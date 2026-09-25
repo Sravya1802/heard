@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Heard — the drive-thru AI that actually hears you
 
-## Getting Started
+> Drive-thru AI didn't fail because it was dumb. It failed because it couldn't hear.
 
-First, run the development server:
+Heard is a voice agent for the drive-thru speaker post, built on the [AssemblyAI Voice Agent API](https://www.assemblyai.com/docs/voice-agents/voice-agent-api). It isolates the driver's voice from engine noise and back-seat chatter, follows mid-sentence corrections, and never invents a price: every item, price and total comes from a deterministic, tested order engine.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The demo restaurant, **Stackhouse Burgers**, is fictional.
+
+## Try it
+
+1. Open **Lane 1** (`/lane`) and press **Pull up to the speaker**. Allow the microphone.
+2. Order like a real person: *"Two Stackhouse Doubles… actually make one a single, no pickles."* Try *"eighteen thousand waters"* or *"can I talk to a person?"*
+3. Open the **kitchen screen** (`/kitchen`) in another tab: items appear while you talk, and the ticket fires when you confirm.
+
+## How it works
+
+```
+Browser /lane ──WebSocket + single-use token──► AssemblyAI Voice Agent API
+   │  session.update: system prompt, tools, menu key terms, voice_focus
+   │  tool.call ─► lib/order-engine.ts (deterministic) ─► tool.result
+   ▼
+Next.js API: /api/token · /api/orders · /api/availability ─► Supabase (optional)
+                                                   │ realtime broadcast
+                                         /kitchen (kitchen display)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| AssemblyAI feature | How Heard uses it |
+|---|---|
+| Voice Agent API (STT + LLM + TTS over one WebSocket) | The whole conversation, with barge-in |
+| `voice_focus` (Universal-3.5 Pro Realtime) | Isolates the driver from car noise and back-seat voices |
+| `keyterms` + `transcription_prompt` | Invented menu names like *Cluckwich* and *Frostee* |
+| Client-side tools with JSON-Schema enums | The model picks menu ids; the engine validates, prices and totals |
+| Single-use browser tokens | The API key never reaches the page |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Guardrails from the public failures of drive-thru AI:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Pranks:** quantities over 10 per item are refused with a friendly double-check ("18,000 waters?").
+- **Corrections:** "actually, make that a single" edits the existing line instead of adding one.
+- **Interruptions:** if the guest cuts in before a tool result is delivered, the pending change is rolled back so the board never disagrees with the agent.
+- **Human fallback:** one sentence hands the car to a crew member, with an alarm on the kitchen screen.
+- **Broken Frostee machine:** the kitchen marks an item down and Heard stops selling it immediately.
 
-## Learn More
+## Run it locally
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+cp .env.example .env.local   # add ASSEMBLYAI_API_KEY
+npm install
+npm run dev                   # http://localhost:3000
+npm test                      # order engine tests
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Supabase is optional. Without it, the lane and kitchen sync between tabs of the same browser. To use it, create a project, run `supabase/schema.sql` in the SQL editor, and fill in the three Supabase variables.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

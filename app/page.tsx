@@ -20,6 +20,8 @@ const STACK = [
   'Menu key terms and a transcription prompt, so invented names like "Cluckwich" survive',
   'The model runs the conversation; a deterministic parser builds the order from the transcript',
   'A tested order engine owns every item, price and total, with guardrails and read-back',
+  'Live side-by-side: the same mic through generic speech-to-text vs Heard, with the order each would build',
+  'Bilingual lane: Spanish, English or both in one sentence, answered in the guest\'s language',
   'Single-use browser tokens: the API key never reaches the page',
 ]
 

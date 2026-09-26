@@ -43,6 +43,7 @@ export interface ParseResult {
 export function tokenize(text: string): string[] {
   return text
     .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/(\d),(\d{3})/g, '$1$2')
     .replace(/[’']/g, '')
     .replace(/-/g, ' ')
@@ -55,25 +56,33 @@ const SMALL: Record<string, number> = {
   zero: 0, a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
   eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19,
   couple: 2,
+  // Spanish
+  un: 1, uno: 1, una: 1, unos: 1, unas: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10,
+  once: 11, doce: 12, trece: 13, catorce: 14, quince: 15, dieciseis: 16, diecisiete: 17, dieciocho: 18, diecinueve: 19,
 }
-const TENS: Record<string, number> = { twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 }
+const TENS: Record<string, number> = {
+  twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90,
+  veinte: 20, treinta: 30, cuarenta: 40, cincuenta: 50,
+}
+const ARTICLES = new Set(['a', 'an', 'couple', 'un', 'una', 'unos', 'unas'])
 
 /** Read a number phrase starting at i: "2", "eighteen thousand", "twenty two". */
 function numberAt(t: string[], i: number): { value: number; len: number } | null {
   if (/^\d+$/.test(t[i] ?? '')) {
-    return t[i + 1] === 'thousand' ? { value: Number(t[i]) * 1000, len: 2 } : { value: Number(t[i]), len: 1 }
+    return t[i + 1] === 'thousand' || t[i + 1] === 'mil' ? { value: Number(t[i]) * 1000, len: 2 } : { value: Number(t[i]), len: 1 }
   }
   let total = 0, current = 0, len = 0
   while (i + len < t.length) {
     const w = t[i + len]
-    if ((w === 'a' || w === 'an' || w === 'couple') && len > 0) break
+    if (ARTICLES.has(w) && len > 0) break
     if (SMALL[w] != null) current += SMALL[w]
     else if (TENS[w] != null) current += TENS[w]
-    else if (w === 'hundred' && len) current *= 100
-    else if (w === 'thousand' && len) { total += current * 1000; current = 0 }
+    else if ((w === 'hundred' || w === 'cien' || w === 'cientos') && len) current *= 100
+    else if ((w === 'thousand' || w === 'mil') && len) { total += current * 1000; current = 0 }
+    else if (w === 'y' && len && TENS[t[i + len - 1]] != null) { /* "veinte y dos" */ }
     else break
     len++
-    if (w === 'a' || w === 'an' || w === 'couple') break
+    if (ARTICLES.has(w)) break
   }
   return len ? { value: total + current, len } : null
 }
@@ -102,7 +111,26 @@ const EXTRA_ALIASES: Record<string, string[]> = {
   stack_fries: ['fry', 'stack fry'],
   frostee: ['frosties', 'frosteee'],
   stack_pack: ['stackpack'],
-  diet_stack_cola: ['diet stack coke'],
+  diet_stack_cola: ['diet stack coke', 'refresco de dieta', 'coca de dieta', 'coca light', 'soda de dieta'],
+}
+
+/** How Spanish-speaking guests name the same menu items (brand names usually stay in English). */
+const SPANISH_ALIASES: Record<string, string[]> = {
+  stackhouse_single: ['stackhouse sencilla', 'stack house sencilla', 'hamburguesa sencilla', 'sencilla', 'hamburguesa normal'],
+  stackhouse_double: ['stackhouse doble', 'stack house doble', 'hamburguesa doble', 'doble', 'double stackhouse'],
+  stackhouse_triple: ['stackhouse triple', 'hamburguesa triple', 'triple stackhouse'],
+  cluckwich: ['sandwich de pollo', 'torta de pollo'],
+  spicy_cluckwich: ['cluckwich picante', 'sandwich de pollo picante', 'cluckwiches picantes'],
+  cluck_bites: ['nuggets de pollo', 'nuggets', 'pedacitos de pollo'],
+  stack_fries: ['papas fritas', 'papas', 'papitas'],
+  onion_rings: ['aros de cebolla', 'aritos de cebolla'],
+  stack_cola: ['refresco', 'refrescos', 'coca', 'coca cola'],
+  fizzy_lemonade: ['limonada', 'limonadas'],
+  sweet_tea: ['te dulce', 'te helado', 'te'],
+  bottled_water: ['agua', 'aguas', 'botella de agua', 'botellas de agua'],
+  frostee: ['malteada', 'malteadas', 'batido', 'licuado'],
+  apple_turnover: ['pay de manzana', 'empanada de manzana', 'pastel de manzana'],
+  stack_pack: ['cajita', 'menu infantil', 'cajita feliz'],
 }
 
 const PHRASES: Phrase[] = (() => {
@@ -122,6 +150,7 @@ const PHRASES: Phrase[] = (() => {
     add(m.name, m.id)
     for (const a of m.aliases ?? []) add(a, m.id)
     for (const a of EXTRA_ALIASES[m.id] ?? []) add(a, m.id)
+    for (const a of SPANISH_ALIASES[m.id] ?? []) add(a, m.id)
   }
   // Longest first: "spicy cluckwich" beats "cluckwich", "diet stack cola" beats "stack cola".
   return out.sort((a, b) => b.words.length - a.words.length)
@@ -132,22 +161,43 @@ function phraseAt(t: string[], i: number): Phrase | null {
   return null
 }
 
-const SIZE_WORDS: Record<string, Size> = { small: 'small', medium: 'medium', regular: 'medium', large: 'large', big: 'large' }
+const SIZE_WORDS: Record<string, Size> = {
+  small: 'small', medium: 'medium', regular: 'medium', large: 'large', big: 'large',
+  chico: 'small', chica: 'small', chicas: 'small', chicos: 'small', pequeno: 'small', pequena: 'small',
+  mediano: 'medium', mediana: 'medium', medianas: 'medium', medianos: 'medium',
+  grande: 'large', grandes: 'large',
+}
 const FLAVORS = new Set(['chocolate', 'vanilla', 'strawberry'])
+const FLAVOR_WORDS: Record<string, Modifier> = { chocolate: 'chocolate', vanilla: 'vanilla', strawberry: 'strawberry', vainilla: 'vanilla', fresa: 'strawberry' }
 const TOPPINGS: Record<string, string> = {
   pickle: 'pickles', pickles: 'pickles', onion: 'onions', onions: 'onions', cheese: 'cheese', lettuce: 'lettuce',
   tomato: 'tomato', tomatoes: 'tomato', sauce: 'sauce', salt: 'salt', ice: 'ice',
+  pepinillo: 'pickles', pepinillos: 'pickles', cebolla: 'onions', cebollas: 'onions', queso: 'cheese', lechuga: 'lettuce',
+  tomate: 'tomato', tomates: 'tomato', salsa: 'sauce', sal: 'salt', hielo: 'ice',
 }
 const SAUCES: [string[], Modifier][] = [
   [['honey', 'mustard'], 'honey_mustard'], [['sweet', 'chili'], 'sweet_chili'], [['sweet', 'chilli'], 'sweet_chili'],
   [['bbq'], 'bbq_sauce'], [['barbecue'], 'bbq_sauce'], [['ranch'], 'ranch'],
+  [['mostaza', 'con', 'miel'], 'honey_mustard'], [['mostaza', 'miel'], 'honey_mustard'], [['barbacoa'], 'bbq_sauce'], [['chile', 'dulce'], 'sweet_chili'],
 ]
-const YES = new Set(['yes', 'yeah', 'yep', 'yup', 'sure', 'ok', 'okay', 'absolutely', 'definitely', 'correct', 'perfect', 'sounds'])
+const YES = new Set(['yes', 'yeah', 'yep', 'yup', 'sure', 'ok', 'okay', 'absolutely', 'definitely', 'correct', 'perfect', 'sounds', 'si', 'claro', 'dale', 'orale', 'correcto', 'exacto', 'perfecto'])
 const NO = new Set(['no', 'nope', 'nah'])
 
 /** An option (modifier) starting at i. */
 function modifierAt(t: string[], i: number): { mod: Modifier; len: number } | null {
   const w = t[i], n = t[i + 1]
+  // Spanish: "sin pepinillos", "extra queso" / "queso extra", "poco hielo", "con tocino"
+  if (w === 'sin' && n) {
+    const skip = ['el', 'la', 'los', 'las'].includes(n) ? 1 : 0
+    if (t[i + 1 + skip] === 'nada') return { mod: 'plain', len: 2 + skip }
+    const top = TOPPINGS[t[i + 1 + skip]]
+    if (top) return { mod: `no_${top}` as Modifier, len: 2 + skip }
+  }
+  if ((w === 'extra' || w === 'doble' || w === 'mas') && n && TOPPINGS[n] && TOPPINGS[n] !== 'ice') return { mod: `extra_${TOPPINGS[n]}` as Modifier, len: 2 }
+  if (TOPPINGS[w] && TOPPINGS[w] !== 'ice' && n === 'extra' && !['no', 'without', 'sin'].includes(t[i - 1] ?? '')) return { mod: `extra_${TOPPINGS[w]}` as Modifier, len: 2 }
+  if (w === 'poco' && n === 'hielo') return { mod: 'light_ice', len: 2 }
+  if (w === 'tocino' || (w === 'con' && n === 'tocino')) return { mod: 'add_bacon', len: w === 'con' ? 2 : 1 }
+  if (FLAVOR_WORDS[w] && w !== 'chocolate' && !FLAVORS.has(w)) return { mod: FLAVOR_WORDS[w], len: 1 }
   if ((w === 'no' || w === 'without' || w === 'hold') && n) {
     const skip = w === 'hold' && n === 'the' ? 1 : 0
     const top = TOPPINGS[t[i + 1 + skip]]
@@ -192,6 +242,8 @@ function findMentions(t: string[]): { mentions: Mention[]; used: Set<number> } {
   const mentions: Mention[] = []
   const used = new Set<number>()
   for (let i = 0; i < t.length; i++) {
+    // "doble queso" / "double cheese" is extra cheese, not a Stackhouse Double.
+    if (['doble', 'double', 'extra'].includes(t[i]) && TOPPINGS[t[i + 1]]) { i++; continue }
     const p = phraseAt(t, i)
     if (!p) continue
     const m: Mention = { start: i, end: i + p.words.length, itemId: p.itemId, modifiers: [], groups: [] }
@@ -200,12 +252,13 @@ function findMentions(t: string[]): { mentions: Mention[]; used: Set<number> } {
       if (used.has(j) || t[j] === ',') break
       const w = t[j]
       if (SIZE_WORDS[w] && !m.size) { m.size = SIZE_WORDS[w]; used.add(j); continue }
-      if (FLAVORS.has(w)) { m.modifiers.push(w as Modifier); used.add(j); continue }
+      if (FLAVOR_WORDS[w]) { m.modifiers.push(FLAVOR_WORDS[w]); used.add(j); continue }
       if ((w === 'piece' || w === 'pc' || w === 'pieces') && j > 0) {
         const n = numberEndingAt(t, j - 1)
         if (n) { m.size = `${n.value}pc` as Size; for (let k = n.from; k <= j; k++) used.add(k); j = n.from; continue }
       }
-      if (['spicy', 'the', 'of', 'those', 'these', 'more', 'another', 'order', 'orders', 'your'].includes(w)) continue
+      if (['spicy', 'the', 'of', 'those', 'these', 'more', 'another', 'order', 'orders', 'your',
+        'el', 'la', 'los', 'las', 'de', 'mi', 'otra', 'otro', 'otras', 'otros', 'mas', 'hamburguesa', 'hamburguesas', 'orden', 'ordenes'].includes(w)) continue
       const n = numberEndingAt(t, j)
       if (n && m.qty == null) { m.qty = n.value; for (let k = n.from; k <= j; k++) used.add(k); j = n.from; continue }
       break
@@ -229,7 +282,7 @@ function attachTrailing(t: string[], mentions: Mention[], used: Set<number>) {
       if (used.has(i)) continue
       const w = t[i]
       // "two Doubles, one with no pickles": split one off with its own options.
-      if ((w === 'one' || w === '1') && (m.qty ?? 1) >= 2 && ['with', 'no', 'without', 'extra', 'plain', 'hold', 'of'].includes(t[i + 1] ?? '')) {
+      if (['one', '1', 'una', 'uno'].includes(w) && (m.qty ?? 1) >= 2 && ['with', 'no', 'without', 'extra', 'plain', 'hold', 'of', 'sin', 'con', 'de'].includes(t[i + 1] ?? '')) {
         group = { qty: 1, modifiers: [] }
         m.groups.push(group)
         continue
@@ -238,8 +291,8 @@ function attachTrailing(t: string[], mentions: Mention[], used: Set<number>) {
       if (mod) { (group ? group.modifiers : m.modifiers).push(mod.mod); i += mod.len - 1; continue }
       if (SIZE_WORDS[w] && !m.size) { m.size = SIZE_WORDS[w]; continue }
       if (w === 'meal' || w === 'meals' || w === 'combo') { m.meal = true; continue }
-      if (w === 'for' && ['my', 'her', 'him', 'the', 'me'].includes(t[i + 1] ?? '')) {
-        m.forWhom = ['my', 'the'].includes(t[i + 1]) && t[i + 2] && t[i + 2] !== ',' ? `${t[i + 1]} ${t[i + 2]}` : t[i + 1]
+      if ((w === 'for' && ['my', 'her', 'him', 'the', 'me'].includes(t[i + 1] ?? '')) || (w === 'para' && ['mi', 'el', 'la', 'ella', 'el', 'mis'].includes(t[i + 1] ?? ''))) {
+        m.forWhom = ['my', 'the', 'mi', 'mis', 'el', 'la'].includes(t[i + 1]) && t[i + 2] && t[i + 2] !== ',' ? `${t[i + 1]} ${t[i + 2]}` : t[i + 1]
         i += m.forWhom.split(' ').length
       }
     }
@@ -250,7 +303,7 @@ function attachTrailing(t: string[], mentions: Mention[], used: Set<number>) {
 function foldMealDrinks(t: string[], mentions: Mention[]) {
   for (let n = 0; n + 1 < mentions.length; n++) {
     const m = mentions[n], next = mentions[n + 1]
-    if (m.meal && isMealDrink(next.itemId) && t.slice(m.end, next.start).some((w) => w === 'with' || w === 'and')) {
+    if (m.meal && isMealDrink(next.itemId) && t.slice(m.end, next.start).some((w) => ['with', 'and', 'con', 'y'].includes(w))) {
       m.mealDrinkId = next.itemId
       if (next.size === 'medium' || next.size === 'large') m.mealSize = next.size
       mentions.splice(n + 1, 1)
@@ -298,8 +351,8 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
   }
 
   const said = clean(t)
-  if (/ (talk|speak) (to|with) (a |an |the )?(real |actual )?(person|human|manager|someone|employee)| (real|actual) (person|human) | manager /.test(said)) result.wantsHuman = true
-  if (/ (thats|that is|that will be|thatll be) (it|all|everything)| nothing else | im good | im done | all set /.test(said)) result.done = true
+  if (/ (talk|speak) (to|with) (a |an |the )?(real |actual )?(person|human|manager|someone|employee)| (real|actual) (person|human) | manager | hablar con (una |un |el |la |alguien)?(persona|humano|gerente|empleado|alguien)| persona real /.test(said)) result.wantsHuman = true
+  if (/ (thats|that is|that will be|thatll be) (it|all|everything)| nothing else | im good | im done | all set | (eso )?(es|seria|sera) todo| nada mas | ya es todo /.test(said)) result.done = true
 
   const { mentions, used } = findMentions(t)
   attachTrailing(t, mentions, used)
@@ -312,13 +365,13 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
   const before = (m: Mention, n = 8) => clean(t.slice(Math.max(0, m.start - n), m.start))
 
   // ---- removals: "scratch the onion rings", "remove one of the fries", "forget that" ----
-  const removeRe = / (scratch|remove|cancel|forget|drop|delete|take off|lose|nix|no more|get rid of) /
+  const removeRe = / (scratch|remove|cancel|forget|drop|delete|take off|lose|nix|no more|get rid of|quita|quitale|quitame|quite|cancela|cancelale|borra|elimina|olvida|saca|sin (el|la|los|las)) /
   for (const m of mentions) {
     const b = before(m, 6)
     if (!removeRe.test(b)) continue
     const line = lineFor(m.itemId)
     if (!line) continue
-    const fewer = m.qty != null && / (one|1) of /.test(b) ? 1 : m.qty != null && m.qty < line.qty ? m.qty : null
+    const fewer = m.qty != null && / (one|1|una|uno) (of|de) /.test(b) ? 1 : m.qty != null && m.qty < line.qty && !/ (las|los|el|la|the) $/.test(b) ? m.qty : null
     result.changes.push(fewer ? { action: 'change', line_id: line.id, quantity: line.qty - fewer } : { action: 'remove', line_id: line.id })
     handled.add(m)
   }
@@ -334,8 +387,9 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
 
     // "make one of those a single, no pickles": split one off an existing line into a new item.
     const oneOf = /(make|change|switch|swap|turn) (one|1)( of (those|them|these|em|the \w+( \w+)?))? (to |into |as )?(a |an )?$/.exec(b.trimEnd() + ' ')
+      ?? /(haz|has|cambia|cambiame|cambie) (una|uno)( de (esas|esos|ellas|ellos|las \w+|los \w+))? (a |por |en )?(una |un )?(que sea )?$/.exec(b.trimEnd() + ' ')
     if (oneOf && lines.length) {
-      const namedWord = oneOf[4]?.startsWith('the ') ? oneOf[4].slice(4).split(' ')[0] : null
+      const namedWord = /^(the|las|los) /.test(oneOf[4] ?? '') ? oneOf[4].split(' ')[1] : null
       const namedIdx = namedWord ? t.lastIndexOf(namedWord, m.start) : -1
       const namedPhrase = namedIdx >= 0 ? phraseAt(t, namedIdx) : null
       const from = (namedPhrase ? lineFor(namedPhrase.itemId) : undefined) ?? lastLine((l) => l.qty > 1) ?? lastLine()
@@ -349,10 +403,13 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
     }
 
     // "make the lemonade a large", "make the Double a meal": the item names the line; what follows changes it.
-    if (/ (make|change|switch|turn|swap|put) (the|my|that) $/.test(b)) {
+    if (/ (make|change|switch|turn|swap|put|haz|has|hazme|cambia|cambiame|pon|ponme|dame) (the|my|that|la|el|las|los|mi|esa|ese) $/.test(b)) {
       const line = lineFor(m.itemId)
       const next = mentions[n + 1]
-      const toNew = next && t.slice(m.end, next.start).some((w) => w === 'to' || w === 'into')
+      const between = next ? t.slice(m.end, next.start).filter((w) => w !== ',') : []
+      // "change the Double to/por a Triple", or Spanish "a una Triple" right before the new item.
+      const toNew = next && (between.some((w) => ['to', 'into', 'por'].includes(w)) ||
+        (between[0] === 'a' && between.length <= 2 && between.every((w) => ['a', 'una', 'un', 'an'].includes(w))))
       if (line && !toNew) {
         const c: Change = { action: 'change', line_id: line.id }
         if (m.size) c.size = m.size
@@ -366,8 +423,8 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
 
     // "change the Double to a Triple, and hold the cheese"
     const next = mentions[n + 1]
-    if (next && / (change|switch|swap|make|turn) (the|my|that)? ?$/.test(b.replace(/ (the|my|that) $/, ' ')) &&
-        t.slice(m.end, next.start).some((w) => w === 'to' || w === 'into' || w === 'for')) {
+    if (next && / (change|switch|swap|make|turn|cambia|cambiame|cambie) (the|my|that)? ?$/.test(b.replace(/ (the|my|that|la|el|las|los|mi) $/, ' ')) &&
+        t.slice(m.end, next.start).some((w) => ['to', 'into', 'for', 'por'].includes(w))) {
       const from = lineFor(m.itemId)
       if (from) {
         const c: Change = { action: 'change', line_id: from.id, item_id: next.itemId }
@@ -383,6 +440,7 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
 
     // "make that a single", "actually a triple instead": swap the most recent line of the same kind.
     const swap = /(make|change|switch|swap|turn) (that|it|this|those|them|mine) (to |into |as )?(a |an )?$/.test(b.trimEnd() + ' ')
+      || /(cambiala|cambialo|cambialas|hazla|hazlo|mejor|mas bien)( a| por| en)? ?(una |un )?(que sea )?$/.test(b.trimEnd() + ' ')
       || t.slice(m.end, m.end + 3).includes('instead')
     if (swap && lines.length) {
       const cat = MENU_BY_ID[m.itemId].category
@@ -472,7 +530,7 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
     if (t.some((w) => YES.has(w)) && !t.some((w) => NO.has(w))) result.affirmative = true
     if (t.some((w) => NO.has(w)) || / no thanks | no thank you | im good /.test(said)) result.negative = true
     if (!result.done && !result.wantsHuman && !result.affirmative && !result.negative &&
-        / (get|want|have|like|order|give me|ill do|ill take|ill have|add) /.test(said)) result.unmatched = true
+        / (get|want|have|like|order|give me|ill do|ill take|ill have|add|quiero|quisiera|dame|deme|me da|me das|me pones|me regala|agrega|agregame) /.test(said)) result.unmatched = true
   }
   return result
 }

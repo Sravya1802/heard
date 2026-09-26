@@ -1,0 +1,133 @@
+{
+  "scenario": "spanglish",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": true,
+  "failures": [],
+  "latencies": [
+    869,
+    1340,
+    1278,
+    1325,
+    1356
+  ],
+  "order": [
+    "1 Stackhouse Double, no pickles",
+    "1 large Stack Fries"
+  ],
+  "log": [
+    {
+      "t": 0.872,
+      "kind": "ready",
+      "text": "sess_d338789ce13a4217a09268945f052c5b"
+    },
+    {
+      "t": 10.538,
+      "kind": "agent",
+      "text": "¡Bienvenidos a Stackhouse! Welcome! ¿Qué le sirvo hoy? What can I get you?"
+    },
+    {
+      "t": 11.657,
+      "kind": "guest",
+      "text": "Hola, quiero dos Stackhouse Doubles, una sin pepinillos."
+    },
+    {
+      "t": 16.682,
+      "kind": "heard",
+      "text": "Hola, quiero 2 Stackhouse dobles, una sin pepinillos."
+    },
+    {
+      "t": 16.949,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 Stackhouse Double, no pickles"
+    },
+    {
+      "t": 23.96,
+      "kind": "agent",
+      "text": "Entendido, un Stackhouse Double sin pepinillos. ¿Algo más?"
+    },
+    {
+      "t": 25.035,
+      "kind": "guest",
+      "text": "Y unas papas grandes."
+    },
+    {
+      "t": 27.28,
+      "kind": "heard",
+      "text": "Y unas papas grandes."
+    },
+    {
+      "t": 28.023,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 large Stack Fries"
+    },
+    {
+      "t": 31.751,
+      "kind": "agent",
+      "text": "Got it, unas papas grandes. ¿Algo más?"
+    },
+    {
+      "t": 32.806,
+      "kind": "guest",
+      "text": "Eso es todo."
+    },
+    {
+      "t": 34.281,
+      "kind": "heard",
+      "text": "Eso es todo."
+    },
+    {
+      "t": 34.928,
+      "kind": "tool",
+      "text": "✓ suggest_upsell"
+    },
+    {
+      "t": 40.049,
+      "kind": "agent",
+      "text": "¿Gusta una Stack Cola, Fizzy Lemonade o un Sweet Tea para acompañar?"
+    },
+    {
+      "t": 41.109,
+      "kind": "guest",
+      "text": "No, gracias."
+    },
+    {
+      "t": 42.88,
+      "kind": "heard",
+      "text": "No, gracias."
+    },
+    {
+      "t": 43.571,
+      "kind": "tool",
+      "text": "✓ read_back"
+    },
+    {
+      "t": 57.977,
+      "kind": "agent",
+      "text": "Tengo un Stackhouse Double sin pepinillos y unas papas grandes. El total es diez con treinta y cinco. ¿Es todo correcto?"
+    },
+    {
+      "t": 59.067,
+      "kind": "guest",
+      "text": "Sí, está bien."
+    },
+    {
+      "t": 60.981,
+      "kind": "heard",
+      "text": "Sí, está bien."
+    },
+    {
+      "t": 61.646,
+      "kind": "tool",
+      "text": "✓ submit_order"
+    },
+    {
+      "t": 69.148,
+      "kind": "agent",
+      "text": "Su total es diez con treinta y cinco. Por favor, avance a la primera ventanilla. ¡Gracias!"
+    }
+  ]
+}

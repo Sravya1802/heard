@@ -15,6 +15,7 @@ export default async function LanePage(props: PageProps<'/lane'>) {
     voiceFocus,
     voiceFocusThreshold: threshold != null && threshold >= 0 && threshold <= 1 ? threshold : undefined,
     keyterms: sp.keyterms !== '0',
+    bilingual: sp.lang === 'es',
   }
   return <Lane hearing={hearing} />
 }

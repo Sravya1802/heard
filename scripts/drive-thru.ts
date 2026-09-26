@@ -19,6 +19,9 @@ import { RATE, loadEnv, mixAtSnr, readWav, speak } from './audio'
 interface Scenario {
   lines: string[]
   unavailable?: string[]
+  /** Bilingual Spanish/English lane, spoken by this macOS voice. */
+  bilingual?: boolean
+  voice?: string
   expect: (s: OrderState) => string[]
 }
 
@@ -104,6 +107,25 @@ const SCENARIOS: Record<string, Scenario> = {
       !s.submitted?.updated && 'expected the ticket to be re-sent as updated',
     ].filter(Boolean) as string[],
   },
+  spanglish: {
+    bilingual: true,
+    voice: 'Paulina',
+    lines: [
+      'Hola, quiero dos Stackhouse Doubles, una sin pepinillos.',
+      'Y unas papas grandes.',
+      'Eso es todo.',
+      'No, gracias.',
+      'Sí, está bien.',
+    ],
+    expect: (s) => {
+      const got = s.lines.map(describeLine)
+      const want = ['1 Stackhouse Double', '1 Stackhouse Double, no pickles', '1 large Stack Fries']
+      return [
+        JSON.stringify(got) !== JSON.stringify(want) && `expected ${want.join(' | ')}, got ${got.join(' | ')}`,
+        !s.submitted && 'expected the order to be submitted',
+      ].filter(Boolean) as string[]
+    },
+  },
   human: {
     lines: [
       'I want a Stackhouse Triple.',
@@ -156,15 +178,16 @@ async function runScenario(name: string) {
   const sc = SCENARIOS[name]
   if (!sc) throw new Error(`Unknown scenario ${name}. Try: ${Object.keys(SCENARIOS).join(', ')}, all`)
   const unavailable = new Set(sc.unavailable ?? [])
+  const v = sc.voice ?? voice
   const turns = sc.lines.map((text) => {
-    const clean = speak(text, voice, CACHE)
+    const clean = speak(text, v, CACHE)
     return noise ? mixAtSnr(clean, noise, snr) : clean
   })
   // Gain that puts the between-turn noise bed at the same level it has under speech.
   const bedGain = (() => {
     if (!noise) return 0
     const rms = (a: Int16Array) => Math.sqrt(a.reduce((s, v) => s + v * v, 0) / a.length)
-    const speechRms = rms(speak(sc.lines[0], voice, CACHE))
+    const speechRms = rms(speak(sc.lines[0], v, CACHE))
     return speechRms / (rms(noise) * Math.pow(10, snr / 20))
   })()
 
@@ -247,7 +270,7 @@ async function runScenario(name: string) {
 
     ws.onopen = () => send({
       type: 'session.update',
-      session: AGENT_ID ? { agent_id: AGENT_ID } : sessionConfig({ voiceFocus, keyterms, minSilence: Number(arg('min-silence') ?? 0) || undefined, maxSilence: Number(arg('max-silence') ?? 0) || undefined }),
+      session: AGENT_ID ? { agent_id: AGENT_ID } : sessionConfig({ voiceFocus, keyterms, bilingual: Boolean(sc.bilingual), minSilence: Number(arg('min-silence') ?? 0) || undefined, maxSilence: Number(arg('max-silence') ?? 0) || undefined }),
     })
     ws.onclose = () => finish()
     ws.onerror = () => { say('error', 'websocket error'); finish() }

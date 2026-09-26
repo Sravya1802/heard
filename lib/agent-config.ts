@@ -14,6 +14,8 @@ export interface HearingOptions {
   voiceFocusThreshold?: number
   /** Menu names as key terms, plus a transcription prompt describing a drive-thru order. */
   keyterms: boolean
+  /** Spanish/English lane: a Spanish-native voice that code-switches, and replies in the guest's mix. */
+  bilingual?: boolean
   /** Override end-of-turn silence (ms). Unset keeps AssemblyAI's adaptive turn detection. */
   minSilence?: number
   maxSilence?: number
@@ -22,6 +24,14 @@ export interface HearingOptions {
 export const DEFAULT_HEARING: HearingOptions = { voiceFocus: 'far-field', keyterms: true }
 
 const GREETING = 'Welcome to Stackhouse! What can I get started for you?'
+const GREETING_BILINGUAL = '¡Bienvenidos a Stackhouse! Welcome! ¿Qué le sirvo hoy? What can I get you?'
+
+const BILINGUAL_RULES = `
+
+# Language (this lane is bilingual)
+- Reply in the language the guest is using. If they mix Spanish and English, reply mostly in Spanish and keep menu names in English (Stackhouse Double, Cluckwich, Frostee, Stack Fries).
+- Tool results are in English. Say them in the guest's language, keeping item names, quantities and prices exact.
+- Spanish is understood automatically: "sin pepinillos", "papas grandes", "eso es todo", "mejor una sencilla" all work through sync_order like English.`
 
 function menuText(): string {
   return MENU.map((m) => {
@@ -101,6 +111,10 @@ export const TOOLS = [
   },
 ]
 
+export const TRANSCRIPTION_PROMPT_BILINGUAL =
+  'A drive-thru order at Stackhouse Burgers. The driver may speak Spanish, English, or mix both in one sentence, over car and traffic noise. ' +
+  'Menu names stay in English: Stackhouse Single, Double and Triple, Cluckwich, Cluck Bites, Stack Fries, Stack Cola, Frostee, Apple Turnover.'
+
 export const TRANSCRIPTION_PROMPT =
   'A drive-thru order at Stackhouse Burgers, spoken by the driver over car and traffic noise. ' +
   'Expect menu names like Stackhouse Single, Double and Triple, Smokestack BBQ, Garden Stack, Cluckwich, Cluck Bites, Stack Fries, Stack Cola, Fizzy Lemonade, Frostee, Apple Turnover and Stack Pack; ' +
@@ -110,8 +124,9 @@ export function sessionConfig(hearing: HearingOptions = DEFAULT_HEARING) {
   const input: Record<string, unknown> = { format: { encoding: 'audio/pcm' } }
   if (hearing.keyterms) {
     input.keyterms = menuKeyterms()
-    input.transcription_prompt = TRANSCRIPTION_PROMPT
+    input.transcription_prompt = hearing.bilingual ? TRANSCRIPTION_PROMPT_BILINGUAL : TRANSCRIPTION_PROMPT
   }
+  if (hearing.bilingual) input.language_codes = ['en', 'es']
   if (hearing.minSilence || hearing.maxSilence) {
     input.turn_detection = {
       ...(hearing.minSilence ? { min_silence: hearing.minSilence } : {}),
@@ -123,10 +138,11 @@ export function sessionConfig(hearing: HearingOptions = DEFAULT_HEARING) {
     if (hearing.voiceFocusThreshold != null) input.voice_focus_threshold = hearing.voiceFocusThreshold
   }
   return {
-    system_prompt: SYSTEM_PROMPT,
-    greeting: GREETING,
+    system_prompt: hearing.bilingual ? SYSTEM_PROMPT + BILINGUAL_RULES : SYSTEM_PROMPT,
+    greeting: hearing.bilingual ? GREETING_BILINGUAL : GREETING,
     tools: TOOLS,
     input,
-    output: { voice: 'alba', format: { encoding: 'audio/pcm' } },
+    // lola: a Spanish-native voice that also speaks English.
+    output: { voice: hearing.bilingual ? 'lola' : 'alba', format: { encoding: 'audio/pcm' } },
   }
 }

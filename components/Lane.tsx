@@ -28,6 +28,13 @@ const STATUS_LABEL: Record<CallStatus, string> = {
   error: 'Something went wrong',
 }
 
+const TRY_SAYING_ES = [
+  '“Quiero dos Stackhouse Doubles, una sin pepinillos.”',
+  '“Y unas papas grandes… mejor medianas.”',
+  '“Can I get una malteada de chocolate grande?”',
+  '“Eso es todo.”',
+]
+
 const TRY_SAYING = [
   '“Two Stackhouse Doubles… actually make one a single, no pickles.”',
   '“And a large chocolate Frostee for her.”',
@@ -319,6 +326,10 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
           )}
           <span className={`rounded border px-2 py-1 ${hearing.voiceFocus === 'off' ? 'border-ketchup text-ketchup' : 'border-line text-muted'}`}>{focusLabel}</span>
           <span className={`rounded border px-2 py-1 ${hearing.keyterms ? 'border-line text-muted' : 'border-ketchup text-ketchup'}`}>Menu key terms {hearing.keyterms ? 'on' : 'off'}</span>
+          <span className="inline-flex rounded border border-line overflow-hidden" role="group" aria-label="Lane language">
+            <Link href="/lane" className={`px-2 py-1 ${!hearing.bilingual ? 'bg-ink text-asphalt' : 'text-muted hover:text-ink'}`}>English</Link>
+            <Link href="/lane?lang=es" className={`px-2 py-1 ${hearing.bilingual ? 'bg-ink text-asphalt' : 'text-muted hover:text-ink'}`}>Español + English</Link>
+          </span>
           <Link href="/kitchen" target="_blank" className="rounded border border-mustard text-mustard px-2 py-1 hover:bg-mustard hover:text-asphalt">Kitchen screen ↗</Link>
         </div>
       </header>
@@ -440,7 +451,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
               {captions.length === 0 && !partial && (
                 <div className="text-muted">
                   <p className="mb-2">Try saying:</p>
-                  <ul className="space-y-1.5">{TRY_SAYING.map((s) => <li key={s}>{s}</li>)}</ul>
+                  <ul className="space-y-1.5">{(hearing.bilingual ? TRY_SAYING_ES : TRY_SAYING).map((s) => <li key={s}>{s}</li>)}</ul>
                 </div>
               )}
               {captions.map((c, i) => (

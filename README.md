@@ -4,7 +4,11 @@
 
 Heard is a voice agent for the drive-thru speaker post, built on the [AssemblyAI Voice Agent API](https://www.assemblyai.com/docs/voice-agents/voice-agent-api). It picks out the driver's voice from engine noise and back-seat chatter, builds the order **only from what it heard**, follows mid-sentence corrections, never invents a price, and puts a human one sentence away.
 
-**Try it:** `/lane` (order out loud) · `/kitchen` (kitchen display, open it in a second tab) · `/replay` (a recorded real order) · `/insights` (the benchmark)
+**Try it:** `/lane` (order out loud) · `/lane?lang=es` (Spanish/English lane) · `/kitchen` (kitchen display, open it in a second tab) · `/noise` (open on your phone for drive-thru noise) · `/replay` (a recorded real order) · `/insights` (the benchmark)
+
+**Hear it both ways.** While you order, the same microphone audio also goes to a generic speech-to-text setup (an older AssemblyAI streaming model with no menu hints and no voice focus). Lane 1 shows every sentence as both heard it, and the order each would have built, so you can watch the difference live with noise playing from your phone.
+
+**Habla español? Order in Spanglish.** The bilingual lane understands Spanish, English, or both in one sentence (*"quiero dos Stackhouse Doubles, una sin pepinillos, y unas papas grandes"*), answers in the guest's language with a Spanish-native voice, and builds the same exact order.
 
 The demo restaurant, **Stackhouse Burgers**, is fictional. Its menu names (*Cluckwich*, *Frostee*, *Smokestack BBQ*) are invented on purpose: made-up brand names are exactly what generic speech-to-text gets wrong.
 
@@ -88,7 +92,7 @@ The result: the same words always produce the same order, and order accuracy dep
 cp .env.example .env.local     # add ASSEMBLYAI_API_KEY
 npm install
 npm run dev                     # http://localhost:3000
-npm test                        # parser + engine: 64 tests
+npm test                        # parser, engine, sync and comparison: 99 tests
 ```
 
 Supabase is optional. Without it, the lane and kitchen sync between tabs of the same browser. To use it, create a project, run [supabase/schema.sql](supabase/schema.sql), and fill in the Supabase variables.
@@ -115,6 +119,7 @@ npm run replay -- <session_id> --title "..."  # save a real session as a static 
 | `lib/order-parser.ts` | Transcript → order changes (deterministic) |
 | `lib/order-engine.ts` | Items, prices, totals, guardrails, read-back, upsell |
 | `lib/sync.ts` | Glue between agent tool calls, transcripts and the engine |
+| `lib/shadow-stt.ts`, `lib/compare.ts` | The generic transcriber and turn-by-turn comparison for "Hear it both ways" |
 | `lib/voice-client.ts` | Browser Voice Agent client: audio worklets, barge-in, deferred tool commits |
 | `lib/agent-config.ts` | System prompt, tools, key terms, voice focus |
 | `components/Lane.tsx` | The speaker post and order board |

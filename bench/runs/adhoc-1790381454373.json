@@ -1,0 +1,39 @@
+{
+  "scenario": "adhoc",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": true,
+  "failures": [],
+  "latencies": [],
+  "order": [],
+  "log": [
+    {
+      "t": 0.991,
+      "kind": "ready",
+      "text": "sess_940d7dad07934649bfd3ef487899dcf2"
+    },
+    {
+      "t": 3.985,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 5.042,
+      "kind": "guest",
+      "text": "Can I get a Stackhouse Single and a Stackhouse Double."
+    },
+    {
+      "t": 9.815,
+      "kind": "heard",
+      "text": "Can I get a Stackhouse Single and a Stackhouse Double?"
+    },
+    {
+      "t": 30.322,
+      "kind": "timeout",
+      "text": "scenario took too long"
+    }
+  ]
+}

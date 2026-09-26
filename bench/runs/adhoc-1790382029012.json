@@ -1,0 +1,56 @@
+{
+  "scenario": "adhoc",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": true,
+  "failures": [],
+  "latencies": [
+    2657
+  ],
+  "order": [],
+  "log": [
+    {
+      "t": 0.893,
+      "kind": "ready",
+      "text": "sess_57688de346504d599f882eea7bd29bc8"
+    },
+    {
+      "t": 3.813,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 4.896,
+      "kind": "guest",
+      "text": "Can I get a Stackhouse Single and a Stackhouse Double."
+    },
+    {
+      "t": 9.664,
+      "kind": "heard",
+      "text": "Can I get a Stackhouse Single and a Stackhouse Double?"
+    },
+    {
+      "t": 11.079,
+      "kind": "nudge",
+      "text": "empty reply, asking again (1)"
+    },
+    {
+      "t": 11.504,
+      "kind": "nudge",
+      "text": "empty reply, asking again (2)"
+    },
+    {
+      "t": 11.577,
+      "kind": "nudge",
+      "text": "empty reply, asking again (3)"
+    },
+    {
+      "t": 16.649,
+      "kind": "agent",
+      "text": "Got it, one Stackhouse Single and one Stackhouse Double. Anything else?"
+    }
+  ]
+}

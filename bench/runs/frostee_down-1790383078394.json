@@ -1,0 +1,132 @@
+{
+  "scenario": "frostee_down",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": true,
+  "failures": [],
+  "latencies": [
+    979,
+    1338,
+    1471,
+    1682,
+    1748
+  ],
+  "order": [
+    "1 Apple Turnover"
+  ],
+  "log": [
+    {
+      "t": 0.819,
+      "kind": "ready",
+      "text": "sess_e2a4c9ba581b40968c992db6ecb30da3"
+    },
+    {
+      "t": 3.734,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 4.783,
+      "kind": "guest",
+      "text": "Can I get a medium vanilla Frostee?"
+    },
+    {
+      "t": 8.659,
+      "kind": "heard",
+      "text": "Can I get a medium vanilla Frosty?"
+    },
+    {
+      "t": 8.94,
+      "kind": "tool",
+      "text": "✓ sync_order ? Frostee is unavailable right now. Apologize briefly and offer Apple Turnover."
+    },
+    {
+      "t": 15.492,
+      "kind": "agent",
+      "text": "I am so sorry, we don't have Frostees available right now. Would you like to try an apple turnover instead?"
+    },
+    {
+      "t": 16.557,
+      "kind": "guest",
+      "text": "Aw, okay. An Apple Turnover then."
+    },
+    {
+      "t": 19.935,
+      "kind": "heard",
+      "text": "Ah, okay. An apple turnover then."
+    },
+    {
+      "t": 20.728,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 Apple Turnover"
+    },
+    {
+      "t": 23.844,
+      "kind": "agent",
+      "text": "Got an apple turnover. Anything else?"
+    },
+    {
+      "t": 24.894,
+      "kind": "guest",
+      "text": "That's it."
+    },
+    {
+      "t": 26.052,
+      "kind": "heard",
+      "text": "That's it."
+    },
+    {
+      "t": 26.804,
+      "kind": "tool",
+      "text": "✓ suggest_upsell"
+    },
+    {
+      "t": 31.818,
+      "kind": "agent",
+      "text": "Would you like to add a Stack Cola, a Fizzy Lemonade, or a Sweet Tea to that?"
+    },
+    {
+      "t": 32.822,
+      "kind": "guest",
+      "text": "No thanks."
+    },
+    {
+      "t": 34.333,
+      "kind": "heard",
+      "text": "No thanks."
+    },
+    {
+      "t": 35.365,
+      "kind": "tool",
+      "text": "✓ read_back"
+    },
+    {
+      "t": 38.276,
+      "kind": "agent",
+      "text": "An apple turnover. Is that all correct?"
+    },
+    {
+      "t": 39.44,
+      "kind": "guest",
+      "text": "Yes please."
+    },
+    {
+      "t": 40.932,
+      "kind": "heard",
+      "text": "Yes, please."
+    },
+    {
+      "t": 42.121,
+      "kind": "tool",
+      "text": "✓ submit_order"
+    },
+    {
+      "t": 47.01,
+      "kind": "agent",
+      "text": "Your total is $2.15. Please pull forward to the first window!"
+    }
+  ]
+}

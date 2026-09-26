@@ -1,0 +1,71 @@
+{
+  "scenario": "adhoc",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": true,
+  "failures": [],
+  "latencies": [
+    878,
+    879
+  ],
+  "order": [
+    "1 Spicy Cluckwich, as a large meal with Sweet Tea",
+    "1 small vanilla Frostee",
+    "2 Apple Turnover"
+  ],
+  "log": [
+    {
+      "t": 1.019,
+      "kind": "ready",
+      "text": "sess_05d3edc50a574fe7a79d4846cf8aed11"
+    },
+    {
+      "t": 4.058,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 5.135,
+      "kind": "guest",
+      "text": "Let me get a Spicy Cluckwich meal, large, with a Sweet Tea."
+    },
+    {
+      "t": 9.932,
+      "kind": "heard",
+      "text": "Let me get a spicy Cluckwich meal, large, with a sweet tea."
+    },
+    {
+      "t": 10.175,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 Spicy Cluckwich, as a large meal with Sweet Tea"
+    },
+    {
+      "t": 15.538,
+      "kind": "agent",
+      "text": "Got it, one large Spicy Cluckwich meal with a sweet tea. Anything else?"
+    },
+    {
+      "t": 16.617,
+      "kind": "guest",
+      "text": "And a vanilla Frostee, small, and two Apple Turnovers."
+    },
+    {
+      "t": 21.002,
+      "kind": "heard",
+      "text": "And a vanilla Frosty, small, and 2 apple turnovers."
+    },
+    {
+      "t": 21.274,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 small vanilla Frostee; added 2 Apple Turnover"
+    },
+    {
+      "t": 26.928,
+      "kind": "agent",
+      "text": "Sure thing, I've added a small vanilla Frostee and two apple turnovers. Anything else?"
+    }
+  ]
+}

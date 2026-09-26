@@ -1,0 +1,177 @@
+{
+  "scenario": "meal",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": false,
+  "failures": [
+    "expected a small chocolate Frostee from the upsell",
+    "expected a large Spicy Cluckwich meal with Sweet Tea"
+  ],
+  "latencies": [
+    1034,
+    1382,
+    1458,
+    1491,
+    1518,
+    1878,
+    1316
+  ],
+  "order": [
+    "1 10-piece Cluck Bites, honey mustard"
+  ],
+  "log": [
+    {
+      "t": 0.873,
+      "kind": "ready",
+      "text": "sess_2e68bc4136b548498bd88b95d59566e8"
+    },
+    {
+      "t": 4.057,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 5.103,
+      "kind": "guest",
+      "text": "Let me get a Spicy Cluckwich meal, large, with a Sweet Tea."
+    },
+    {
+      "t": 7.766,
+      "kind": "heard",
+      "text": "Let me get a spicy Cluckwich meal."
+    },
+    {
+      "t": 8.154,
+      "kind": "tool",
+      "text": "✓ sync_order ? Ask which drink comes with the meal: Stack Cola, Diet Stack Cola, Fizzy Lemonade or Sweet Tea."
+    },
+    {
+      "t": 16.543,
+      "kind": "agent",
+      "text": "Got it, a spicy Cluckwich meal. Which drink would you like with that, Stack Cola, Diet Stack Cola, Fizzy Lemonade, or Sweet Tea?"
+    },
+    {
+      "t": 17.577,
+      "kind": "guest",
+      "text": "And ten Cluck Bites with honey mustard."
+    },
+    {
+      "t": 20.466,
+      "kind": "heard",
+      "text": "And 10 Cluck Bites with honey mustard."
+    },
+    {
+      "t": 21.261,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 10-piece Cluck Bites, honey mustard"
+    },
+    {
+      "t": 25.297,
+      "kind": "agent",
+      "text": "Added ten Cluck Bites with honey mustard. Anything else?"
+    },
+    {
+      "t": 26.362,
+      "kind": "guest",
+      "text": "That's all."
+    },
+    {
+      "t": 27.668,
+      "kind": "heard",
+      "text": "That's all."
+    },
+    {
+      "t": 28.439,
+      "kind": "tool",
+      "text": "✓ suggest_upsell"
+    },
+    {
+      "t": 34.134,
+      "kind": "agent",
+      "text": "Would you like to make those Cluck Bites a meal with fries and a drink for just three dollars and nineteen cents more?"
+    },
+    {
+      "t": 35.238,
+      "kind": "guest",
+      "text": "Sure, why not."
+    },
+    {
+      "t": 37.267,
+      "kind": "heard",
+      "text": "Sure, why not?"
+    },
+    {
+      "t": 38.058,
+      "kind": "tool",
+      "text": "✓ sync_order ? Ask which drink comes with the meal: Stack Cola, Diet Stack Cola, Fizzy Lemonade or Sweet Tea."
+    },
+    {
+      "t": 45.05,
+      "kind": "agent",
+      "text": "Sure thing, let's make those bites a meal. Which drink would you like, Stack Cola, Diet Stack Cola, Fizzy Lemonade, or Sweet Tea?"
+    },
+    {
+      "t": 46.107,
+      "kind": "guest",
+      "text": "A small chocolate one."
+    },
+    {
+      "t": 48.194,
+      "kind": "heard",
+      "text": "A small chocolate one."
+    },
+    {
+      "t": 49.054,
+      "kind": "tool",
+      "text": "✓ sync_order ? \"chocolate\" does not apply to Cluck Bites. Skip it or ask what they meant."
+    },
+    {
+      "t": 53.942,
+      "kind": "agent",
+      "text": "I'm sorry, I didn't catch that. Which drink would you like with your meal?"
+    },
+    {
+      "t": 55.038,
+      "kind": "guest",
+      "text": "No, that's all."
+    },
+    {
+      "t": 56.915,
+      "kind": "heard",
+      "text": "No, that's all."
+    },
+    {
+      "t": 58.161,
+      "kind": "tool",
+      "text": "✓ read_back"
+    },
+    {
+      "t": 65.362,
+      "kind": "agent",
+      "text": "I have ten Cluck Bites with honey mustard. Your total is five dollars and ninety three cents. Is that all correct?"
+    },
+    {
+      "t": 66.466,
+      "kind": "guest",
+      "text": "That's correct."
+    },
+    {
+      "t": 67.928,
+      "kind": "heard",
+      "text": "That's correct."
+    },
+    {
+      "t": 68.649,
+      "kind": "tool",
+      "text": "✓ submit_order"
+    },
+    {
+      "t": 74.372,
+      "kind": "agent",
+      "text": "Your total is $5.93. Please pull forward to the first window!"
+    }
+  ]
+}

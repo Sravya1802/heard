@@ -1,0 +1,51 @@
+{
+  "scenario": "adhoc",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": true,
+  "failures": [],
+  "latencies": [
+    951
+  ],
+  "order": [],
+  "log": [
+    {
+      "t": 0.994,
+      "kind": "ready",
+      "text": "sess_1ce470e49a064f94bc77e56a94620ef0"
+    },
+    {
+      "t": 4.408,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 5.541,
+      "kind": "guest",
+      "text": "Two Stackhouse Doubles, and make one of them with no pickles. Oh and a large Frostee, chocolate."
+    },
+    {
+      "t": 12.113,
+      "kind": "heard",
+      "text": "2 Stackhouse Doubles, and make one of them with no pickles. Oh, and a large Frosty, chocolate."
+    },
+    {
+      "t": 12.368,
+      "kind": "tool",
+      "text": "✗ sync_order {} → unknown_tool"
+    },
+    {
+      "t": 17.795,
+      "kind": "agent",
+      "text": "I am so sorry, I had a little glitch on my end. Could you please say that order one more time?"
+    },
+    {
+      "t": 20.369,
+      "kind": "timeout",
+      "text": "scenario took too long"
+    }
+  ]
+}

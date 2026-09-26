@@ -1,0 +1,124 @@
+{
+  "scenario": "prank",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": false,
+  "failures": [
+    "expected the order to be submitted"
+  ],
+  "latencies": [
+    342,
+    819,
+    1368,
+    1464,
+    2169
+  ],
+  "order": [
+    "1 Bottled Water"
+  ],
+  "log": [
+    {
+      "t": 0.967,
+      "kind": "ready",
+      "text": "sess_3333c4451d264c37bb5614b17cfe4163"
+    },
+    {
+      "t": 4.042,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 5.087,
+      "kind": "guest",
+      "text": "Can I get eighteen thousand waters?"
+    },
+    {
+      "t": 7.902,
+      "kind": "heard",
+      "text": "Can I get 18,000 waters?"
+    },
+    {
+      "t": 12.431,
+      "kind": "agent",
+      "text": "I'm sorry, we can't do that many. Can I get you a few bottled waters instead?"
+    },
+    {
+      "t": 13.528,
+      "kind": "guest",
+      "text": "Ha, just kidding. Just one water please."
+    },
+    {
+      "t": 15.473,
+      "kind": "heard",
+      "text": "Ha, just kidding!"
+    },
+    {
+      "t": 16.625,
+      "kind": "agent",
+      "text": "Haha,  [cut off]"
+    },
+    {
+      "t": 17.192,
+      "kind": "heard",
+      "text": "Just one water, please."
+    },
+    {
+      "t": 17.942,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 Bottled Water ? The guest asked for 18000 Bottled Water. The drive-thru limit is 10 of one item. Do not add it. Lightly confirm the number (they may have misspoken, or be joking); for large orders, suggest calling the store for catering."
+    },
+    {
+      "t": 18.218,
+      "kind": "guest",
+      "text": "That's it."
+    },
+    {
+      "t": 21.369,
+      "kind": "agent",
+      "text": "Got it, one bottled water. Anything else?"
+    },
+    {
+      "t": 22.425,
+      "kind": "guest",
+      "text": "No thank you."
+    },
+    {
+      "t": 23.967,
+      "kind": "heard",
+      "text": "No, thank you."
+    },
+    {
+      "t": 24.727,
+      "kind": "tool",
+      "text": "✓ suggest_upsell"
+    },
+    {
+      "t": 30.06,
+      "kind": "agent",
+      "text": "Would you like to add a Frostee for dessert? We've got chocolate, vanilla, or strawberry."
+    },
+    {
+      "t": 31.146,
+      "kind": "guest",
+      "text": "Yes."
+    },
+    {
+      "t": 33.404,
+      "kind": "heard",
+      "text": "Yes."
+    },
+    {
+      "t": 34.884,
+      "kind": "tool",
+      "text": "✓ sync_order ? Ask what size and flavor of Frostee they want, in one question: small, medium or large; chocolate, vanilla or strawberry."
+    },
+    {
+      "t": 43.723,
+      "kind": "agent",
+      "text": "Sure thing. What size would you like, and which flavor? We have small, medium, or large, and chocolate, vanilla, or strawberry."
+    }
+  ]
+}

@@ -17,6 +17,8 @@ import { join } from 'node:path'
 import { ORDER_LINES, DRIVER_VOICES, BACKSEAT_LINES } from '../bench/testset'
 import { TRANSCRIPTION_PROMPT } from '../lib/agent-config'
 import { menuKeyterms } from '../lib/menu'
+import { describeLine, emptyOrder, runTool } from '../lib/order-engine'
+import { parseUtterance } from '../lib/order-parser'
 import { RATE, loadEnv, readWav, speak } from './audio'
 
 loadEnv()
@@ -169,27 +171,65 @@ function wer(ref: string, hyp: string): { errors: number; words: number } {
   return { errors: d[r.length][h.length], words: r.length }
 }
 
-function score(words: Word[], windows: [number, number][]) {
-  const perLine = windows.map(() => [] as string[])
-  for (const w of words) {
-    const mid = (w.start + w.end) / 2
-    const idx = windows.findIndex(([s, e]) => mid >= s - 300 && mid <= e + 1100)
-    if (idx >= 0) perLine[idx].push(w.text)
+/** The order that a line produces, starting from its setup order. Same parser and engine as the live agent. */
+function orderFrom(text: string, setup?: string): string[] {
+  let s = emptyOrder()
+  for (const line of setup ? [setup, text] : [text]) {
+    const r = parseUtterance(line, s, null)
+    if (r.changes.length) s = runTool(s, 'update_order', { changes: r.changes }).state
   }
-  let found = 0, total = 0, perfect = 0, errors = 0, refWords = 0
+  return s.lines.map(describeLine)
+}
+const EXPECTED_ORDERS = ORDER_LINES.map((u) => orderFrom(u.text, u.setup))
+
+/**
+ * Split the session transcript back into lines by aligning it to the reference
+ * text word by word (edit-distance alignment), so scoring doesn't depend on timestamps.
+ */
+function splitByAlignment(words: Word[]): string[] {
+  const ref: { w: string; line: number }[] = []
+  ORDER_LINES.forEach((u, line) => normalize(u.text).split(' ').filter(Boolean).forEach((w) => ref.push({ w, line })))
+  const hyp = words.map((w) => ({ raw: w.text, w: normalize(w.text) })).filter((h) => h.w)
+  const R = ref.length, H = hyp.length
+  const d: Uint32Array[] = Array.from({ length: R + 1 }, () => new Uint32Array(H + 1))
+  for (let i = 0; i <= R; i++) d[i][0] = i
+  for (let j = 0; j <= H; j++) d[0][j] = j
+  for (let i = 1; i <= R; i++)
+    for (let j = 1; j <= H; j++)
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (ref[i - 1].w === hyp[j - 1].w ? 0 : 1))
+  // Walk back: each hypothesis word takes the line of the reference word it aligns with (or the nearest one).
+  const lineOf = new Array<number>(H).fill(-1)
+  let i = R, j = H
+  while (j > 0) {
+    if (i > 0 && d[i][j] === d[i - 1][j - 1] + (ref[i - 1].w === hyp[j - 1].w ? 0 : 1)) { lineOf[j - 1] = ref[i - 1].line; i--; j-- }
+    else if (i > 0 && d[i][j] === d[i - 1][j] + 1) { i-- }
+    else { lineOf[j - 1] = i > 0 ? ref[i - 1].line : 0; j-- }
+  }
+  const perLine = ORDER_LINES.map(() => [] as string[])
+  hyp.forEach((h, k) => perLine[Math.max(0, lineOf[k])].push(h.raw))
+  return perLine.map((ws) => ws.join(' '))
+}
+
+function score(words: Word[]) {
+  const perLine = splitByAlignment(words)
+  let found = 0, total = 0, perfect = 0, errors = 0, refWords = 0, exactOrders = 0
   const detail = ORDER_LINES.map((u, i) => {
-    const hyp = perLine[i].join(' ')
+    const hyp = perLine[i]
     const missed = u.entities.filter((alts) => !heard(hyp, alts)).map((a) => a[0])
     found += u.entities.length - missed.length
     total += u.entities.length
     if (!missed.length) perfect++
     const w = wer(u.text, hyp)
     errors += w.errors; refWords += w.words
-    return { ref: u.text, hyp, missed }
+    const got = orderFrom(hyp, u.setup)
+    const exact = JSON.stringify(got) === JSON.stringify(EXPECTED_ORDERS[i])
+    if (exact) exactOrders++
+    return { ref: u.text, hyp, missed, order: got, expected: EXPECTED_ORDERS[i], exact }
   })
   const everything = normalize(words.map((w) => w.text).join(' '))
   const leaks = BACKSEAT_LINES.flatMap((l) => l.leak).filter((w) => (` ${everything} `).includes(` ${normalize(w)} `))
   return {
+    orderAccuracy: exactOrders / ORDER_LINES.length,
     menuAccuracy: found / total,
     perfectLines: perfect / ORDER_LINES.length,
     wer: errors / refWords,
@@ -206,37 +246,40 @@ const sessions = new Map(jobs.map(({ c }) => [c.id, buildSession(c)]))
 const minutes = jobs.reduce((s, { c }) => s + sessions.get(c.id)!.pcm.length / RATE / 60, 0)
 console.log(`${jobs.length} sessions, ${minutes.toFixed(1)} min of audio, ${PARALLEL} at a time (≈${(minutes / PARALLEL).toFixed(0)} min)`)
 
-const results: Record<string, unknown>[] = []
-const queue = [...jobs]
-async function worker() {
-  while (queue.length) {
-    const { c, k } = queue.shift()!
-    const { pcm, windows } = sessions.get(c.id)!
-    const t0 = Date.now()
-    try {
-      const words = await transcribe(pcm, k)
-      const s = score(words, windows)
-      results.push({ condition: c.id, conditionLabel: c.label, config: k.id, configLabel: k.label, ...s })
-      console.log(`${c.id.padEnd(10)} ${k.id.padEnd(8)} menu ${(s.menuAccuracy * 100).toFixed(1).padStart(5)}%  perfect ${(s.perfectLines * 100).toFixed(0).padStart(3)}%  WER ${(s.wer * 100).toFixed(1).padStart(5)}%  leaks ${s.leaks.length}  (${Math.round((Date.now() - t0) / 1000)}s)`)
-    } catch (e) {
-      console.error(`${c.id} ${k.id} failed:`, e instanceof Error ? e.message : e)
+async function main() {
+  const results: Record<string, unknown>[] = []
+  const queue = [...jobs]
+  async function worker() {
+    while (queue.length) {
+      const { c, k } = queue.shift()!
+      const { pcm } = sessions.get(c.id)!
+      const t0 = Date.now()
+      try {
+        const words = await transcribe(pcm, k)
+        const s = score(words)
+        results.push({ condition: c.id, conditionLabel: c.label, config: k.id, configLabel: k.label, ...s, transcript: words.map((w) => w.text).join(' ') })
+        console.log(`${c.id.padEnd(10)} ${k.id.padEnd(8)} orders ${(s.orderAccuracy * 100).toFixed(0).padStart(3)}%  menu ${(s.menuAccuracy * 100).toFixed(1).padStart(5)}%  perfect ${(s.perfectLines * 100).toFixed(0).padStart(3)}%  WER ${(s.wer * 100).toFixed(1).padStart(5)}%  leaks ${s.leaks.length}  (${Math.round((Date.now() - t0) / 1000)}s)`)
+      } catch (e) {
+        console.error(`${c.id} ${k.id} failed:`, e instanceof Error ? e.message : e)
+      }
     }
   }
-}
-await Promise.all(Array.from({ length: PARALLEL }, worker))
+  await Promise.all(Array.from({ length: PARALLEL }, worker))
 
-const order = (r: Record<string, unknown>) => CONDITIONS.findIndex((c) => c.id === r.condition) * 10 + CONFIGS.findIndex((k) => k.id === r.config)
-results.sort((a, b) => order(a) - order(b))
-mkdirSync('bench', { recursive: true })
-const out = {
-  ranAt: new Date().toISOString(),
-  lines: ORDER_LINES.length,
-  menuTerms: ORDER_LINES.reduce((s, u) => s + u.entities.length, 0),
-  voices: DRIVER_VOICES,
-  conditions: CONDITIONS.filter((c) => !onlyConditions || onlyConditions.includes(c.id)),
-  configs: CONFIGS.filter((k) => !onlyConfigs || onlyConfigs.includes(k.id)).map(({ id, label }) => ({ id, label })),
-  results,
+  const order = (r: Record<string, unknown>) => CONDITIONS.findIndex((c) => c.id === r.condition) * 10 + CONFIGS.findIndex((k) => k.id === r.config)
+  results.sort((a, b) => order(a) - order(b))
+  mkdirSync('bench', { recursive: true })
+  const out = {
+    ranAt: new Date().toISOString(),
+    lines: ORDER_LINES.length,
+    menuTerms: ORDER_LINES.reduce((s, u) => s + u.entities.length, 0),
+    voices: DRIVER_VOICES,
+    conditions: CONDITIONS.filter((c) => !onlyConditions || onlyConditions.includes(c.id)),
+    configs: CONFIGS.filter((k) => !onlyConfigs || onlyConfigs.includes(k.id)).map(({ id, label }) => ({ id, label })),
+    results,
+  }
+  const file = onlyConditions || onlyConfigs ? join('bench', `results-partial-${Date.now()}.json`) : join('bench', 'results.json')
+  writeFileSync(file, JSON.stringify(out, null, 2))
+  console.log(`\nwrote ${file}`)
 }
-const file = onlyConditions || onlyConfigs ? join('bench', `results-partial-${Date.now()}.json`) : join('bench', 'results.json')
-writeFileSync(file, JSON.stringify(out, null, 2))
-console.log(`\nwrote ${file}`)
+main()

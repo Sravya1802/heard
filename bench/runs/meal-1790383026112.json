@@ -1,0 +1,156 @@
+{
+  "scenario": "meal",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": false,
+  "failures": [
+    "expected the order to be submitted"
+  ],
+  "latencies": [
+    917,
+    1243,
+    1453,
+    1371,
+    1484,
+    1572
+  ],
+  "order": [
+    "1 Spicy Cluckwich, as a large meal with Sweet Tea",
+    "1 10-piece Cluck Bites, honey mustard"
+  ],
+  "log": [
+    {
+      "t": 0.864,
+      "kind": "ready",
+      "text": "sess_f0c12f1a9eca405cb5cf9bc89aec06b2"
+    },
+    {
+      "t": 3.795,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 4.838,
+      "kind": "guest",
+      "text": "Let me get a Spicy Cluckwich meal, large, with a Sweet Tea."
+    },
+    {
+      "t": 9.68,
+      "kind": "heard",
+      "text": "Let me get a Spicy Cluckwich meal, large, with a sweet tea."
+    },
+    {
+      "t": 9.903,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 Spicy Cluckwich, as a large meal with Sweet Tea"
+    },
+    {
+      "t": 15.314,
+      "kind": "agent",
+      "text": "Got it, one large Spicy Cluckwich meal with a sweet tea. Anything else?"
+    },
+    {
+      "t": 16.425,
+      "kind": "guest",
+      "text": "And ten Cluck Bites with honey mustard."
+    },
+    {
+      "t": 19.316,
+      "kind": "heard",
+      "text": "And 10 Cluck Bites with honey mustard."
+    },
+    {
+      "t": 19.922,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 10-piece Cluck Bites, honey mustard"
+    },
+    {
+      "t": 24.338,
+      "kind": "agent",
+      "text": "Added ten piece Cluck Bites with honey mustard. Anything else?"
+    },
+    {
+      "t": 25.468,
+      "kind": "guest",
+      "text": "That's all."
+    },
+    {
+      "t": 26.775,
+      "kind": "heard",
+      "text": "That's all."
+    },
+    {
+      "t": 27.521,
+      "kind": "tool",
+      "text": "✓ suggest_upsell"
+    },
+    {
+      "t": 32.565,
+      "kind": "agent",
+      "text": "Would you like to add a Frostee for dessert? We have chocolate, vanilla, or strawberry."
+    },
+    {
+      "t": 33.697,
+      "kind": "guest",
+      "text": "Sure, why not."
+    },
+    {
+      "t": 35.673,
+      "kind": "heard",
+      "text": "Sure, why not?"
+    },
+    {
+      "t": 36.425,
+      "kind": "tool",
+      "text": "✓ sync_order ? Ask what size Frostee they want: small, medium, large."
+    },
+    {
+      "t": 41.998,
+      "kind": "agent",
+      "text": "Great! What size Frostee would you like, small, medium, or large?"
+    },
+    {
+      "t": 43.091,
+      "kind": "guest",
+      "text": "Chocolate, small."
+    },
+    {
+      "t": 44.275,
+      "kind": "heard",
+      "text": "Chocolate."
+    },
+    {
+      "t": 45.082,
+      "kind": "tool",
+      "text": "✓ sync_order ? Ask what size Frostee they want: small, medium, large."
+    },
+    {
+      "t": 49.769,
+      "kind": "agent",
+      "text": "I'm sorry, I didn't catch that. What size Frostee would you like?"
+    },
+    {
+      "t": 50.86,
+      "kind": "guest",
+      "text": "That's correct."
+    },
+    {
+      "t": 52.348,
+      "kind": "heard",
+      "text": "That's correct."
+    },
+    {
+      "t": 53.202,
+      "kind": "tool",
+      "text": "✓ sync_order"
+    },
+    {
+      "t": 57.927,
+      "kind": "agent",
+      "text": "No problem. Would you like a small, medium, or large Frostee?"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "scenario": "adhoc",
+  "voice": "Daniel",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": true,
+  "failures": [],
+  "latencies": [
+    851,
+    1402
+  ],
+  "order": [
+    "1 Spicy Cluckwich, as a large meal with Sweet Tea"
+  ],
+  "log": [
+    {
+      "t": 1.124,
+      "kind": "ready",
+      "text": "sess_56a0ffde078248d980958a9b72886b6d"
+    },
+    {
+      "t": 3.726,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 4.83,
+      "kind": "guest",
+      "text": "Let me get a Spicy Cluckwich meal, large, with a Sweet Tea."
+    },
+    {
+      "t": 9.843,
+      "kind": "heard",
+      "text": "Let me get a spicy Cluckwich meal, large, with a sweet tea."
+    },
+    {
+      "t": 10.077,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 Spicy Cluckwich, as a large meal with Sweet Tea"
+    },
+    {
+      "t": 15.34,
+      "kind": "agent",
+      "text": "Got it, one large Spicy Cluckwich meal with a sweet tea. Anything else?"
+    },
+    {
+      "t": 16.414,
+      "kind": "guest",
+      "text": "Chocolate, small."
+    },
+    {
+      "t": 18.645,
+      "kind": "heard",
+      "text": "Chocolate, small."
+    },
+    {
+      "t": 19.443,
+      "kind": "tool",
+      "text": "✓ sync_order"
+    },
+    {
+      "t": 22.269,
+      "kind": "timeout",
+      "text": "scenario took too long"
+    }
+  ]
+}

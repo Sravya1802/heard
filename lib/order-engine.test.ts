@@ -127,6 +127,45 @@ describe('corrections', () => {
   })
 })
 
+describe('update_order (one call per guest sentence)', () => {
+  it('applies a correction and an addition together', () => {
+    const { state, last } = run([
+      ['update_order', { changes: [{ action: 'add', item_id: 'stackhouse_double', quantity: 2 }] }],
+      ['update_order', { changes: [
+        { action: 'change', line_id: 'L1', quantity: 1 },
+        { action: 'add', item_id: 'stackhouse_single', modifiers: ['no_pickles'] },
+      ] }],
+    ])
+    expect(last.result.ok).toBe(true)
+    expect(state.lines.map((l) => [l.itemId, l.qty])).toEqual([['stackhouse_double', 1], ['stackhouse_single', 1]])
+  })
+
+  it('keeps the changes that worked and explains the one that did not', () => {
+    const { state, last } = run([['update_order', { changes: [
+      { item_id: 'stackhouse_double' },
+      { item_id: 'stack_fries' },
+    ] }]])
+    expect(last.ok).toBe(true)
+    expect(last.result.ok).toBe(false)
+    expect((last.result.results as { error?: string }[])[1].error).toBe('size_required')
+    expect(state.lines).toHaveLength(1)
+  })
+
+  it('infers change vs add from line_id and handles removals', () => {
+    const { state } = run([
+      ['update_order', { changes: [{ item_id: 'apple_turnover' }, { item_id: 'cluckwich' }] }],
+      ['update_order', { changes: [{ action: 'remove', line_id: 'L1' }, { line_id: 'L2', add_modifiers: ['no_tomato'] }] }],
+    ])
+    expect(state.lines).toHaveLength(1)
+    expect(state.lines[0]).toMatchObject({ itemId: 'cluckwich', modifiers: ['no_tomato'] })
+  })
+
+  it('is refused after submission', () => {
+    const { state } = run([['add_item', { item_id: 'apple_turnover' }], ['read_back', {}], ['submit_order', {}]])
+    expect(runTool(state, 'update_order', { changes: [{ item_id: 'apple_turnover' }] }).result.error).toBe('already_submitted')
+  })
+})
+
 describe('upsell', () => {
   it('offers a meal first, then never again', () => {
     const first = run([

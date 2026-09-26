@@ -121,6 +121,11 @@ export interface VoiceCallbacks {
   /** Milliseconds from the end of the guest's speech to the first audio of the reply. */
   onLatency?: (ms: number) => void
   onMicLevel?: (level: number) => void
+  /**
+   * The agent finished a reply with no speech and no tool call. Return
+   * instructions for a fresh reply (after syncing the order yourself), or null.
+   */
+  onEmptyReply?: () => string | null
   onEnded?: (info: { sessionId: string | null; seconds: number }) => void
   onError?: (code: string, message: string) => void
 }
@@ -169,6 +174,8 @@ export class VoiceSession {
   private liveReplyId: string | null = null
   private printedReplyId: string | null = null
   private ended = false
+  private replyHadContent = false
+  private recoveries = 0
   private readonly onPageHide = () => this.stop()
 
   constructor(private cb: VoiceCallbacks) {}
@@ -270,11 +277,13 @@ export class VoiceSession {
         break
 
       case 'transcript.user':
+        this.recoveries = 0
         this.cb.onUserFinal?.(msg.text ?? '')
         break
 
       case 'reply.started':
         this.lastEvent = 'reply.started'
+        this.replyHadContent = false
         break
 
       case 'reply.audio': {
@@ -282,6 +291,7 @@ export class VoiceSession {
           this.cb.onLatency?.(Math.round(performance.now() - this.speechStoppedAt))
           this.awaitingFirstAudio = false
         }
+        this.replyHadContent = true
         const bytes = fromBase64(msg.data ?? '')
         this.playback?.port.postMessage(bytes.buffer, [bytes.buffer])
         this.cb.onStatus?.('speaking')
@@ -302,6 +312,7 @@ export class VoiceSession {
         break
 
       case 'tool.call': {
+        this.replyHadContent = true
         if (!msg.name || !msg.call_id) break
         const reply = this.cb.onToolCall(msg.name, msg.arguments ?? {}, msg.call_id)
         this.pending.push({ callId: msg.call_id, reply })
@@ -319,6 +330,16 @@ export class VoiceSession {
         }
         this.lastEvent = 'reply.done'
         this.flushIfIdle()
+        // Safety net: an empty reply would leave the guest in silence.
+        if (msg.status === 'completed' && !this.replyHadContent && !this.pending.length && this.recoveries < 2) {
+          const instructions = this.cb.onEmptyReply?.()
+          if (instructions) {
+            this.recoveries++
+            this.ws?.send(JSON.stringify({ type: 'reply.create', instructions }))
+            this.lastEvent = 'reply.started'
+            break
+          }
+        }
         if (!this.pending.length) this.cb.onStatus?.('listening')
         break
 

@@ -1,0 +1,69 @@
+{
+  "scenario": "human",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": true,
+  "failures": [],
+  "latencies": [
+    869,
+    883
+  ],
+  "order": [
+    "1 Stackhouse Triple"
+  ],
+  "log": [
+    {
+      "t": 1.019,
+      "kind": "ready",
+      "text": "sess_4a1819df8e1941e4b0ba6276595075f8"
+    },
+    {
+      "t": 4.168,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 5.171,
+      "kind": "guest",
+      "text": "I want a Stackhouse Triple."
+    },
+    {
+      "t": 8.553,
+      "kind": "heard",
+      "text": "I want a Stackhouse Triple."
+    },
+    {
+      "t": 8.885,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 Stackhouse Triple"
+    },
+    {
+      "t": 12.63,
+      "kind": "agent",
+      "text": "Got it, one Stackhouse Triple. Anything else?"
+    },
+    {
+      "t": 13.699,
+      "kind": "guest",
+      "text": "Ugh, this is annoying. Can I just talk to a real person?"
+    },
+    {
+      "t": 17.964,
+      "kind": "heard",
+      "text": "Ugh, this is annoying. Can I just talk to a real person?"
+    },
+    {
+      "t": 18.194,
+      "kind": "tool",
+      "text": "✓ request_human"
+    },
+    {
+      "t": 23.042,
+      "kind": "agent",
+      "text": "No problem, a crew member is jumping on the speaker now. One moment."
+    }
+  ]
+}

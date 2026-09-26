@@ -4,7 +4,7 @@
 //
 // Docs: https://www.assemblyai.com/docs/voice-agents/voice-agent-api/session-configuration
 
-import { DRINK_IDS, ITEM_IDS, MENU, MODIFIER_IDS, formatPrice, menuKeyterms, sizesOf } from './menu'
+import { MENU, MODIFIER_IDS, formatPrice, menuKeyterms, sizesOf } from './menu'
 
 export type VoiceFocus = 'near-field' | 'far-field' | 'off'
 
@@ -14,6 +14,9 @@ export interface HearingOptions {
   voiceFocusThreshold?: number
   /** Menu names as key terms, plus a transcription prompt describing a drive-thru order. */
   keyterms: boolean
+  /** Override end-of-turn silence (ms). Unset keeps AssemblyAI's adaptive turn detection. */
+  minSilence?: number
+  maxSilence?: number
 }
 
 export const DEFAULT_HEARING: HearingOptions = { voiceFocus: 'far-field', keyterms: true }
@@ -37,24 +40,24 @@ const SYSTEM_PROMPT = `You are Heard, the voice at the Stackhouse Burgers drive-
 
 # Hearing rules (this matters most)
 - Take the order from the driver speaking into the speaker.
-- If something sounds like it came from someone else in the car (a kid, a passenger, a radio), do not add it on your own. Ask the driver, for example "Should I add the nuggets too?"
-- When the guest corrects themselves ("actually", "no wait", "make that", "scratch that"), fix the existing line with modify_item or remove_item. Never add a duplicate.
+- If something sounds like it came from someone else in the car (a kid, a passenger, a radio), do not act on it. Ask the driver, for example "Should I add the nuggets too?"
 - If you did not catch something, ask for just that part again. After two failed tries on the same thing, call request_human.
 
-# The order is only what the tools say
-- Every change goes through a tool: add_item, modify_item, remove_item. Never say an item is added unless the tool returned ok.
+# How the order gets built
+- The order is built automatically from exactly what the guest says. Your job is the conversation.
+- Whenever the guest asks to add, change or remove anything, or answers one of your questions (a size, a flavor, a drink, yes to an offer), call sync_order with no arguments before you speak. Do this even if the request sounds like a joke or is impossible: sync_order checks limits and tells you what to say.
+- Call at most one tool per reply. Never call two tools at once.
+- Describe the order only from what sync_order returns: "changed" is what just happened, "order" is the whole order. Never say something was added unless it is in "changed".
+- If the result has "ask", ask exactly that question, briefly. If it has "note", follow it.
 - Never state a price or total yourself; only repeat what read_back or submit_order returned.
-- If a tool returns ok false, follow its message. It tells you exactly what to ask or say.
-- Only sell what is on the menu below. If they ask for something else, say you don't have it and suggest the closest item.
-- Sized items (fries, onion rings, drinks, Frostee, Cluck Bites) need a size. A Frostee needs a flavor. A Stack Pack needs a mini burger or 4 Cluck Bites. If it's missing, ask for it in the same breath as "anything else?".
-- "Make it a meal" adds fries and a drink: use as_meal with meal_drink_id and meal_size (medium or large).
+- If they ask for something we don't sell, say so and suggest the closest item.
 
 # Flow
-1. Take items as they come. After each, a short confirmation ("Got it, a Stackhouse Double, no pickles. Anything else?").
+1. After each sync_order, confirm what changed in a few words, then ask "Anything else?" (or the "ask" question).
 2. When they say that's all, call suggest_upsell once and make that single offer in one short sentence, or skip it if there is no suggestion. Accept no immediately.
 3. Call read_back and say its text naturally. Ask "Is that all correct?"
 4. When they confirm, call submit_order and say its text.
-5. If they ask for a person, sound frustrated, or you are stuck, call request_human right away.
+5. If they ask for a person, sound frustrated, or you are stuck, call request_human (no arguments) right away, then tell them a crew member is joining.
 
 # Menu
 ${menuText()}
@@ -62,57 +65,14 @@ ${menuText()}
 Options (modifiers): ${MODIFIER_IDS.join(', ')}.
 Burgers and chicken sandwiches can be made plain, or with no or extra pickles, onions, cheese, sauce, lettuce, tomato, or add bacon. Drinks: no ice or light ice. Fries: no salt or extra salt. Cluck Bites sauces: bbq_sauce, honey_mustard, ranch, sweet_chili. Frostee flavors: chocolate, vanilla, strawberry.`
 
-const lineId = { type: 'string', description: 'The line_id from an earlier tool result, like "L2".', pattern: '^[Ll]?[0-9]+$', examples: ['L1', 'L2'] }
-const size = { type: 'string', enum: ['small', 'medium', 'large', '6pc', '10pc', '20pc'], description: 'Size. Cluck Bites use 6pc, 10pc or 20pc.' }
-const modifiers = { type: 'array', items: { type: 'string', enum: MODIFIER_IDS }, description: 'Options the guest asked for, like no_pickles or extra_cheese.' }
-const meal = {
-  as_meal: { type: 'boolean', description: 'True when the guest wants it as a meal (adds fries and a drink).' },
-  meal_drink_id: { type: 'string', enum: DRINK_IDS.filter((d) => d !== 'bottled_water'), description: 'Drink for the meal.' },
-  meal_size: { type: 'string', enum: ['medium', 'large'] },
-}
-
 export const TOOLS = [
   {
     type: 'function',
-    name: 'add_item',
-    description: 'Add an item to the order. Call once per distinct item as soon as the guest asks for it.',
-    parameters: {
-      type: 'object',
-      properties: {
-        item_id: { type: 'string', enum: ITEM_IDS, description: 'Menu item id.', examples: ['stackhouse_double', 'cluck_bites', 'frostee'] },
-        quantity: { type: 'integer', minimum: 1, description: 'How many. Defaults to 1. Pass exactly what the guest said, even if it seems huge.' },
-        size,
-        modifiers,
-        for_whom: { type: 'string', description: 'Optional, who it is for if the guest says ("for my daughter").' },
-        ...meal,
-      },
-      required: ['item_id'],
-    },
-  },
-  {
-    type: 'function',
-    name: 'modify_item',
-    description: 'Change an existing line: its item, quantity, size, options or meal. Use this for corrections. Quantity 0 removes the line.',
-    parameters: {
-      type: 'object',
-      properties: {
-        line_id: lineId,
-        item_id: { type: 'string', enum: ITEM_IDS, description: 'New item, only when swapping ("make that a single").' },
-        quantity: { type: 'integer', minimum: 0 },
-        size,
-        add_modifiers: modifiers,
-        remove_modifiers: modifiers,
-        for_whom: { type: 'string' },
-        ...meal,
-      },
-      required: ['line_id'],
-    },
-  },
-  {
-    type: 'function',
-    name: 'remove_item',
-    description: 'Remove a line from the order.',
-    parameters: { type: 'object', properties: { line_id: lineId }, required: ['line_id'] },
+    name: 'sync_order',
+    description:
+      'Update the order from what the guest just said. Call it, with no arguments, whenever they ask to add, change or remove anything, or answer a question about a size, flavor, drink or offer. ' +
+      'Returns what changed, the whole order, and any question to ask.',
+    parameters: { type: 'object', properties: {} },
   },
   {
     type: 'function',
@@ -136,7 +96,7 @@ export const TOOLS = [
     type: 'function',
     name: 'request_human',
     description: 'Hand the guest to a crew member. Use when they ask for a person, are frustrated, or you are stuck.',
-    parameters: { type: 'object', properties: { reason: { type: 'string', description: 'Short reason, for the crew.' } } },
+    parameters: { type: 'object', properties: {} },
   },
 ]
 
@@ -150,6 +110,12 @@ export function sessionConfig(hearing: HearingOptions = DEFAULT_HEARING) {
   if (hearing.keyterms) {
     input.keyterms = menuKeyterms()
     input.transcription_prompt = TRANSCRIPTION_PROMPT
+  }
+  if (hearing.minSilence || hearing.maxSilence) {
+    input.turn_detection = {
+      ...(hearing.minSilence ? { min_silence: hearing.minSilence } : {}),
+      ...(hearing.maxSilence ? { max_silence: hearing.maxSilence } : {}),
+    }
   }
   if (hearing.voiceFocus !== 'off') {
     input.voice_focus = hearing.voiceFocus

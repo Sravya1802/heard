@@ -6,6 +6,7 @@
 // Error messages are written to be read by the model, so they say exactly what
 // to ask the guest next.
 
+import type { Change, Pending } from './order-parser'
 import {
   DRINK_IDS, MAX_ITEMS_PER_ORDER, MAX_QTY_PER_LINE, MEAL_CATEGORIES, MEAL_PRICE, MENU, MENU_BY_ID, MODIFIERS,
   TAX_RATE, formatPrice, resolveItemId, resolveModifier, sizesOf,
@@ -33,6 +34,8 @@ export interface OrderState {
   upsellOffered: boolean
   humanRequested: boolean
   submitted: null | { orderNumber: number; totalCents: number }
+  /** The question or offer the agent is waiting on, so "large" or "sure" can be understood. */
+  pending: Pending | null
 }
 
 export interface EngineContext {
@@ -48,7 +51,7 @@ export interface ToolOutcome {
 }
 
 export function emptyOrder(): OrderState {
-  return { lines: [], nextLine: 1, version: 0, readBackVersion: null, upsellOffered: false, humanRequested: false, submitted: null }
+  return { lines: [], nextLine: 1, version: 0, readBackVersion: null, upsellOffered: false, humanRequested: false, submitted: null, pending: null }
 }
 
 // ---------------------------------------------------------------- pricing ---
@@ -161,7 +164,15 @@ function buildLine(
   let size: Size | undefined
   if (sizes.length) {
     const s = normalizeSize(args.size)
-    if (!s) return { ok: false, error: 'size_required', message: `Ask what size ${item.name} they want: ${sizes.map((z) => SIZE_WORDS[z]).join(', ')}.` }
+    if (!s) {
+      const needsFlavor = item.id === 'frostee' && !args.modifiers.some((m) => ['chocolate', 'vanilla', 'strawberry'].includes(m))
+      return {
+        ok: false, error: 'size_required',
+        message: needsFlavor
+          ? 'Ask what size and flavor of Frostee they want, in one question: small, medium or large; chocolate, vanilla or strawberry.'
+          : `Ask what size ${item.name} they want: ${sizes.map((z) => SIZE_WORDS[z]).join(', ')}.`,
+      }
+    }
     if (!sizes.includes(s)) return { ok: false, error: 'size_unavailable', message: `${item.name} comes in ${sizes.map((z) => SIZE_WORDS[z]).join(' or ')}, not ${SIZE_WORDS[s]}. Ask which one.` }
     size = s
   }
@@ -250,7 +261,7 @@ function modifyItem(state: OrderState, a: Args, ctx: EngineContext): ToolOutcome
   // Swapping the item ("make that a single") keeps options that still apply, like "no pickles".
   const category = MENU_BY_ID[itemId].category
   const keptMods: string[] = line.modifiers.filter((m) => !remove.has(m) && MODIFIERS[m].categories.includes(category))
-  const mods = [...keptMods, ...toList(a.add_modifiers)]
+  const mods = [...keptMods, ...toList(a.add_modifiers), ...toList(a.modifiers)]
 
   const asMeal = a.as_meal == null ? Boolean(line.meal) : Boolean(a.as_meal)
   const built = buildLine({
@@ -292,6 +303,7 @@ function suggestUpsell(state: OrderState, ctx: EngineContext): ToolOutcome {
   const available = (id: string) => !ctx.unavailable?.has(id)
   let suggestion: string | null = null
   let line_id: string | undefined
+  let offer: Change | undefined
 
   const mealless = state.lines.find((l) => MEAL_CATEGORIES.includes(cat(l)) && !l.meal)
   const hasSide = has((l) => cat(l) === 'side')
@@ -299,14 +311,18 @@ function suggestUpsell(state: OrderState, ctx: EngineContext): ToolOutcome {
   if (mealless && !hasSide && !hasDrink) {
     suggestion = `Offer to make the ${MENU_BY_ID[mealless.itemId].name} a meal with fries and a drink for ${formatPrice(MEAL_PRICE.medium)} more.`
     line_id = mealless.id
+    offer = { action: 'change', line_id: mealless.id, as_meal: true }
   } else if (!hasDrink && available('stack_cola')) {
     suggestion = 'Offer a drink: a Stack Cola, Fizzy Lemonade or Sweet Tea.'
+    offer = { action: 'add', item_id: 'stack_cola', quantity: 1 }
   } else if (!has((l) => cat(l) === 'dessert') && available('frostee')) {
     suggestion = 'Offer a Frostee (chocolate, vanilla or strawberry) for dessert.'
+    offer = { action: 'add', item_id: 'frostee', quantity: 1 }
   } else if (!has((l) => cat(l) === 'dessert') && available('apple_turnover')) {
     suggestion = 'Offer a warm Apple Turnover for dessert.'
+    offer = { action: 'add', item_id: 'apple_turnover', quantity: 1 }
   }
-  const next = { ...state, upsellOffered: true }
+  const next: OrderState = { ...state, upsellOffered: true, pending: offer ? { kind: 'offer', change: offer } : state.pending }
   return { state: next, ok: true, result: { ok: true, suggestion, line_id, note: suggestion ? 'Make this offer once, in one short friendly sentence. Accept a no without pushing.' : 'Nothing worth offering. Move on to the read-back.' } }
 }
 
@@ -347,13 +363,47 @@ function requestHuman(state: OrderState, a: Args): ToolOutcome {
   }
 }
 
-const MUTATING = new Set(['add_item', 'modify_item', 'remove_item'])
+/**
+ * Every change from one guest sentence, applied in order, in one tool call.
+ * "Two doubles… actually make one a single, no pickles" is two changes; the
+ * managed model handles one call per turn reliably, so they travel together.
+ * Changes that fail don't block the ones that succeed; the result says which.
+ */
+function updateOrder(state: OrderState, a: Args, ctx: EngineContext): ToolOutcome {
+  const changes = Array.isArray(a.changes) ? (a.changes as Args[]) : []
+  if (!changes.length) return fail(state, 'no_changes', 'Pass the changes the guest asked for in `changes`.')
+  let s = state
+  const results: Record<string, unknown>[] = []
+  for (const c of changes) {
+    const action = String(c.action ?? (c.line_id ? 'change' : 'add')).toLowerCase()
+    const o = action === 'remove' ? removeItem(s, c)
+      : action === 'change' || action === 'modify' ? modifyItem(s, c, ctx)
+      : addItem(s, c, ctx)
+    s = o.state
+    const own = Object.fromEntries(Object.entries(o.result).filter(([k]) => !['order', 'item_count', 'subtotal'].includes(k)))
+    results.push({ action, ...own })
+  }
+  const okCount = results.filter((r) => r.ok).length
+  return {
+    state: s,
+    ok: okCount > 0,
+    result: {
+      ok: okCount === results.length,
+      results,
+      ...orderSummary(s),
+      ...(okCount < results.length ? { note: 'Some changes failed. Tell the guest what went through, then ask only about what failed, following its message.' } : {}),
+    },
+  }
+}
+
+const MUTATING = new Set(['add_item', 'modify_item', 'remove_item', 'update_order'])
 
 export function runTool(state: OrderState, name: string, args: Args, ctx: EngineContext = {}): ToolOutcome {
   if (state.submitted && (MUTATING.has(name) || name === 'submit_order')) {
     return fail(state, 'already_submitted', `Order #${state.submitted.orderNumber} was already sent to the kitchen. Changes now need the window crew; tell the guest to mention it at the window.`)
   }
   switch (name) {
+    case 'update_order': return updateOrder(state, args, ctx)
     case 'add_item': return addItem(state, args, ctx)
     case 'modify_item': return modifyItem(state, args, ctx)
     case 'remove_item': return removeItem(state, args)

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { sessionConfig, type HearingOptions } from '@/lib/agent-config'
 import { MENU_BY_ID, formatPrice } from '@/lib/menu'
 import { emptyOrder, priceLine, runTool, ticketLine, totals, type OrderState } from '@/lib/order-engine'
+import { recoveryInstructions, runAgentTool, syncHeard, type SyncSummary } from '@/lib/sync'
 import { openLaneChannel, type LaneChannel, type LaneSnapshot, type SubmittedOrder } from '@/lib/realtime'
 import { VoiceSession, type CallStatus } from '@/lib/voice-client'
 
@@ -30,16 +31,16 @@ const TRY_SAYING = [
   '“Can I talk to a real person?”',
 ]
 
-function toolDetail(name: string, args: Record<string, unknown>, result: Record<string, unknown>): string {
-  if (!result.ok) return `${result.error}`
-  if (result.added) return `+ ${result.added}`
-  if (result.now) return `${result.line_id} → ${result.now}`
-  if (result.removed) return `− ${result.removed}`
-  if (name === 'suggest_upsell') return result.suggestion ? String(result.suggestion) : 'no offer'
-  if (name === 'read_back') return `read back · ${result.total}`
-  if (name === 'submit_order') return `order #${result.order_number} · ${result.total}`
-  if (name === 'request_human') return 'crew takeover'
-  return JSON.stringify(args)
+function toolDetail(name: string, result: Record<string, unknown>, summary: SyncSummary): string {
+  const parts: string[] = []
+  if (summary.changed.length) parts.push(summary.changed.join('; '))
+  if (summary.ask.length) parts.push('asks: ' + summary.ask[0])
+  if (!result.ok && result.error) parts.push(String(result.error))
+  if (name === 'suggest_upsell') parts.push(result.suggestion ? String(result.suggestion) : 'no offer')
+  if (name === 'read_back') parts.push(`read back · ${result.total}`)
+  if (name === 'submit_order' && result.ok) parts.push(`order #${result.order_number} · ${result.total}`)
+  if (name === 'request_human') parts.push('crew takeover')
+  return parts.join(' · ') || (summary.heard.length ? 'no change' : '')
 }
 
 export default function Lane({ hearing }: { hearing: HearingOptions }) {
@@ -66,6 +67,9 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
   const lastHeard = useRef('')
   const startedAt = useRef(0)
   const toolSeq = useRef(0)
+  // Final transcripts not yet applied to the order, and those held by tool calls not yet delivered.
+  const unsynced = useRef<string[]>([])
+  const inFlight = useRef(new Map<string, string[]>())
   const endTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const live = status === 'listening' || status === 'thinking' || status === 'speaking'
@@ -113,6 +117,25 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
     committed.current = speculative.current = emptyOrder()
     setCaptions([]); setPartial(''); setAgentPartial(''); setTools([]); setLatencies([]); setCrew(false); setFlash({})
     lastHeard.current = ''
+    unsynced.current = []
+    inFlight.current.clear()
+
+    const ctx = () => ({
+      unavailable: new Set(unavailableRef.current),
+      nextOrderNumber: () => 100 + (Math.floor(Date.now() / 1000) % 900),
+    })
+
+    /** Commit a new order state to the board and the kitchen, flashing what changed. */
+    const commitState = (next: OrderState) => {
+      const prev = committed.current
+      committed.current = next
+      setOrder(next)
+      const changed = next.lines.filter((l) => {
+        const before = prev.lines.find((p) => p.id === l.id)
+        return !before || JSON.stringify(before) !== JSON.stringify(l)
+      })
+      if (changed.length) setFlash((f) => ({ ...f, ...Object.fromEntries(changed.map((l) => [l.id, (f[l.id] ?? 0) + 1])) }))
+    }
 
     const s = new VoiceSession({
       onStatus: (st, detail) => {
@@ -128,6 +151,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
         setPartial('')
         if (!text.trim()) return
         lastHeard.current = text
+        unsynced.current.push(text)
         setCaptions((c) => [...c, { who: 'guest' as const, text }].slice(-12))
       },
       onAgentPartial: setAgentPartial,
@@ -137,29 +161,20 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
       },
       onLatency: (ms) => setLatencies((l) => [...l, ms].slice(-50)),
       onMicLevel: (lv) => setLevel(lv),
-      onToolCall: (name, args) => {
-        const outcome = runTool(speculative.current, name, args, {
-          unavailable: new Set(unavailableRef.current),
-          nextOrderNumber: () => 100 + (Math.floor(Date.now() / 1000) % 900),
-        })
+      onToolCall: (name, args, callId) => {
+        const heard = unsynced.current
+        unsynced.current = []
+        inFlight.current.set(callId, heard)
+        const outcome = runAgentTool(speculative.current, name, args, heard, ctx())
         speculative.current = outcome.state
-        const detail = toolDetail(name, args, outcome.result)
+        const detail = toolDetail(name, outcome.result, outcome.summary)
         return {
           result: outcome.result,
           isError: !outcome.ok,
           commit: () => {
-            const prev = committed.current
-            committed.current = outcome.state
-            setOrder(outcome.state)
+            inFlight.current.delete(callId)
+            commitState(outcome.state)
             addTool({ name, detail, ok: outcome.ok })
-            if (outcome.ok) {
-              // Re-trigger the flash on any line that is new or changed.
-              const changed = outcome.state.lines.filter((l) => {
-                const before = prev.lines.find((p) => p.id === l.id)
-                return !before || JSON.stringify(before) !== JSON.stringify(l)
-              })
-              if (changed.length) setFlash((f) => ({ ...f, ...Object.fromEntries(changed.map((l) => [l.id, (f[l.id] ?? 0) + 1])) }))
-            }
             if (name === 'submit_order' && outcome.ok && outcome.state.submitted) {
               const submitted: SubmittedOrder = {
                 orderNumber: outcome.state.submitted.orderNumber,
@@ -176,7 +191,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
               endSoon(9000)
             } else if (name === 'request_human' && outcome.ok) {
               setCrew(true)
-              channel.current?.send('crew', { lane: LANE, reason: String(args.reason ?? ''), at: Date.now() })
+              channel.current?.send('crew', { lane: LANE, reason: lastHeard.current, at: Date.now() })
               broadcast(outcome.state, 'crew')
               endSoon(7000)
             } else {
@@ -185,8 +200,30 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
           },
         }
       },
+      onEmptyReply: () => {
+        // The model produced nothing. Sync the order ourselves and tell it exactly what to say.
+        const heard = unsynced.current
+        unsynced.current = []
+        const { state, summary } = syncHeard(speculative.current, heard, ctx())
+        const next = summary.wantsHuman ? runTool(state, 'request_human', {}).state : state
+        speculative.current = next
+        commitState(next)
+        addTool({ name: 'recovered', detail: toolDetail('sync_order', { ok: true }, summary) || 'empty reply, re-prompted', ok: true, rolledBack: true })
+        if (summary.wantsHuman) {
+          setCrew(true)
+          channel.current?.send('crew', { lane: LANE, reason: lastHeard.current, at: Date.now() })
+          broadcast(next, 'crew')
+          endSoon(7000)
+        } else {
+          broadcast(next, 'ordering')
+        }
+        return recoveryInstructions(summary, next)
+      },
       onToolsDiscarded: () => {
         speculative.current = committed.current
+        // Put back what those calls had consumed, so it is applied on the next sync.
+        unsynced.current = [...[...inFlight.current.values()].flat(), ...unsynced.current]
+        inFlight.current.clear()
         addTool({ name: 'interrupted', detail: 'guest cut in, pending changes rolled back', ok: true, rolledBack: true })
       },
       onError: (code, message) => {

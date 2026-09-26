@@ -1,0 +1,48 @@
+{
+  "scenario": "adhoc",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": true,
+  "failures": [],
+  "latencies": [
+    1124
+  ],
+  "order": [
+    "2 Stackhouse Double"
+  ],
+  "log": [
+    {
+      "t": 1.087,
+      "kind": "ready",
+      "text": "sess_4ddd2974f3b04ea4a9ece861cea9f4dc"
+    },
+    {
+      "t": 4.128,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 5.193,
+      "kind": "guest",
+      "text": "Hi, can I get two Stackhouse Doubles."
+    },
+    {
+      "t": 9.586,
+      "kind": "heard",
+      "text": "Hi, can I get 2 Stackhouse Doubles?"
+    },
+    {
+      "t": 10.075,
+      "kind": "tool",
+      "text": "✓ add_item {\"item_id\":\"stackhouse_double\",\"quantity\":2}"
+    },
+    {
+      "t": 13.752,
+      "kind": "agent",
+      "text": "Got it, two Stackhouse Doubles. Anything else?"
+    }
+  ]
+}

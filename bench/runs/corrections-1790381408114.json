@@ -1,0 +1,69 @@
+{
+  "scenario": "corrections",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": false,
+  "failures": [
+    "expected 1 Stackhouse Double",
+    "expected 1 Stackhouse Single, no pickles",
+    "expected a large chocolate Frostee",
+    "expected 3 lines, got 1",
+    "expected the order to be submitted"
+  ],
+  "latencies": [
+    1216
+  ],
+  "order": [
+    "2 Stackhouse Double"
+  ],
+  "log": [
+    {
+      "t": 1.233,
+      "kind": "ready",
+      "text": "sess_0b94c9b655144af1957981fffa1641e5"
+    },
+    {
+      "t": 3.703,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 4.744,
+      "kind": "guest",
+      "text": "Hi, can I get two Stackhouse Doubles."
+    },
+    {
+      "t": 9.171,
+      "kind": "heard",
+      "text": "Hi, can I get 2 Stackhouse Doubles?"
+    },
+    {
+      "t": 9.762,
+      "kind": "tool",
+      "text": "✓ add_item {\"item_id\":\"stackhouse_double\",\"quantity\":2}"
+    },
+    {
+      "t": 13.836,
+      "kind": "agent",
+      "text": "Got it, two Stackhouse Doubles. Anything else?"
+    },
+    {
+      "t": 14.92,
+      "kind": "guest",
+      "text": "Actually, make one of those a single, with no pickles."
+    },
+    {
+      "t": 19.068,
+      "kind": "heard",
+      "text": "Actually, make one of those a single with no pickles."
+    },
+    {
+      "t": 60.331,
+      "kind": "timeout",
+      "text": "scenario took too long"
+    }
+  ]
+}

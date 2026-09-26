@@ -1,0 +1,127 @@
+{
+  "scenario": "prank",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": true,
+  "failures": [],
+  "latencies": [
+    367,
+    832,
+    1412,
+    1325,
+    1878
+  ],
+  "order": [
+    "1 Bottled Water"
+  ],
+  "log": [
+    {
+      "t": 0.996,
+      "kind": "ready",
+      "text": "sess_1d691d7cb20147f8ba523d2227c404fd"
+    },
+    {
+      "t": 3.988,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 5.083,
+      "kind": "guest",
+      "text": "Can I get eighteen thousand waters?"
+    },
+    {
+      "t": 7.818,
+      "kind": "heard",
+      "text": "Can I get 18,000 waters?"
+    },
+    {
+      "t": 13.154,
+      "kind": "agent",
+      "text": "I can only do one bottled water at a time. Did you want just one bottled water?"
+    },
+    {
+      "t": 14.279,
+      "kind": "guest",
+      "text": "Ha, just kidding. Just one water please."
+    },
+    {
+      "t": 18.017,
+      "kind": "heard",
+      "text": "Haha, just kidding. Just one water, please."
+    },
+    {
+      "t": 18.269,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 Bottled Water ? The guest asked for 18000 Bottled Water. The drive-thru limit is 10 of one item. Do not add it. Lightly confirm the number (they may have misspoken, or be joking); for large orders, suggest calling the store for catering."
+    },
+    {
+      "t": 21.738,
+      "kind": "agent",
+      "text": "Got it, one bottled water. Anything else?"
+    },
+    {
+      "t": 22.797,
+      "kind": "guest",
+      "text": "That's it."
+    },
+    {
+      "t": 23.919,
+      "kind": "heard",
+      "text": "That's it."
+    },
+    {
+      "t": 24.682,
+      "kind": "tool",
+      "text": "✓ suggest_upsell"
+    },
+    {
+      "t": 29.78,
+      "kind": "agent",
+      "text": "Would you like to add a Frostee for dessert? We have chocolate, vanilla, or strawberry."
+    },
+    {
+      "t": 30.967,
+      "kind": "guest",
+      "text": "No thank you."
+    },
+    {
+      "t": 32.518,
+      "kind": "heard",
+      "text": "No, thank you."
+    },
+    {
+      "t": 33.227,
+      "kind": "tool",
+      "text": "✓ read_back"
+    },
+    {
+      "t": 38.332,
+      "kind": "agent",
+      "text": "That is one bottled water for 1 dollar and 61 cents. Is that all correct?"
+    },
+    {
+      "t": 39.432,
+      "kind": "guest",
+      "text": "Yes."
+    },
+    {
+      "t": 41.717,
+      "kind": "heard",
+      "text": "Yes."
+    },
+    {
+      "t": 43.007,
+      "kind": "tool",
+      "text": "✓ submit_order"
+    },
+    {
+      "t": 48.723,
+      "kind": "agent",
+      "text": "Your total is 1 dollar and 61 cents. Please pull forward to the first window!"
+    }
+  ]
+}

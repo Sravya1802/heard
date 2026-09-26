@@ -10,7 +10,9 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { sessionConfig, type VoiceFocus } from '../lib/agent-config'
-import { describeLine, emptyOrder, runTool, totals, type OrderState } from '../lib/order-engine'
+import { describeLine, emptyOrder, totals, type OrderState } from '../lib/order-engine'
+import { recoveryInstructions, runAgentTool, syncHeard } from '../lib/sync'
+import { runTool } from '../lib/order-engine'
 import { formatPrice } from '../lib/menu'
 import { RATE, loadEnv, mixAtSnr, readWav, speak } from './audio'
 
@@ -61,10 +63,12 @@ const SCENARIOS: Record<string, Scenario> = {
       'And ten Cluck Bites with honey mustard.',
       "That's all.",
       'Sure, why not.',
-      'Chocolate, small.',
+      'A small chocolate one.',
+      "No, that's all.",
       "That's correct.",
     ],
     expect: (s) => [
+      !s.lines.some((l) => l.itemId === 'frostee' && l.size === 'small' && l.modifiers.includes('chocolate')) && 'expected a small chocolate Frostee from the upsell',
       !s.lines.some((l) => l.itemId === 'spicy_cluckwich' && l.meal?.size === 'large' && l.meal.drinkId === 'sweet_tea') && 'expected a large Spicy Cluckwich meal with Sweet Tea',
       !s.lines.some((l) => l.itemId === 'cluck_bites' && l.size === '10pc') && 'expected 10-piece Cluck Bites',
       !s.submitted && 'expected the order to be submitted',
@@ -104,7 +108,9 @@ loadEnv()
 const KEY = process.env.ASSEMBLYAI_API_KEY
 if (!KEY) { console.error('Set ASSEMBLYAI_API_KEY in .env.local'); process.exit(1) }
 
-const which = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'corrections'
+const adhoc = arg('lines')
+if (adhoc) SCENARIOS.adhoc = { lines: adhoc.split('|').map((l) => l.trim()).filter(Boolean), expect: () => [] }
+const which = adhoc ? 'adhoc' : process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'corrections'
 const names = which === 'all' ? Object.keys(SCENARIOS) : [which]
 const focusArg = arg('focus', 'far')!
 const voiceFocus: VoiceFocus = focusArg === 'off' ? 'off' : focusArg === 'near' ? 'near-field' : 'far-field'
@@ -114,6 +120,8 @@ const noisePath = arg('noise')
 const snr = Number(arg('snr', '10'))
 const noise = noisePath ? readWav(noisePath) : null
 const CACHE = join('bench', '.cache', 'tts')
+const DEBUG = process.argv.includes('--debug')
+const AGENT_ID = arg('agent')
 
 // ----------------------------------------------------------------- run ---
 
@@ -154,7 +162,8 @@ async function runScenario(name: string) {
 
   let committed = emptyOrder()
   let speculative = committed
-  let pending: { callId: string; result: unknown; isError: boolean; state: OrderState }[] = []
+  let pending: { callId: string; result: unknown; isError: boolean; state: OrderState; heard: string[] }[] = []
+  let unsynced: string[] = []
   let lastEvent: string | null = null
   let ready = false
   let turn = 0
@@ -164,6 +173,9 @@ async function runScenario(name: string) {
   let agentAudioEndsAt = 0
   let agentSpokeSinceTurn = true
   let speechStoppedAt: number | null = null
+  // Empty-reply recovery: sync the order ourselves and tell the agent what to say.
+  let replyHadContent = false
+  let nudges = 0
   const latencies: number[] = []
 
   const ws = new WebSocket(`wss://agents.assemblyai.com/v1/ws?token=${encodeURIComponent(await token())}`)
@@ -179,7 +191,7 @@ async function runScenario(name: string) {
   }
 
   const done = new Promise<void>((resolve) => {
-    const timeout = setTimeout(() => { say('timeout', 'scenario took too long'); finish() }, 180_000)
+    const timeout = setTimeout(() => { say('timeout', 'scenario took too long'); finish() }, Number(arg('timeout') ?? 180) * 1000)
     let finished = false
     function finish() {
       if (finished) return
@@ -219,16 +231,19 @@ async function runScenario(name: string) {
 
     ws.onopen = () => send({
       type: 'session.update',
-      session: sessionConfig({ voiceFocus, keyterms }),
+      session: AGENT_ID ? { agent_id: AGENT_ID } : sessionConfig({ voiceFocus, keyterms, minSilence: Number(arg('min-silence') ?? 0) || undefined, maxSilence: Number(arg('max-silence') ?? 0) || undefined }),
     })
     ws.onclose = () => finish()
     ws.onerror = () => { say('error', 'websocket error'); finish() }
     ws.onmessage = (e) => {
       const m = JSON.parse(String(e.data))
+      if (DEBUG && !['reply.audio', 'transcript.agent.delta', 'transcript.user.delta'].includes(m.type)) {
+        console.log('        · ' + m.type + ' ' + JSON.stringify(m).slice(0, 220))
+      }
       switch (m.type) {
         case 'session.ready': ready = true; lastEvent = 'reply.done'; agentSpokeSinceTurn = false; say('ready', m.session_id); break
         case 'input.speech.stopped': speechStoppedAt = Date.now(); break
-        case 'reply.started': lastEvent = 'reply.started'; break
+        case 'reply.started': lastEvent = 'reply.started'; replyHadContent = false; break
         case 'reply.audio': {
           const now = Date.now()
           if (speechStoppedAt != null) { latencies.push(now - speechStoppedAt); speechStoppedAt = null }
@@ -237,20 +252,39 @@ async function runScenario(name: string) {
           agentSpokeSinceTurn = true
           break
         }
-        case 'transcript.user': if (m.text?.trim()) say('heard', m.text); break
-        case 'transcript.agent': say('agent', m.text + (m.interrupted ? '  [cut off]' : '')); break
+        case 'transcript.user': if (m.text?.trim()) { say('heard', m.text); unsynced.push(m.text); nudges = 0 } break
+        case 'transcript.agent': replyHadContent = true; say('agent', m.text + (m.interrupted ? '  [cut off]' : '')); break
         case 'tool.call': {
-          const o = runTool(speculative, m.name, m.arguments ?? {}, { unavailable, nextOrderNumber: () => 100 + turn })
+          replyHadContent = true
+          const heardNow = unsynced
+          unsynced = []
+          const o = runAgentTool(speculative, m.name, m.arguments ?? {}, heardNow, { unavailable, nextOrderNumber: () => 100 + turn })
           speculative = o.state
-          pending.push({ callId: m.call_id, result: o.result, isError: !o.ok, state: o.state })
-          say('tool', `${o.ok ? '✓' : '✗'} ${m.name} ${JSON.stringify(m.arguments ?? {})}${o.ok ? '' : ' → ' + o.result.error}`)
+          pending.push({ callId: m.call_id, result: o.result, isError: !o.ok, state: o.state, heard: heardNow })
+          const detail = o.summary.changed.length ? ' ' + o.summary.changed.join('; ') : ''
+          const ask = o.summary.ask.length ? ' ? ' + o.summary.ask.join(' ') : ''
+          say('tool', `${o.ok ? '✓' : '✗'} ${m.name}${detail}${ask}${o.ok ? '' : ' → ' + o.result.error}`)
           flush()
           break
         }
         case 'reply.done':
-          if (m.status === 'interrupted' && pending.length) { pending = []; speculative = committed; say('tool', '↺ interrupted, rolled back') }
+          if (m.status === 'interrupted' && pending.length) {
+            unsynced = [...pending.flatMap((p) => p.heard), ...unsynced]
+            pending = []; speculative = committed; say('tool', '↺ interrupted, rolled back')
+          }
           lastEvent = 'reply.done'
           flush()
+          if (m.status === 'completed' && !replyHadContent && !pending.length && nudges < 2) {
+            nudges++
+            const heardNow = unsynced
+            unsynced = []
+            const { state: synced, summary } = syncHeard(committed, heardNow, { unavailable })
+            committed = speculative = summary.wantsHuman ? runTool(synced, 'request_human', {}).state : synced
+            const instructions = recoveryInstructions(summary, committed)
+            say('recover', `empty reply → synced locally${summary.changed.length ? ': ' + summary.changed.join('; ') : ''} → "${instructions.slice(0, 90)}"`)
+            send({ type: 'reply.create', instructions })
+            lastEvent = 'reply.started'
+          }
           break
         case 'session.error': case 'error': say('error', `${m.code ?? m.error_code}: ${m.message}`); break
       }
@@ -276,9 +310,12 @@ async function runScenario(name: string) {
   return failures.length === 0
 }
 
-let allPassed = true
-for (const name of names) {
-  console.log(`\n=== ${name} (voice focus ${voiceFocus}, key terms ${keyterms ? 'on' : 'off'}${noise ? `, noise ${snr} dB SNR` : ''}) ===`)
-  allPassed = (await runScenario(name)) && allPassed
+async function main() {
+  let allPassed = true
+  for (const name of names) {
+    console.log(`\n=== ${name} (voice focus ${voiceFocus}, key terms ${keyterms ? 'on' : 'off'}${noise ? `, noise ${snr} dB SNR` : ''}) ===`)
+    allPassed = (await runScenario(name)) && allPassed
+  }
+  process.exit(allPassed ? 0 : 1)
 }
-process.exit(allPassed ? 0 : 1)
+main()

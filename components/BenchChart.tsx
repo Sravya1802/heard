@@ -12,6 +12,8 @@ export interface BenchCell {
   wer: number
   exact: number
   lines: number
+  reps: number
+  range: [number, number]
 }
 
 // Categorical slots 1-4 of the validated reference palette, dark steps
@@ -103,7 +105,10 @@ export default function BenchChart({ cells, conditions, configs }: {
             <span className="inline-block w-2.5 h-2.5 rounded-[2px]" style={{ background: SERIES[hover.cell.config] }} />
             <span className="text-ink font-semibold">{hover.cell.configLabel}</span>
           </div>
-          <div className="mt-1 font-mono tabular-nums text-ink">{pct(hover.cell.orderAccuracy)} orders exactly right ({hover.cell.exact}/{hover.cell.lines})</div>
+          <div className="mt-1 font-mono tabular-nums text-ink">
+            {pct(hover.cell.orderAccuracy)} orders exactly right{' '}
+            {hover.cell.reps > 1 ? `(mean of ${hover.cell.reps} runs, ${pct(hover.cell.range[0])}–${pct(hover.cell.range[1])})` : `(${hover.cell.exact}/${hover.cell.lines})`}
+          </div>
           <div className="font-mono tabular-nums text-muted">{(hover.cell.menuAccuracy * 100).toFixed(1)}% menu terms · WER {(hover.cell.wer * 100).toFixed(1)}%</div>
         </div>
       )}

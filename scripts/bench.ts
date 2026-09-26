@@ -52,7 +52,8 @@ function arg(name: string) {
 }
 const onlyConditions = arg('only')?.split(',')
 const onlyConfigs = arg('configs')?.split(',')
-const PARALLEL = Number(arg('parallel') ?? 4)
+const PARALLEL = Number(arg('parallel') ?? 2)
+const REPS = Math.max(1, Number(arg('reps') ?? 1))
 
 // ------------------------------------------------------------- audio ---
 
@@ -240,25 +241,27 @@ function score(words: Word[]) {
 
 // --------------------------------------------------------------- run ---
 
-const jobs = CONDITIONS.filter((c) => !onlyConditions || onlyConditions.includes(c.id))
+const cells = CONDITIONS.filter((c) => !onlyConditions || onlyConditions.includes(c.id))
   .flatMap((c) => CONFIGS.filter((k) => !onlyConfigs || onlyConfigs.includes(k.id)).map((k) => ({ c, k })))
+// Repetitions interleaved, so a slow patch of the service doesn't hit one cell's reps together.
+const jobs = Array.from({ length: REPS }, (_, rep) => cells.map((j) => ({ ...j, rep }))).flat()
 const sessions = new Map(jobs.map(({ c }) => [c.id, buildSession(c)]))
 const minutes = jobs.reduce((s, { c }) => s + sessions.get(c.id)!.pcm.length / RATE / 60, 0)
-console.log(`${jobs.length} sessions, ${minutes.toFixed(1)} min of audio, ${PARALLEL} at a time (≈${(minutes / PARALLEL).toFixed(0)} min)`)
+console.log(`${jobs.length} sessions (${REPS}× each cell), ${minutes.toFixed(1)} min of audio, ${PARALLEL} at a time (≈${(minutes / PARALLEL).toFixed(0)} min)`)
 
 async function main() {
-  const results: Record<string, unknown>[] = []
+  const runs: Record<string, unknown>[] = []
   const queue = [...jobs]
   async function worker() {
     while (queue.length) {
-      const { c, k } = queue.shift()!
+      const { c, k, rep } = queue.shift()!
       const { pcm } = sessions.get(c.id)!
       const t0 = Date.now()
       try {
         const words = await transcribe(pcm, k)
         const s = score(words)
-        results.push({ condition: c.id, conditionLabel: c.label, config: k.id, configLabel: k.label, ...s, transcript: words.map((w) => w.text).join(' ') })
-        console.log(`${c.id.padEnd(10)} ${k.id.padEnd(8)} orders ${(s.orderAccuracy * 100).toFixed(0).padStart(3)}%  menu ${(s.menuAccuracy * 100).toFixed(1).padStart(5)}%  perfect ${(s.perfectLines * 100).toFixed(0).padStart(3)}%  WER ${(s.wer * 100).toFixed(1).padStart(5)}%  leaks ${s.leaks.length}  (${Math.round((Date.now() - t0) / 1000)}s)`)
+        runs.push({ rep, condition: c.id, conditionLabel: c.label, config: k.id, configLabel: k.label, ...s, transcript: words.map((w) => w.text).join(' ') })
+        console.log(`${c.id.padEnd(10)} ${k.id.padEnd(8)} #${rep + 1} orders ${(s.orderAccuracy * 100).toFixed(0).padStart(3)}%  menu ${(s.menuAccuracy * 100).toFixed(1).padStart(5)}%  perfect ${(s.perfectLines * 100).toFixed(0).padStart(3)}%  WER ${(s.wer * 100).toFixed(1).padStart(5)}%  leaks ${s.leaks.length}  (${Math.round((Date.now() - t0) / 1000)}s)`)
       } catch (e) {
         console.error(`${c.id} ${k.id} failed:`, e instanceof Error ? e.message : e)
       }
@@ -266,11 +269,31 @@ async function main() {
   }
   await Promise.all(Array.from({ length: PARALLEL }, worker))
 
+  // One entry per cell: the mean over repetitions, the range, and the first run's line-by-line detail.
+  const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length
+  const results: Record<string, unknown>[] = cells.flatMap(({ c, k }) => {
+    const mine = runs.filter((r) => r.condition === c.id && r.config === k.id).sort((a, b) => Number(a.rep) - Number(b.rep))
+    if (!mine.length) return []
+    const num = (f: string) => mine.map((r) => Number(r[f]))
+    return [{
+      ...mine[0],
+      rep: undefined,
+      reps: mine.length,
+      orderAccuracy: mean(num('orderAccuracy')),
+      orderAccuracyRange: [Math.min(...num('orderAccuracy')), Math.max(...num('orderAccuracy'))],
+      menuAccuracy: mean(num('menuAccuracy')),
+      perfectLines: mean(num('perfectLines')),
+      wer: mean(num('wer')),
+      runs: mine.map((r) => ({ orderAccuracy: r.orderAccuracy, menuAccuracy: r.menuAccuracy, wer: r.wer, leaks: r.leaks })),
+    }]
+  })
+
   const order = (r: Record<string, unknown>) => CONDITIONS.findIndex((c) => c.id === r.condition) * 10 + CONFIGS.findIndex((k) => k.id === r.config)
   results.sort((a, b) => order(a) - order(b))
   mkdirSync('bench', { recursive: true })
   const out = {
     ranAt: new Date().toISOString(),
+    reps: REPS,
     lines: ORDER_LINES.length,
     menuTerms: ORDER_LINES.reduce((s, u) => s + u.entities.length, 0),
     voices: DRIVER_VOICES,

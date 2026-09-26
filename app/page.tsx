@@ -3,9 +3,9 @@ import Link from 'next/link'
 const FAILURES = [
   { failure: 'Mishears orders over engine noise and back-seat chatter', fix: 'AssemblyAI voice_focus isolates the driver; menu key terms catch made-up brand names' },
   { failure: 'Guest changes their mind mid-sentence', fix: 'Corrections edit the existing line instead of adding a duplicate' },
-  { failure: 'Pranked with absurd orders', fix: 'Quantity guardrails: "18,000 waters?" gets a friendly double-check, not a ticket' },
-  { failure: 'Frustrated guest has no way out', fix: 'One sentence hands the car to a human crew member' },
-  { failure: 'AI invents items or prices', fix: 'A deterministic, tested order engine owns every item, price and total' },
+  { failure: 'Nine sweet teas instead of one', fix: 'Quantities are parsed deterministically and read back before anything reaches the kitchen' },
+  { failure: 'Pranked with 18,000 waters to reach a human', fix: 'A person is one sentence away, and quantity guardrails refuse absurd orders' },
+  { failure: 'AI invents items or prices', fix: 'The model never writes the order: a tested parser and engine own every item, price and total' },
 ]
 
 const STEPS = [
@@ -15,11 +15,11 @@ const STEPS = [
 ]
 
 const STACK = [
-  'AssemblyAI Voice Agent API: speech-to-text, LLM and voice over one WebSocket',
-  'Universal-3.5 Pro Realtime with voice_focus to isolate the nearest speaker',
-  'Menu key terms and a transcription prompt for invented brand names',
-  'Client-side tools with JSON-Schema enums, driving a deterministic order engine',
-  'Barge-in: interrupt the agent at any time and it stops mid-word',
+  'AssemblyAI Voice Agent API: speech-to-text, LLM and voice over one WebSocket, with barge-in',
+  'Universal-3.6 Pro streaming with voice_focus, which AssemblyAI lists for drive-thru speakers',
+  'Menu key terms and a transcription prompt, so invented names like "Cluckwich" survive',
+  'The model runs the conversation; a deterministic parser builds the order from the transcript',
+  'A tested order engine owns every item, price and total, with guardrails and read-back',
   'Single-use browser tokens: the API key never reaches the page',
 ]
 
@@ -31,6 +31,7 @@ export default function Home() {
         <nav className="flex gap-4 text-sm text-muted">
           <Link href="/lane" className="hover:text-ink">Lane 1</Link>
           <Link href="/kitchen" className="hover:text-ink">Kitchen</Link>
+          <Link href="/insights" className="hover:text-ink">Benchmark</Link>
         </nav>
       </header>
 
@@ -41,7 +42,9 @@ export default function Home() {
             Drive-thru AI didn&apos;t fail because it was dumb. It failed because it couldn&apos;t hear.
           </h1>
           <p className="mt-6 text-lg text-muted max-w-2xl">
-            Big chains have tested AI order-takers and pulled back after viral misheard orders. Heard isolates the driver&apos;s voice from engine noise and back-seat chatter, follows mid-sentence corrections, and never invents a price.
+            McDonald&apos;s pulled its AI drive-thru from 100+ restaurants after viral misheard orders.{' '}
+            Taco Bell slowed its rollout after one caller ordered 18,000 waters just to reach a human.{' '}
+            Heard isolates the driver&apos;s voice from engine noise and back-seat chatter, builds the order only from what it heard, and puts a person one sentence away.
           </p>
         </div>
         <div className="flex flex-col gap-3">
@@ -91,11 +94,13 @@ export default function Home() {
           </ul>
         </div>
         <div className="rounded-2xl border border-line bg-panel p-5 font-mono text-sm leading-relaxed">
-          <p className="text-faint"># the model decides what you meant</p>
-          <p>tool.call add_item {'{'} item_id: <span className="text-mustard">&quot;stackhouse_single&quot;</span>, modifiers: [<span className="text-ketchup">&quot;no_pickles&quot;</span>] {'}'}</p>
-          <p className="text-faint mt-3"># the engine decides what it costs</p>
-          <p className="text-pickle">✓ + 1 Stackhouse Single, no pickles · subtotal $4.49</p>
-          <p className="text-faint mt-3"># and it says no when it should</p>
+          <p className="text-faint"># AssemblyAI hears the driver</p>
+          <p>transcript.user <span className="text-sky">&quot;2 Stackhouse Doubles… actually make one of those a single, no pickles&quot;</span></p>
+          <p className="text-faint mt-3"># the model only decides it&apos;s time to update the order</p>
+          <p>tool.call sync_order {'{}'}</p>
+          <p className="text-faint mt-3"># the parser and engine decide what it means and what it costs</p>
+          <p className="text-pickle">✓ now 1 Stackhouse Double · added 1 Stackhouse Single, <span className="text-ketchup">no pickles</span></p>
+          <p className="text-faint mt-3"># and they say no when they should</p>
           <p className="text-ketchup">✗ quantity_too_high: asked for 18000 Bottled Water</p>
         </div>
       </section>

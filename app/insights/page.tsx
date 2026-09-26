@@ -10,6 +10,7 @@ interface Detail { ref: string; hyp: string; exact: boolean }
 interface Result {
   condition: string; conditionLabel: string; config: string; configLabel: string
   orderAccuracy: number; menuAccuracy: number; wer: number; leaks: string[]; detail: Detail[]
+  reps?: number; orderAccuracyRange?: [number, number]
 }
 
 const data = results as unknown as {
@@ -27,7 +28,9 @@ export default function InsightsPage() {
     condition: r.condition, conditionLabel: r.conditionLabel, config: r.config, configLabel: r.configLabel,
     orderAccuracy: r.orderAccuracy, menuAccuracy: r.menuAccuracy, wer: r.wer,
     exact: r.detail.filter((d) => d.exact).length, lines: r.detail.length,
+    reps: r.reps ?? 1, range: r.orderAccuracyRange ?? [r.orderAccuracy, r.orderAccuracy],
   }))
+  const reps = Math.max(...cells.map((c) => c.reps))
 
   // Headline: the loudest road noise we tested.
   const worst = find('road0', 'generic')
@@ -79,7 +82,9 @@ export default function InsightsPage() {
 
       <section>
         <h2 className="font-display text-2xl font-bold mb-1">Orders exactly right, by condition</h2>
-        <p className="text-sm text-muted mb-5">Each bar is one streaming session of all {data.lines} lines. Hover a bar for menu-term accuracy and word error rate.</p>
+        <p className="text-sm text-muted mb-5">
+          {reps > 1 ? `Each bar is the mean of ${reps} streaming sessions of all ${data.lines} lines.` : `Each bar is one streaming session of all ${data.lines} lines.`} Hover a bar for the range, menu-term accuracy and word error rate.
+        </p>
         <div className="rounded-2xl border border-line bg-panel p-5">
           <BenchChart cells={cells} conditions={conditions} configs={data.configs} />
         </div>
@@ -88,14 +93,14 @@ export default function InsightsPage() {
           <div className="overflow-x-auto mt-3">
             <table className="w-full text-sm font-mono tabular-nums">
               <thead className="text-left text-muted">
-                <tr><th className="py-1 pr-4 font-normal">Condition</th><th className="py-1 pr-4 font-normal">Setup</th><th className="py-1 pr-4 font-normal">Orders exact</th><th className="py-1 pr-4 font-normal">Menu terms</th><th className="py-1 font-normal">WER</th></tr>
+                <tr><th className="py-1 pr-4 font-normal">Condition</th><th className="py-1 pr-4 font-normal">Setup</th><th className="py-1 pr-4 font-normal">Orders exact{reps > 1 ? ' (range)' : ''}</th><th className="py-1 pr-4 font-normal">Menu terms</th><th className="py-1 font-normal">WER</th></tr>
               </thead>
               <tbody>
                 {cells.map((c) => (
                   <tr key={c.condition + c.config} className="border-t border-line">
                     <td className="py-1 pr-4">{c.conditionLabel}</td>
                     <td className="py-1 pr-4">{c.configLabel}</td>
-                    <td className="py-1 pr-4">{pct(c.orderAccuracy)} ({c.exact}/{c.lines})</td>
+                    <td className="py-1 pr-4">{pct(c.orderAccuracy)}{c.reps > 1 ? ` (${pct(c.range[0])}–${pct(c.range[1])})` : ` (${c.exact}/${c.lines})`}</td>
                     <td className="py-1 pr-4">{(c.menuAccuracy * 100).toFixed(1)}%</td>
                     <td className="py-1">{(c.wer * 100).toFixed(1)}%</td>
                   </tr>
@@ -155,7 +160,7 @@ export default function InsightsPage() {
           <h2 className="font-display text-xl font-bold text-ink mb-2">Limits, honestly</h2>
           <ul className="space-y-1.5 list-disc pl-5">
             <li>Synthetic voices and generated noise, not recordings from a real lane. Real-world numbers will differ.</li>
-            <li>One session per cell, so small differences (one or two lines) are within noise.</li>
+            <li>{reps > 1 ? `${reps} sessions per cell; the same audio can still score a few points apart run to run, so small differences are within noise.` : 'One session per cell, so small differences (one or two lines) are within noise.'}</li>
             <li>Voice focus did not stop our synthetic back-seat voices from appearing in transcripts. Those words never became order items, because the order is parsed only against the menu.</li>
             <li>Reproduce it: <code className="text-ink">npm run noise && npm run bench</code>. Last run {new Date(data.ranAt).toUTCString()}.</li>
           </ul>

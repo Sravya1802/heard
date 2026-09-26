@@ -12,7 +12,7 @@
 //   - WER against the reference text
 //   - back-seat leaks: words that only the kids in the back said, showing up anyway
 
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { ORDER_LINES, DRIVER_VOICES, BACKSEAT_LINES } from '../bench/testset'
 import { TRANSCRIPTION_PROMPT } from '../lib/agent-config'
@@ -278,7 +278,19 @@ async function main() {
     configs: CONFIGS.filter((k) => !onlyConfigs || onlyConfigs.includes(k.id)).map(({ id, label }) => ({ id, label })),
     results,
   }
-  const file = onlyConditions || onlyConfigs ? join('bench', `results-partial-${Date.now()}.json`) : join('bench', 'results.json')
+  const partial = Boolean(onlyConditions || onlyConfigs)
+  const merge = partial && process.argv.includes('--merge') && existsSync(join('bench', 'results.json'))
+  if (merge) {
+    // Replace just the cells we re-ran, keep the rest of the matrix.
+    const prev = JSON.parse(readFileSync(join('bench', 'results.json'), 'utf8'))
+    const key = (r: Record<string, unknown>) => `${r.condition}:${r.config}`
+    const fresh = new Map(results.map((r) => [key(r), r]))
+    const kept = (prev.results as Record<string, unknown>[]).filter((r) => !fresh.has(key(r)))
+    out.results = [...kept, ...results].sort((a, b) => order(a) - order(b))
+    out.conditions = CONDITIONS.filter((c) => out.results.some((r) => r.condition === c.id))
+    out.configs = CONFIGS.filter((k) => out.results.some((r) => r.config === k.id)).map(({ id, label }) => ({ id, label }))
+  }
+  const file = partial && !merge ? join('bench', `results-partial-${Date.now()}.json`) : join('bench', 'results.json')
   writeFileSync(file, JSON.stringify(out, null, 2))
   console.log(`\nwrote ${file}`)
 }

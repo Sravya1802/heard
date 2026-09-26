@@ -8,6 +8,7 @@ import { emptyOrder, priceLine, runTool, ticketLine, totals, type OrderState } f
 import { recoveryInstructions, runAgentTool, syncHeard, type SyncSummary } from '@/lib/sync'
 import { openLaneChannel, type LaneChannel, type LaneSnapshot, type SubmittedOrder } from '@/lib/realtime'
 import { VoiceSession, type CallStatus } from '@/lib/voice-client'
+import NoiseQR from '@/components/NoiseQR'
 
 const LANE = 1
 
@@ -372,6 +373,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
                 Drive away (end)
               </button>
             )}
+            {!live && <NoiseQR />}
             {error && (
               <div className="rounded-lg border border-ketchup/60 bg-ketchup/10 px-3 py-2 text-sm">
                 {error} <Link href="/replay" className="underline text-mustard">Watch a recorded order</Link>

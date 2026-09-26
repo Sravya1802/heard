@@ -11,7 +11,8 @@
     "drive": "tsx scripts/drive-thru.ts",
     "noise": "tsx scripts/make-noise.ts",
     "bench": "tsx scripts/bench.ts",
-    "latency": "tsx scripts/latency.ts"
+    "latency": "tsx scripts/latency.ts",
+    "replay": "tsx scripts/save-replay.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",

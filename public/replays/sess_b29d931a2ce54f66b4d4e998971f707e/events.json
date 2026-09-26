@@ -1,0 +1,177 @@
+{
+ "id": "sess_b29d931a2ce54f66b4d4e998971f707e",
+ "title": "Scripted test: two Doubles, one correction",
+ "duration": 69.2,
+ "recordedAt": "2026-09-26T00:32:41.015966Z",
+ "events": [
+  {
+   "t": 0.25,
+   "kind": "agent",
+   "text": "Welcome to Stackhouse! What can I get started for you?",
+   "end": 3.15
+  },
+  {
+   "t": 4.77,
+   "kind": "guest",
+   "text": "Hi, can I get 2 Stackhouse Doubles?"
+  },
+  {
+   "t": 9.25,
+   "kind": "tool",
+   "name": "sync_order",
+   "changed": [
+    "added 2 Stackhouse Double"
+   ]
+  },
+  {
+   "t": 9.25,
+   "kind": "order",
+   "lines": [
+    "2 Stackhouse Double"
+   ]
+  },
+  {
+   "t": 9.62,
+   "kind": "agent",
+   "text": "Got it, two Stackhouse Doubles. Anything else?",
+   "end": 12.91
+  },
+  {
+   "t": 14.77,
+   "kind": "guest",
+   "text": "Actually, make one of those a single with no pickles."
+  },
+  {
+   "t": 18.81,
+   "kind": "tool",
+   "name": "sync_order",
+   "changed": [
+    "now 1 Stackhouse Double",
+    "added 1 Stackhouse Single, no pickles"
+   ]
+  },
+  {
+   "t": 18.81,
+   "kind": "order",
+   "lines": [
+    "1 Stackhouse Double",
+    "1 Stackhouse Single, no pickles"
+   ]
+  },
+  {
+   "t": 19.11,
+   "kind": "agent",
+   "text": "Sure thing, one double and one single with no pickles. Anything else?",
+   "end": 23.37
+  },
+  {
+   "t": 25.27,
+   "kind": "guest",
+   "text": "And a large chocolate Frosty."
+  },
+  {
+   "t": 28.52,
+   "kind": "tool",
+   "name": "sync_order",
+   "changed": [
+    "added 1 large chocolate Frostee"
+   ]
+  },
+  {
+   "t": 28.52,
+   "kind": "order",
+   "lines": [
+    "1 Stackhouse Double",
+    "1 Stackhouse Single, no pickles",
+    "1 large chocolate Frostee"
+   ]
+  },
+  {
+   "t": 29,
+   "kind": "agent",
+   "text": "Got it, a large chocolate Frostee. Anything else?",
+   "end": 32.5
+  },
+  {
+   "t": 34.07,
+   "kind": "guest",
+   "text": "That's everything."
+  },
+  {
+   "t": 36.11,
+   "kind": "tool",
+   "name": "suggest_upsell",
+   "changed": []
+  },
+  {
+   "t": 36.11,
+   "kind": "order",
+   "lines": [
+    "1 Stackhouse Double",
+    "1 Stackhouse Single, no pickles",
+    "1 large chocolate Frostee"
+   ]
+  },
+  {
+   "t": 36.41,
+   "kind": "agent",
+   "text": "Would you like to make that Stackhouse Double a meal with fries and a drink for just three dollars and nineteen cents more?",
+   "end": 42.08
+  },
+  {
+   "t": 43.97,
+   "kind": "guest",
+   "text": "No thanks."
+  },
+  {
+   "t": 45.61,
+   "kind": "tool",
+   "name": "read_back",
+   "changed": []
+  },
+  {
+   "t": 45.61,
+   "kind": "order",
+   "lines": [
+    "1 Stackhouse Double",
+    "1 Stackhouse Single, no pickles",
+    "1 large chocolate Frostee"
+   ],
+   "total": "$15.41"
+  },
+  {
+   "t": 45.91,
+   "kind": "agent",
+   "text": "No problem. I have one Stackhouse Double, one Stackhouse Single with no pickles, and a large chocolate Frostee. Your total is $15.41. Is that all correct?",
+   "end": 56.5
+  },
+  {
+   "t": 58.17,
+   "kind": "guest",
+   "text": "Yeah, that's right."
+  },
+  {
+   "t": 60.49,
+   "kind": "tool",
+   "name": "submit_order",
+   "changed": []
+  },
+  {
+   "t": 60.49,
+   "kind": "order",
+   "lines": [
+    "1 Stackhouse Double",
+    "1 Stackhouse Single, no pickles",
+    "1 large chocolate Frostee"
+   ],
+   "total": "$15.41",
+   "submitted": 106
+  },
+  {
+   "t": 61.32,
+   "kind": "agent",
+   "text": "Your total is $15.41. Please pull forward to the first window!",
+   "end": 65.75
+  }
+ ]
+}

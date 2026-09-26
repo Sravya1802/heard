@@ -1,5 +1,6 @@
 {
-  "ranAt": "2026-09-26T01:25:51.249Z",
+  "ranAt": "2026-09-26T03:03:35.125Z",
+  "reps": 3,
   "lines": 24,
   "menuTerms": 88,
   "voices": [
@@ -401,17 +402,42 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get to Stack House doubles, one with no pickles? Let me get a spicy clockwich meal, large, with a sweet tea. Can I get 10 cluck bites with honey mustard and ranch? Actually, make that a stacked house single instead, no onions. One medium chocolate frosty and an apple turnover. I'll do this McKesstak BBQ with extra cheese and add bacon. 2 stack packs, one with the mini burger and one with clog bites. Large stack fries, no salt, and a medium diode stack cola with light ice. Can I get a garden stack, plain, and a small fizzy lemonade? Give me a stacked house triple meal with a large stack collar. 20 piece cluck bites with sweet chili sauce. No wait, scratch the onion rings, just a small freeze. A vanilla frosty small and a strawberry frosty, large. Can I get a clockwitch with no tomato and extra sauce? Three stack higher singles, all with no pickles, and three waters. Make the lemonade a large and add an apple turnover. I want the smokestack barbecue meal, medium, with the fizzy lemonade. Six piece club bites with barbecue sauce for my dollar. Two spicy clock witches and a large onion rings. Can I change the double to a triple and hold the cheese? One stack house double extra pickles extra onions no sauce. And a medium sweet tea, no ice for my husband. That's it. Oh, and a garden stack meal with a diet stack cola. Can I get a large chocolate frosty and two apple turnovers?"
+      "transcript": "Hi, can I get to Stack House doubles, one with no pickles? Let me get a spicy clockwich meal, large, with a sweet tea. Can I get 10 cluck bites with honey mustard and ranch? Actually, make that a stacked house single instead, no onions. One medium chocolate frosty and an apple turnover. I'll do this McKesstak BBQ with extra cheese and add bacon. 2 stack packs, one with the mini burger and one with clog bites. Large stack fries, no salt, and a medium diode stack cola with light ice. Can I get a garden stack, plain, and a small fizzy lemonade? Give me a stacked house triple meal with a large stack collar. 20 piece cluck bites with sweet chili sauce. No wait, scratch the onion rings, just a small freeze. A vanilla frosty small and a strawberry frosty, large. Can I get a clockwitch with no tomato and extra sauce? Three stack higher singles, all with no pickles, and three waters. Make the lemonade a large and add an apple turnover. I want the smokestack barbecue meal, medium, with the fizzy lemonade. Six piece club bites with barbecue sauce for my dollar. Two spicy clock witches and a large onion rings. Can I change the double to a triple and hold the cheese? One stack house double extra pickles extra onions no sauce. And a medium sweet tea, no ice for my husband. That's it. Oh, and a garden stack meal with a diet stack cola. Can I get a large chocolate frosty and two apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.5833333333333334,
+        0.5833333333333334
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.5833333333333334,
+          "menuAccuracy": 0.8181818181818182,
+          "wer": 0.1141732283464567,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.5833333333333334,
+          "menuAccuracy": 0.8181818181818182,
+          "wer": 0.1141732283464567,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.5833333333333334,
+          "menuAccuracy": 0.8181818181818182,
+          "wer": 0.1141732283464567,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "clean",
       "conditionLabel": "Quiet lane",
       "config": "u3",
       "configLabel": "Universal-3.6 Pro",
-      "orderAccuracy": 0.75,
-      "menuAccuracy": 0.9204545454545454,
-      "perfectLines": 0.7083333333333334,
-      "wer": 0.04330708661417323,
+      "orderAccuracy": 0.6944444444444445,
+      "menuAccuracy": 0.9015151515151515,
+      "perfectLines": 0.638888888888889,
+      "wer": 0.048556430446194225,
       "leaks": [],
       "detail": [
         {
@@ -493,7 +519,7 @@
         },
         {
           "ref": "Two Stack Packs, one with the mini burger and one with Cluck Bites.",
-          "hyp": "2 stacked packs. One with the mini burger and one with Cluck Bites.",
+          "hyp": "2 stacked packs, one with the mini burger and one with Cluck Bites.",
           "missed": [
             "stack pack"
           ],
@@ -520,19 +546,17 @@
         },
         {
           "ref": "Can I get a Garden Stack, plain, and a small Fizzy Lemonade.",
-          "hyp": "Can I get a garden stack? And a small fizzy lemonade.",
-          "missed": [
-            "plain"
-          ],
+          "hyp": "Can I get a Garden Stack, plain, and a small fizzy lemonade?",
+          "missed": [],
           "order": [
-            "1 Garden Stack",
+            "1 Garden Stack, plain",
             "1 small Fizzy Lemonade"
           ],
           "expected": [
             "1 Garden Stack, plain",
             "1 small Fizzy Lemonade"
           ],
-          "exact": false
+          "exact": true
         },
         {
           "ref": "Give me a Stackhouse Triple meal with a large Stack Cola.",
@@ -642,15 +666,15 @@
         },
         {
           "ref": "Six piece Cluck Bites with barbecue sauce for my daughter.",
-          "hyp": "6-piece Cluck Bites with barbecue sauce for my daughter.",
-          "missed": [],
-          "order": [
-            "1 6-piece Cluck Bites, bbq sauce (for my daughter)"
+          "hyp": "6-piece club bites with barbecue sauce for my daughter.",
+          "missed": [
+            "cluck bites"
           ],
+          "order": [],
           "expected": [
             "1 6-piece Cluck Bites, bbq sauce (for my daughter)"
           ],
-          "exact": true
+          "exact": false
         },
         {
           "ref": "Two Spicy Cluckwiches and a large onion rings.",
@@ -731,17 +755,42 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Clarkwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. 1 medium chocolate Frisbee and an apple turnover. I'll do the Smokey Stack BBQ with extra cheese and add bacon. 2 stacked packs. One with the mini burger and one with Cluck Bites. Large stack fries, no salt, and a medium diet stack cola with light ice. Can I get a garden stack? And a small fizzy lemonade. Give me a Stackhouse triple meal with a large stack cola. 20-piece Cluck Bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a fizzy lemonade. 6-piece Cluck Bites with barbecue sauce for my daughter. 2 spicy Cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One Stackhouse double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice. my husband. That's it. and a garden stack meal with a diet stack cola. Can I get a large chocolate Frosty and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Clarkwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. 1 medium chocolate Frisbee and an apple turnover. I'll do the Smokey Stack BBQ with extra cheese and add bacon. 2 stacked packs, one with the mini burger and one with Cluck Bites. Large stack fries, no salt, and a medium diet stack cola with light ice. Can I get a Garden Stack, plain, and a small fizzy lemonade? Give me a Stackhouse triple meal with a large stack cola. 20-piece Cluck Bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a fizzy lemonade. 6-piece club bites with barbecue sauce for my daughter. 2 spicy Cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One Stackhouse double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice. my husband. That's it. and a garden stack meal with a diet stack cola. Can I get a large chocolate Frosty and 2 apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.5833333333333334,
+        0.75
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.75,
+          "menuAccuracy": 0.9204545454545454,
+          "wer": 0.04330708661417323,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.75,
+          "menuAccuracy": 0.9204545454545454,
+          "wer": 0.04330708661417323,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.5833333333333334,
+          "menuAccuracy": 0.8636363636363636,
+          "wer": 0.05905511811023622,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "clean",
       "conditionLabel": "Quiet lane",
       "config": "menu",
       "configLabel": "+ menu key terms & prompt",
-      "orderAccuracy": 0.9583333333333334,
-      "menuAccuracy": 0.9772727272727273,
+      "orderAccuracy": 0.9722222222222223,
+      "menuAccuracy": 0.9772727272727272,
       "perfectLines": 0.9166666666666666,
-      "wer": 0.01968503937007874,
+      "wer": 0.01837270341207349,
       "leaks": [],
       "detail": [
         {
@@ -1059,7 +1108,32 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a Spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. 1 medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large stack fries, no salt, and a medium diet stack cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple Meal with a large Stack Cola. 20-piece Cluck Bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. A vanilla Frostee, small, and a strawberry Frostee, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice. my husband. That's it. And a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a Spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. 1 medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large stack fries, no salt, and a medium diet stack cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple Meal with a large Stack Cola. 20-piece Cluck Bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. A vanilla Frostee, small, and a strawberry Frostee, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice. my husband. That's it. And a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.9583333333333334,
+        1
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9772727272727273,
+          "wer": 0.01968503937007874,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9772727272727273,
+          "wer": 0.01968503937007874,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9772727272727273,
+          "wer": 0.015748031496062992,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "clean",
@@ -1067,9 +1141,9 @@
       "config": "focus",
       "configLabel": "+ voice focus (far-field)",
       "orderAccuracy": 1,
-      "menuAccuracy": 0.9886363636363636,
-      "perfectLines": 0.9583333333333334,
-      "wer": 0.007874015748031496,
+      "menuAccuracy": 0.9810606060606061,
+      "perfectLines": 0.9305555555555555,
+      "wer": 0.010498687664041995,
       "leaks": [],
       "detail": [
         {
@@ -1385,7 +1459,32 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a Spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. 1 medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple Meal with a large Stack Cola. 20-piece Cluck Bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. A vanilla Frostee, small, and a strawberry Frostee, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frostee and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a Spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. 1 medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple Meal with a large Stack Cola. 20-piece Cluck Bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. A vanilla Frostee, small, and a strawberry Frostee, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frostee and 2 apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        1,
+        1
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9886363636363636,
+          "wer": 0.007874015748031496,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9772727272727273,
+          "wer": 0.011811023622047244,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9772727272727273,
+          "wer": 0.011811023622047244,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "road10",
@@ -1729,7 +1828,32 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get two stack house doubles, one with no pickles? Let me get a spicy clockwich meal large with a sweet tea. Can I get 10 cluck bites with honey mustard and ranch? Actually make the stack house single instead no onions. 1 medium chocolate frosty and an apple turnover. I'll do the smokestack BBQ with extra cheese and add bacon. 2 stack packs one with the mini burger and one with cloth bites. Large stacked fries no salt and a medium diet stack color with light ice. Can I get a garden stack clean and a small fizzy lemonade. Give me a stacked house triple meal with a large stack poly. 20 piece clock bites with sweet chili sauce. No wait scratch the onion rings just a small freeze. A vanilla frosty small and a strawberry frosty large. Can I get a clock which with no tomato and extra sauce? Three stackaru singles all with no pickles and three waters. Make the lemonade a large and add an apple turnover. I want the smokestack barbecue meal medium with the fizzy lemonade. Six piece club fights with barbecue sauce for my Dodger. Two spicy clock witches and a large onion rings. Can I change the double to a triple and hold the cheese. One stack house double extra pickles extra onions no sauce. And a medium sweet tea no ice for my husband. That's it oh and a garden stack meal with a diet stack Cola. Can I get a large chocolate frosty and two apple turnovers?"
+      "transcript": "Hi, can I get two stack house doubles, one with no pickles? Let me get a spicy clockwich meal large with a sweet tea. Can I get 10 cluck bites with honey mustard and ranch? Actually make the stack house single instead no onions. 1 medium chocolate frosty and an apple turnover. I'll do the smokestack BBQ with extra cheese and add bacon. 2 stack packs one with the mini burger and one with cloth bites. Large stacked fries no salt and a medium diet stack color with light ice. Can I get a garden stack clean and a small fizzy lemonade. Give me a stacked house triple meal with a large stack poly. 20 piece clock bites with sweet chili sauce. No wait scratch the onion rings just a small freeze. A vanilla frosty small and a strawberry frosty large. Can I get a clock which with no tomato and extra sauce? Three stackaru singles all with no pickles and three waters. Make the lemonade a large and add an apple turnover. I want the smokestack barbecue meal medium with the fizzy lemonade. Six piece club fights with barbecue sauce for my Dodger. Two spicy clock witches and a large onion rings. Can I change the double to a triple and hold the cheese. One stack house double extra pickles extra onions no sauce. And a medium sweet tea no ice for my husband. That's it oh and a garden stack meal with a diet stack Cola. Can I get a large chocolate frosty and two apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.625,
+        0.625
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.625,
+          "menuAccuracy": 0.8181818181818182,
+          "wer": 0.1220472440944882,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.625,
+          "menuAccuracy": 0.8181818181818182,
+          "wer": 0.1220472440944882,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.625,
+          "menuAccuracy": 0.8181818181818182,
+          "wer": 0.1220472440944882,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "road10",
@@ -1737,9 +1861,9 @@
       "config": "u3",
       "configLabel": "Universal-3.6 Pro",
       "orderAccuracy": 0.625,
-      "menuAccuracy": 0.8295454545454546,
-      "perfectLines": 0.4583333333333333,
-      "wer": 0.07480314960629922,
+      "menuAccuracy": 0.8409090909090909,
+      "perfectLines": 0.47222222222222215,
+      "wer": 0.07349081364829396,
       "leaks": [],
       "detail": [
         {
@@ -1822,12 +1946,13 @@
         },
         {
           "ref": "Two Stack Packs, one with the mini burger and one with Cluck Bites.",
-          "hyp": "2 stacked packs, one with the mini burger and one with club bites.",
+          "hyp": "2 stack packs, one with the mini burger and one with club bites.",
           "missed": [
-            "stack pack",
             "cluck bites"
           ],
-          "order": [],
+          "order": [
+            "1 Stack Pack, mini burger"
+          ],
           "expected": [
             "1 Stack Pack, mini burger",
             "1 Stack Pack, 4pc bites"
@@ -1836,19 +1961,17 @@
         },
         {
           "ref": "Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice.",
-          "hyp": "Large stacked fries, no salt, and a medium diet stacked cola with light ice.",
-          "missed": [
-            "stack fries",
-            "diet stack cola"
-          ],
+          "hyp": "Large stack fries, no salt, and a medium diet stack cola with light ice.",
+          "missed": [],
           "order": [
-            "1 medium Diet Stack Cola"
+            "1 large Stack Fries, no salt",
+            "1 medium Diet Stack Cola, light ice"
           ],
           "expected": [
             "1 large Stack Fries, no salt",
             "1 medium Diet Stack Cola, light ice"
           ],
-          "exact": false
+          "exact": true
         },
         {
           "ref": "Can I get a Garden Stack, plain, and a small Fizzy Lemonade.",
@@ -1866,10 +1989,8 @@
         },
         {
           "ref": "Give me a Stackhouse Triple meal with a large Stack Cola.",
-          "hyp": "Give me a Stackhouse triple meal with a large stacked cola.",
-          "missed": [
-            "stack cola"
-          ],
+          "hyp": "Give me a Stackhouse triple meal with a large stack cola.",
+          "missed": [],
           "order": [
             "1 Stackhouse Triple, as a large meal with Stack Cola"
           ],
@@ -2064,17 +2185,42 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Clarkwich meal, large, with a sweet tea. Can I get 10 club bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an apple turnover. I'll do the Smokey Stack BBQ with extra cheese and add bacon. 2 stacked packs, one with the mini burger and one with club bites. Large stacked fries, no salt, and a medium diet stacked cola with light ice. Can I get a garden stack, plain, and a small fizzy lemonade? Give me a Stackhouse triple meal with a large stacked cola. 20-piece club bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a clubwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a fizzy lemonade. 6-piece club bites with barbecue sauce for my daughter. 2 spicy clubwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One stack house double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a garden stack meal with a diet stack cola. Can I get a large chocolate frosty and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Clarkwich meal, large, with a sweet tea. Can I get 10 club bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an apple turnover. I'll do the Smokey Stack BBQ with extra cheese and add bacon. 2 stack packs, one with the mini burger and one with club bites. Large stack fries, no salt, and a medium diet stack cola with light ice. Can I get a garden stack, plain, and a small fizzy lemonade? Give me a Stackhouse triple meal with a large stack cola. 20-piece club bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a clubwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a fizzy lemonade. 6-piece club bites with barbecue sauce for my daughter. 2 spicy clubwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One stack house double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a garden stack meal with a diet stack cola. Can I get a large chocolate frosty and 2 apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.5833333333333334,
+        0.6666666666666666
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.6666666666666666,
+          "menuAccuracy": 0.875,
+          "wer": 0.05905511811023622,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.5833333333333334,
+          "menuAccuracy": 0.8181818181818182,
+          "wer": 0.08267716535433071,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.625,
+          "menuAccuracy": 0.8295454545454546,
+          "wer": 0.07874015748031496,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "road10",
       "conditionLabel": "Road noise (10 dB)",
       "config": "menu",
       "configLabel": "+ menu key terms & prompt",
-      "orderAccuracy": 1,
-      "menuAccuracy": 0.9772727272727273,
-      "perfectLines": 0.9166666666666666,
-      "wer": 0.015748031496062992,
+      "orderAccuracy": 0.9583333333333334,
+      "menuAccuracy": 0.962121212121212,
+      "perfectLines": 0.8611111111111112,
+      "wer": 0.02099737532808399,
       "leaks": [],
       "detail": [
         {
@@ -2129,7 +2275,7 @@
         },
         {
           "ref": "One medium chocolate Frostee and an Apple Turnover.",
-          "hyp": "One medium chocolate Frosty and an Apple Turnover.",
+          "hyp": "1 medium chocolate Frosty and an Apple Turnover.",
           "missed": [
             "frostee"
           ],
@@ -2199,7 +2345,7 @@
         },
         {
           "ref": "Give me a Stackhouse Triple meal with a large Stack Cola.",
-          "hyp": "Give me a Stackhouse Triple Meal with a large Stack Cola.",
+          "hyp": "Give me a Stackhouse Triple meal with a large Stack Cola.",
           "missed": [],
           "order": [
             "1 Stackhouse Triple, as a large meal with Stack Cola"
@@ -2223,17 +2369,18 @@
         },
         {
           "ref": "No wait, scratch the onion rings, just a small fries.",
-          "hyp": "No, wait, scratch the onion rings, just a small fries.",
-          "missed": [],
+          "hyp": "No, wait, scratch the onion rings, just a small freeze.",
+          "missed": [
+            "fries"
+          ],
           "order": [
-            "1 Cluckwich",
-            "1 small Stack Fries"
+            "1 Cluckwich"
           ],
           "expected": [
             "1 Cluckwich",
             "1 small Stack Fries"
           ],
-          "exact": true
+          "exact": false
         },
         {
           "ref": "A vanilla Frostee, small, and a strawberry Frostee, large.",
@@ -2379,8 +2526,10 @@
         },
         {
           "ref": "Can I get a large chocolate Frostee and two Apple Turnovers.",
-          "hyp": "Can I get a large chocolate Frostee and 2 apple turnovers?",
-          "missed": [],
+          "hyp": "Can I get a large chocolate Frosty and 2 apple turnovers?",
+          "missed": [
+            "frostee"
+          ],
           "order": [
             "1 large chocolate Frostee",
             "2 Apple Turnover"
@@ -2392,7 +2541,32 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple Meal with a large Stack Cola. 20-piece Cluck Bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy Cluckwiches and a large Onion Rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frostee and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. 1 medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple meal with a large Stack Cola. 20-piece Cluck Bites with sweet chili sauce. No, wait, scratch the onion rings, just a small freeze. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy Cluckwiches and a large Onion Rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.9583333333333334,
+        0.9583333333333334
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9545454545454546,
+          "wer": 0.023622047244094488,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.01968503937007874,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.01968503937007874,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "road10",
@@ -2400,9 +2574,9 @@
       "config": "focus",
       "configLabel": "+ voice focus (far-field)",
       "orderAccuracy": 1,
-      "menuAccuracy": 0.9886363636363636,
-      "perfectLines": 0.9583333333333334,
-      "wer": 0.011811023622047244,
+      "menuAccuracy": 0.9848484848484849,
+      "perfectLines": 0.9444444444444445,
+      "wer": 0.014435695538057743,
       "leaks": [],
       "detail": [
         {
@@ -2527,7 +2701,7 @@
         },
         {
           "ref": "Give me a Stackhouse Triple meal with a large Stack Cola.",
-          "hyp": "Give me a Stackhouse Triple Meal with a large Stack Cola.",
+          "hyp": "Give me a Stackhouse Triple Meal with a large Stack Cola,",
           "missed": [],
           "order": [
             "1 Stackhouse Triple, as a large meal with Stack Cola"
@@ -2565,8 +2739,10 @@
         },
         {
           "ref": "A vanilla Frostee, small, and a strawberry Frostee, large.",
-          "hyp": "A vanilla Frostee, small, and a strawberry Frostee, large.",
-          "missed": [],
+          "hyp": "A vanilla Frosty, small, and a strawberry Frosty, large.",
+          "missed": [
+            "frostee"
+          ],
           "order": [
             "1 small vanilla Frostee",
             "1 large strawberry Frostee"
@@ -2669,7 +2845,7 @@
         },
         {
           "ref": "One Stackhouse Double, extra pickles, extra onions, no sauce.",
-          "hyp": "1 Stackhouse Double, extra pickles, extra onions, no sauce.",
+          "hyp": "One Stackhouse Double, extra pickles, extra onions, no sauce.",
           "missed": [],
           "order": [
             "1 Stackhouse Double, extra pickles, extra onions, no sauce"
@@ -2718,7 +2894,32 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple Meal with a large Stack Cola. 20-piece Cluck Bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frostee, small, and a strawberry Frostee, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. And a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frostee and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple Meal with a large Stack Cola, 20-piece Cluck Bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. And a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frostee and 2 apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        1,
+        1
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9772727272727273,
+          "wer": 0.01968503937007874,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9886363636363636,
+          "wer": 0.011811023622047244,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9886363636363636,
+          "wer": 0.011811023622047244,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "road5",
@@ -3067,7 +3268,32 @@
           "exact": true
         }
       ],
-      "transcript": "Hi. Can I get two stack house doubles, one with no pickles? Let me get a spicy clockwich meal, Large, with a sweet tea. Can I get 10 plug bites with honey mustard and rant? Actually make the stack house single instead, no onions. One medium chocolate for steak and an apple turnover. I'll do the SmackestJack BBQ with extra cheese and add bacon. Two stack packs, one with the mini burger and one with claw bites. And a medium diet stack color with light ice. Can I get a garden stack, clean, and a small fizzy lemonade? Give me a stack house triple meal with a large stack poly. 20 piece clock bites with sweet chili sauce. No wait, scratch the onion rings, just a small freeze. A vanilla frosty, small, and a strawberry frosty, large. Can I get a clock which with no tomato and extra sauce? Three stackado singles, all with no pickles and three waters. Make the lemonade a large and add an apple turnover. I want the smokestack barbecue meal with the fizzy lemonade. 6 piece club fights with barbecue sauce for my dodger. Two spicy clockwitches and a large onion rings. Can I change the double to a triple and hold the cheese? One stack house double extrapicals extra onions no sauce. And a medium sweet tea no ice for my husband. That's it oh and a garden stack meal with the diet stack cola. Can I get a large chocolate frosty and two apple turnovers?"
+      "transcript": "Hi. Can I get two stack house doubles, one with no pickles? Let me get a spicy clockwich meal, Large, with a sweet tea. Can I get 10 plug bites with honey mustard and rant? Actually make the stack house single instead, no onions. One medium chocolate for steak and an apple turnover. I'll do the SmackestJack BBQ with extra cheese and add bacon. Two stack packs, one with the mini burger and one with claw bites. And a medium diet stack color with light ice. Can I get a garden stack, clean, and a small fizzy lemonade? Give me a stack house triple meal with a large stack poly. 20 piece clock bites with sweet chili sauce. No wait, scratch the onion rings, just a small freeze. A vanilla frosty, small, and a strawberry frosty, large. Can I get a clock which with no tomato and extra sauce? Three stackado singles, all with no pickles and three waters. Make the lemonade a large and add an apple turnover. I want the smokestack barbecue meal with the fizzy lemonade. 6 piece club fights with barbecue sauce for my dodger. Two spicy clockwitches and a large onion rings. Can I change the double to a triple and hold the cheese? One stack house double extrapicals extra onions no sauce. And a medium sweet tea no ice for my husband. That's it oh and a garden stack meal with the diet stack cola. Can I get a large chocolate frosty and two apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.4583333333333333,
+        0.4583333333333333
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.4583333333333333,
+          "menuAccuracy": 0.75,
+          "wer": 0.16535433070866143,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.4583333333333333,
+          "menuAccuracy": 0.75,
+          "wer": 0.16535433070866143,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.4583333333333333,
+          "menuAccuracy": 0.75,
+          "wer": 0.16535433070866143,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "road5",
@@ -3075,9 +3301,9 @@
       "config": "u3",
       "configLabel": "Universal-3.6 Pro",
       "orderAccuracy": 0.5833333333333334,
-      "menuAccuracy": 0.8409090909090909,
-      "perfectLines": 0.4583333333333333,
-      "wer": 0.07874015748031496,
+      "menuAccuracy": 0.8484848484848486,
+      "perfectLines": 0.47222222222222215,
+      "wer": 0.0748031496062992,
       "leaks": [],
       "detail": [
         {
@@ -3399,7 +3625,32 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse doubles, one with no pickles? Let me get a spicy Clarkwich meal, large, with a sweet tea. Can I get 10 club bites with honey mustard and ranch? Actually, make that a Stackhouse single instead, no onions. One medium chocolate Frosty and an apple turnover. I'll do the Smokey Stack BBQ with extra cheese and add bacon. 2 stacked packs, one with the mini burger and one with club bites. Large stacked fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack plain and a small fizzy lemonade? Give me a Stackhouse triple meal with a large stack poly. 20-piece club bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frosty small and a strawberry Frosty large. Can I get a clubwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack Barbecue Meal, medium, with a fizzy lemonade. 6-piece club bites with barbecue sauce for my daughter. 2 spicy clubwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One stack house double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a garden stack meal with a diet stack cola. Can I get a large chocolate Frosty and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse doubles, one with no pickles? Let me get a spicy Clarkwich meal, large, with a sweet tea. Can I get 10 club bites with honey mustard and ranch? Actually, make that a Stackhouse single instead, no onions. One medium chocolate Frosty and an apple turnover. I'll do the Smokey Stack BBQ with extra cheese and add bacon. 2 stacked packs, one with the mini burger and one with club bites. Large stacked fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack plain and a small fizzy lemonade? Give me a Stackhouse triple meal with a large stack poly. 20-piece club bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frosty small and a strawberry Frosty large. Can I get a clubwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack Barbecue Meal, medium, with a fizzy lemonade. 6-piece club bites with barbecue sauce for my daughter. 2 spicy clubwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One stack house double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a garden stack meal with a diet stack cola. Can I get a large chocolate Frosty and 2 apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.5833333333333334,
+        0.5833333333333334
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.5833333333333334,
+          "menuAccuracy": 0.8409090909090909,
+          "wer": 0.07874015748031496,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.5833333333333334,
+          "menuAccuracy": 0.8522727272727273,
+          "wer": 0.07480314960629922,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.5833333333333334,
+          "menuAccuracy": 0.8522727272727273,
+          "wer": 0.07086614173228346,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "road5",
@@ -3407,9 +3658,9 @@
       "config": "menu",
       "configLabel": "+ menu key terms & prompt",
       "orderAccuracy": 1,
-      "menuAccuracy": 0.9772727272727273,
-      "perfectLines": 0.9166666666666666,
-      "wer": 0.015748031496062992,
+      "menuAccuracy": 0.9696969696969697,
+      "perfectLines": 0.8888888888888888,
+      "wer": 0.01837270341207349,
       "leaks": [],
       "detail": [
         {
@@ -3534,7 +3785,7 @@
         },
         {
           "ref": "Give me a Stackhouse Triple meal with a large Stack Cola.",
-          "hyp": "Give me a Stackhouse Triple meal with a large Stack Cola.",
+          "hyp": "Give me a Stackhouse Triple Meal with a large Stack Cola,",
           "missed": [],
           "order": [
             "1 Stackhouse Triple, as a large meal with Stack Cola"
@@ -3652,7 +3903,7 @@
         },
         {
           "ref": "Two Spicy Cluckwiches and a large onion rings.",
-          "hyp": "2 spicy Cluckwiches and a large Onion Rings.",
+          "hyp": "2 spicy cluckwiches and a large onion rings.",
           "missed": [],
           "order": [
             "2 Spicy Cluckwich",
@@ -3714,8 +3965,10 @@
         },
         {
           "ref": "Can I get a large chocolate Frostee and two Apple Turnovers.",
-          "hyp": "Can I get a large chocolate Frostee and 2 apple turnovers?",
-          "missed": [],
+          "hyp": "Can I get a large chocolate Frosty and 2 apple turnovers?",
+          "missed": [
+            "frostee"
+          ],
           "order": [
             "1 large chocolate Frostee",
             "2 Apple Turnover"
@@ -3727,7 +3980,32 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple meal with a large Stack Cola. 20-piece Cluck Bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy Cluckwiches and a large Onion Rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frostee and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple Meal with a large Stack Cola, 20-piece Cluck Bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        1,
+        1
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.01968503937007874,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.01968503937007874,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9772727272727273,
+          "wer": 0.015748031496062992,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "road5",
@@ -3862,7 +4140,7 @@
         },
         {
           "ref": "Give me a Stackhouse Triple meal with a large Stack Cola.",
-          "hyp": "Give me a Stackhouse Triple meal with a large Stack Cola.",
+          "hyp": "Give me a Stackhouse Triple Meal with a large Stack Cola,",
           "missed": [],
           "order": [
             "1 Stackhouse Triple, as a large meal with Stack Cola"
@@ -4057,7 +4335,32 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple meal with a large Stack Cola. 20-piece Cluck Bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy Cluckwiches and a large Onion Rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple Meal with a large Stack Cola, 20-piece Cluck Bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy Cluckwiches and a large Onion Rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        1,
+        1
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.01968503937007874,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.01968503937007874,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.01968503937007874,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "road0",
@@ -4418,7 +4721,32 @@
           "exact": false
         }
       ],
-      "transcript": "Hi. Can I get you Stack House Doubles, one with no Pickles? Meal with a sweet tea. Can I get Denflap Bites with honey mustard and ranch? Actually make the stack house single instead, no onions. 1 Medium chocolate for stea and an Apple turnover. I'll do the mcejack BBQ with extra cheese and Advacum. 2 stack packs, one with the Mini Burger and one with Claw Bites. No salt, and a medium diet stack color with Livyce. Can I get a garden style king and a small fizzy lemonade? Give me a stathouse Triple meal with a large stack hollow. 20 piece clock bites with sweet Chile source. Noise, scratched the onion rings, just a small freeze. A Vanilla Frosty and a strawberry frosty, large. Can I get a cluff which with no tomato and extra sauce? Singals all with no pickles and three waters. Make the lemonade a large and add an apple turnover. I want the smokestack barbecue meal, Medium, with the Phizzy Lemonade. 6-piece Club fight Swift barbecue sauce for my daughter. Two spicy clockwitches and a large onion rings. Can I change the double to a triple and hold the sheets? Onestacost double extrapolate extra onions no sauce. And a medium sweet tea for my husband. And regarding Stack Neo with the diet Staccola. Can I get a large chocolate for Steam to Agla turnovers?"
+      "transcript": "Hi. Can I get you Stack House Doubles, one with no Pickles? Meal with a sweet tea. Can I get Denflap Bites with honey mustard and ranch? Actually make the stack house single instead, no onions. 1 Medium chocolate for stea and an Apple turnover. I'll do the mcejack BBQ with extra cheese and Advacum. 2 stack packs, one with the Mini Burger and one with Claw Bites. No salt, and a medium diet stack color with Livyce. Can I get a garden style king and a small fizzy lemonade? Give me a stathouse Triple meal with a large stack hollow. 20 piece clock bites with sweet Chile source. Noise, scratched the onion rings, just a small freeze. A Vanilla Frosty and a strawberry frosty, large. Can I get a cluff which with no tomato and extra sauce? Singals all with no pickles and three waters. Make the lemonade a large and add an apple turnover. I want the smokestack barbecue meal, Medium, with the Phizzy Lemonade. 6-piece Club fight Swift barbecue sauce for my daughter. Two spicy clockwitches and a large onion rings. Can I change the double to a triple and hold the sheets? Onestacost double extrapolate extra onions no sauce. And a medium sweet tea for my husband. And regarding Stack Neo with the diet Staccola. Can I get a large chocolate for Steam to Agla turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.125,
+        0.125
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.125,
+          "menuAccuracy": 0.5795454545454546,
+          "wer": 0.2874015748031496,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.125,
+          "menuAccuracy": 0.5795454545454546,
+          "wer": 0.2874015748031496,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.125,
+          "menuAccuracy": 0.5795454545454546,
+          "wer": 0.2874015748031496,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "road0",
@@ -4428,7 +4756,7 @@
       "orderAccuracy": 0.625,
       "menuAccuracy": 0.875,
       "perfectLines": 0.5416666666666666,
-      "wer": 0.07086614173228346,
+      "wer": 0.06824146981627296,
       "leaks": [],
       "detail": [
         {
@@ -4749,17 +5077,42 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse doubles, one with no pickles? Let me get a spicy Clubwich meal, large, with a sweet tea. Can I get 10 club bites with honey mustard and ranch? Actually, make that a Stackhouse single instead, no onions. One medium chocolate for Steve and an apple turnover. I'll do the Smokey Stack BBQ with extra cheese and add bacon. 2 stack packs, one with the mini burger and one with club bites. Large stack fries, no salt, and a medium diet stack cola with light ice. Can I get a garden stack, plain, and a small fizzy lemonade? Give me a Stackhouse triple meal with a large stack cola. 20-piece club bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a clubwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack barbecue meal, medium, with the fizzy lemonade. 6-piece club bites with barbecue sauce for my daughter. 2 spicy clubwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One stack house double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a garden stack meal with a diet stack cola. Can I get a large chocolate Frosty and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse doubles, one with no pickles? Let me get a spicy Clubwich meal, large, with a sweet tea. Can I get 10 club bites with honey mustard and ranch? Actually, make that a Stackhouse single instead, no onions. One medium chocolate for Steve and an apple turnover. I'll do the Smokey Stack BBQ with extra cheese and add bacon. 2 stack packs, one with the mini burger and one with club bites. Large stack fries, no salt, and a medium diet stack cola with light ice. Can I get a garden stack, plain, and a small fizzy lemonade? Give me a Stackhouse triple meal with a large stack cola. 20-piece club bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a clubwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack barbecue meal, medium, with the fizzy lemonade. 6-piece club bites with barbecue sauce for my daughter. 2 spicy clubwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One stack house double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a garden stack meal with a diet stack cola. Can I get a large chocolate Frosty and 2 apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.625,
+        0.625
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.625,
+          "menuAccuracy": 0.875,
+          "wer": 0.07086614173228346,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.625,
+          "menuAccuracy": 0.875,
+          "wer": 0.07086614173228346,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.625,
+          "menuAccuracy": 0.875,
+          "wer": 0.06299212598425197,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "road0",
       "conditionLabel": "Road noise (0 dB)",
       "config": "menu",
       "configLabel": "+ menu key terms & prompt",
-      "orderAccuracy": 0.9583333333333334,
-      "menuAccuracy": 0.9545454545454546,
-      "perfectLines": 0.8333333333333334,
-      "wer": 0.027559055118110236,
+      "orderAccuracy": 0.9722222222222223,
+      "menuAccuracy": 0.962121212121212,
+      "perfectLines": 0.8611111111111112,
+      "wer": 0.02493438320209974,
       "leaks": [],
       "detail": [
         {
@@ -4884,7 +5237,7 @@
         },
         {
           "ref": "Give me a Stackhouse Triple meal with a large Stack Cola.",
-          "hyp": "Give me a Stackhouse Triple meal with a large Stack Cola,",
+          "hyp": "Give me a Stackhouse Triple meal with a large Stack Cola.",
           "missed": [],
           "order": [
             "1 Stackhouse Triple, as a large meal with Stack Cola"
@@ -4896,7 +5249,7 @@
         },
         {
           "ref": "Twenty piece Cluck Bites with sweet chili sauce.",
-          "hyp": "20-piece Cluck Bites with sweet chili",
+          "hyp": "20-piece Cluck Bites with sweet chili sauce.",
           "missed": [],
           "order": [
             "1 20-piece Cluck Bites, sweet chili"
@@ -4908,7 +5261,7 @@
         },
         {
           "ref": "No wait, scratch the onion rings, just a small fries.",
-          "hyp": "No wait, scratch the onion rings, just a small freeze.",
+          "hyp": "No, wait, scratch the onion rings, just a small freeze.",
           "missed": [
             "fries"
           ],
@@ -4979,7 +5332,7 @@
         },
         {
           "ref": "I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade.",
-          "hyp": "I want the Smokestack BBQ meal, medium, with the fizzy lemonade.",
+          "hyp": "I want the Smokestack BBQ meal, medium, with the Fizzy Lemonade.",
           "missed": [],
           "order": [
             "1 Smokestack BBQ, as a medium meal with Fizzy Lemonade"
@@ -4991,7 +5344,7 @@
         },
         {
           "ref": "Six piece Cluck Bites with barbecue sauce for my daughter.",
-          "hyp": "6-piece Cluck Bites with barbecue sauce for my daughter.",
+          "hyp": "6-piece Cluck Bites with BBQ sauce for my daughter.",
           "missed": [],
           "order": [
             "1 6-piece Cluck Bites, bbq sauce (for my daughter)"
@@ -5003,7 +5356,7 @@
         },
         {
           "ref": "Two Spicy Cluckwiches and a large onion rings.",
-          "hyp": "2 spicy Cluckwiches and a large onion rings.",
+          "hyp": "2 spicy Cluckwiches and a large Onion Rings.",
           "missed": [],
           "order": [
             "2 Spicy Cluckwich",
@@ -5029,7 +5382,7 @@
         },
         {
           "ref": "One Stackhouse Double, extra pickles, extra onions, no sauce.",
-          "hyp": "One Stackhouse Double, extra pickles, extra onions, no sauce.",
+          "hyp": "1 Stackhouse Double, extra pickles, extra onions, no sauce.",
           "missed": [],
           "order": [
             "1 Stackhouse Double, extra pickles, extra onions, no sauce"
@@ -5080,17 +5433,42 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple meal with a large Stack Cola, 20-piece Cluck Bites with sweet chili No wait, scratch the onion rings, just a small freeze. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with the fizzy lemonade. 6-piece Cluck Bites with barbecue sauce for my daughter. 2 spicy Cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 Apple Turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple meal with a large Stack Cola. 20-piece Cluck Bites with sweet chili sauce. No, wait, scratch the onion rings, just a small freeze. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with the Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy Cluckwiches and a large Onion Rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 Apple Turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.9583333333333334,
+        1
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9545454545454546,
+          "wer": 0.027559055118110236,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.023622047244094488,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.023622047244094488,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "road0",
       "conditionLabel": "Road noise (0 dB)",
       "config": "focus",
       "configLabel": "+ voice focus (far-field)",
-      "orderAccuracy": 1,
-      "menuAccuracy": 0.9886363636363636,
-      "perfectLines": 0.9583333333333334,
-      "wer": 0.011811023622047244,
+      "orderAccuracy": 0.9861111111111112,
+      "menuAccuracy": 0.9848484848484849,
+      "perfectLines": 0.9444444444444445,
+      "wer": 0.013123359580052493,
       "leaks": [],
       "detail": [
         {
@@ -5379,7 +5757,7 @@
         },
         {
           "ref": "That's it. Oh, and a Garden Stack meal with a Diet Stack Cola.",
-          "hyp": "That's it. Oh, and a Garden Stack meal with a Diet Stack Cola.",
+          "hyp": "That's it. Oh, and a Garden Stack meal with the Diet Stack Cola.",
           "missed": [],
           "order": [
             "1 Garden Stack, as a medium meal with Diet Stack Cola"
@@ -5406,7 +5784,32 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frostee and an apple turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple meal with a large Stack Cola. 20-piece Cluck Bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frostee, small, and a strawberry Frostee, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with the Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy Cluckwiches and a large Onion Rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 Apple Turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frostee and an apple turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple meal with a large Stack Cola. 20-piece Cluck Bites with sweet chili sauce. No, wait, scratch the onion rings, just a small fries. A vanilla Frostee, small, and a strawberry Frostee, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with the Fizzy Lemonade. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy Cluckwiches and a large Onion Rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with the Diet Stack Cola. Can I get a large chocolate Frosty and 2 Apple Turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.9583333333333334,
+        1
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9886363636363636,
+          "wer": 0.015748031496062992,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9772727272727273,
+          "wer": 0.011811023622047244,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9886363636363636,
+          "wer": 0.011811023622047244,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "backseat5",
@@ -5754,7 +6157,34 @@
           "exact": true
         }
       ],
-      "transcript": "Are we there? Can I get to Stack House Devils? One with no pickles. Let me get a spicy clockwich meal. Large with a sweet pea. Can I get 10 cluck bites with honey mustard and ranch? Actually make that a stack house single instead. No onions. One medium chocolate frosty and an apple turnover. I'll do the smokestack BBQ with extra cheese and add bacon. Two stack packs, one with the mini burger and one with clog bites. Log stack fries, no salt, and a medium diet stacked color with light ice. Can I get a garden stack, clean, and a small fizzy lemonade? Mom, he took my. Give me a stack house triple meal with a large stack collar. Are we there yet? 20 piece clock bites with sweet chili sauce. No wait. Scratch the onion rings. Just a small freeze. I am so bored. A vanilla frosty. Small and a strawberry frosty, large. Can I get a clock witch with no tomato and extra sauce? Three stack harvest singles, all with no pickles, and three waters. I want to watch them. Make the lemonade a large and add an apple turnover. I want the smokestack barbecue meal medium with the fizzy lemonade. I am so bored. Six piece clock bites with barbecue sauce for my dollar. Two spicy clock witches and a large onion rings. Can I change the double to a triple? And hold the cheese. One stack house double extra pickles extra onions no sauce. Mom and a medium sweet tea, no ice for my husband. Are we there yet? That's it. And a garden stack meal with a diet stack cola. Can I get a large chocolate frosty and two apple turnovers?"
+      "transcript": "Are we there? Can I get to Stack House Devils? One with no pickles. Let me get a spicy clockwich meal. Large with a sweet pea. Can I get 10 cluck bites with honey mustard and ranch? Actually make that a stack house single instead. No onions. One medium chocolate frosty and an apple turnover. I'll do the smokestack BBQ with extra cheese and add bacon. Two stack packs, one with the mini burger and one with clog bites. Log stack fries, no salt, and a medium diet stacked color with light ice. Can I get a garden stack, clean, and a small fizzy lemonade? Mom, he took my. Give me a stack house triple meal with a large stack collar. Are we there yet? 20 piece clock bites with sweet chili sauce. No wait. Scratch the onion rings. Just a small freeze. I am so bored. A vanilla frosty. Small and a strawberry frosty, large. Can I get a clock witch with no tomato and extra sauce? Three stack harvest singles, all with no pickles, and three waters. I want to watch them. Make the lemonade a large and add an apple turnover. I want the smokestack barbecue meal medium with the fizzy lemonade. I am so bored. Six piece clock bites with barbecue sauce for my dollar. Two spicy clock witches and a large onion rings. Can I change the double to a triple? And hold the cheese. One stack house double extra pickles extra onions no sauce. Mom and a medium sweet tea, no ice for my husband. Are we there yet? That's it. And a garden stack meal with a diet stack cola. Can I get a large chocolate frosty and two apple turnovers?",
+      "reps": 2,
+      "orderAccuracyRange": [
+        0.5416666666666666,
+        0.5416666666666666
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.5416666666666666,
+          "menuAccuracy": 0.7954545454545454,
+          "wer": 0.25196850393700787,
+          "leaks": [
+            "bored",
+            "there yet",
+            "took my"
+          ]
+        },
+        {
+          "orderAccuracy": 0.5416666666666666,
+          "menuAccuracy": 0.7954545454545454,
+          "wer": 0.25196850393700787,
+          "leaks": [
+            "bored",
+            "there yet",
+            "took my"
+          ]
+        }
+      ]
     },
     {
       "condition": "backseat5",
@@ -6088,7 +6518,34 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Clockwork Meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. 1 medium chocolate Frisbee and an apple turnover. I'll do the Smokey Stack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Stack fries, no salt, and a medium Diet Stack cola with light ice. Can I get a Garden Stack, plain, and a small fizzy lemonade? Mom, he took my phone. Give me a Stackhouse Triple Meal with a large Stack Cola. Are we there yet? 20-piece Cluck Bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. I am so bored. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack barbecue meal, medium, with a fizzy lemonade. I am so bored. 6-piece club bites with barbecue sauce for my daughter. 2 spicy Cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One stackhouse double, extra pickles, extra onions, no sauce. Mom, he took my order. And a medium sweet tea, no ice, for my husband. Are we there yet? That's it. Oh, and a garden stack meal with a diet stack cola. Can I get a large chocolate Frosty and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Clockwork Meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. 1 medium chocolate Frisbee and an apple turnover. I'll do the Smokey Stack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Stack fries, no salt, and a medium Diet Stack cola with light ice. Can I get a Garden Stack, plain, and a small fizzy lemonade? Mom, he took my phone. Give me a Stackhouse Triple Meal with a large Stack Cola. Are we there yet? 20-piece Cluck Bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. I am so bored. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack barbecue meal, medium, with a fizzy lemonade. I am so bored. 6-piece club bites with barbecue sauce for my daughter. 2 spicy Cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One stackhouse double, extra pickles, extra onions, no sauce. Mom, he took my order. And a medium sweet tea, no ice, for my husband. Are we there yet? That's it. Oh, and a garden stack meal with a diet stack cola. Can I get a large chocolate Frosty and 2 apple turnovers?",
+      "reps": 2,
+      "orderAccuracyRange": [
+        0.7916666666666666,
+        0.7916666666666666
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.7916666666666666,
+          "menuAccuracy": 0.9204545454545454,
+          "wer": 0.14173228346456693,
+          "leaks": [
+            "bored",
+            "there yet",
+            "took my"
+          ]
+        },
+        {
+          "orderAccuracy": 0.7916666666666666,
+          "menuAccuracy": 0.9204545454545454,
+          "wer": 0.14173228346456693,
+          "leaks": [
+            "bored",
+            "there yet",
+            "took my"
+          ]
+        }
+      ]
     },
     {
       "condition": "backseat5",
@@ -6098,7 +6555,7 @@
       "orderAccuracy": 1,
       "menuAccuracy": 0.9772727272727273,
       "perfectLines": 0.9166666666666666,
-      "wer": 0.0984251968503937,
+      "wer": 0.11023622047244094,
       "leaks": [
         "bored",
         "there yet",
@@ -6420,7 +6877,34 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a Spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple Meal with a large Stack Cola. Are we there yet? 20-piece Cluck Bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. I am so bored. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. I am so bored. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy Cluckwiches and a large Onion Rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. Mom, he took my order. And a medium sweet tea, no ice, for my husband. Are we there yet? That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frostee and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a Spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple Meal with a large Stack Cola. Are we there yet? 20-piece Cluck Bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. I am so bored. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. I am so bored. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy Cluckwiches and a large Onion Rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. Mom, he took my order. And a medium sweet tea, no ice, for my husband. Are we there yet? That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frostee and 2 apple turnovers?",
+      "reps": 2,
+      "orderAccuracyRange": [
+        1,
+        1
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9772727272727273,
+          "wer": 0.0984251968503937,
+          "leaks": [
+            "bored",
+            "there yet",
+            "took my"
+          ]
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9772727272727273,
+          "wer": 0.1220472440944882,
+          "leaks": [
+            "bored",
+            "there yet",
+            "took my"
+          ]
+        }
+      ]
     },
     {
       "condition": "backseat5",
@@ -6430,7 +6914,7 @@
       "orderAccuracy": 1,
       "menuAccuracy": 0.9659090909090909,
       "perfectLines": 0.875,
-      "wer": 0.1062992125984252,
+      "wer": 0.10826771653543307,
       "leaks": [
         "bored",
         "there yet",
@@ -6754,7 +7238,34 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a Spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Mom, he took my fries. Give me a Stackhouse Triple Meal with a large Stack Cola. Are we there yet? 20-piece Cluck Bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. I am so bored. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy Cluckwiches and a large Onion Rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. Mom, he took my order. And a medium sweet tea, no ice, for my husband. Are we there yet? That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a Spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Mom, he took my fries. Give me a Stackhouse Triple Meal with a large Stack Cola. Are we there yet? 20-piece Cluck Bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade. I am so bored. 6-piece Cluck Bites with BBQ sauce for my daughter. 2 spicy Cluckwiches and a large Onion Rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse Double, extra pickles, extra onions, no sauce. Mom, he took my order. And a medium sweet tea, no ice, for my husband. Are we there yet? That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 apple turnovers?",
+      "reps": 2,
+      "orderAccuracyRange": [
+        1,
+        1
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.1062992125984252,
+          "leaks": [
+            "bored",
+            "there yet",
+            "took my"
+          ]
+        },
+        {
+          "orderAccuracy": 1,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.11023622047244094,
+          "leaks": [
+            "bored",
+            "there yet",
+            "took my"
+          ]
+        }
+      ]
     },
     {
       "condition": "rush",
@@ -7112,7 +7623,26 @@
           "exact": true
         }
       ],
-      "transcript": "Can I get two stackhouse doubles, one with no pickles let me get a spicy clockwich meal with a sweet tea? Can I get 10 plug bites with honey mustard hand ranch actually make the stack how single instead no onions. 1 medium chocolate frosty and an epid turnover. I'll do theq with extra cheese and Adbacon 2 stack packs one with the mini burger and one with club bites. And a medium diet stack color with light ice. Can I get a garden stack clean and a small fizzy lemonade Idmia Stackhouse triple meal with a large stack poly 20 piece clock vikes with sweet chili sauce no way scratch the onion rings just a small freeze, a vanilla frosty small and a strawberry frosty large. Can I get a clock which with no tomato and extra sauce? 3 stackadish singles all with no pickles and 3 waters make the lemonade a large and add an apple turnover. I want the smokestack barbecue meal median with the Physi Lemonade. 6 piece clove bites with barbecue sauce for my daughter. Two spicy clockwitches and a large onion rings. Can I change the double to a triple and hold the sheets once dichotomous double extrapolate no sauce and a medium sweet tea no ice for my husband and a garden stack meal with the diet Staccola can I get a large chocolate frosty and two apple turnovers."
+      "transcript": "Can I get two stackhouse doubles, one with no pickles let me get a spicy clockwich meal with a sweet tea? Can I get 10 plug bites with honey mustard hand ranch actually make the stack how single instead no onions. 1 medium chocolate frosty and an epid turnover. I'll do theq with extra cheese and Adbacon 2 stack packs one with the mini burger and one with club bites. And a medium diet stack color with light ice. Can I get a garden stack clean and a small fizzy lemonade Idmia Stackhouse triple meal with a large stack poly 20 piece clock vikes with sweet chili sauce no way scratch the onion rings just a small freeze, a vanilla frosty small and a strawberry frosty large. Can I get a clock which with no tomato and extra sauce? 3 stackadish singles all with no pickles and 3 waters make the lemonade a large and add an apple turnover. I want the smokestack barbecue meal median with the Physi Lemonade. 6 piece clove bites with barbecue sauce for my daughter. Two spicy clockwitches and a large onion rings. Can I change the double to a triple and hold the sheets once dichotomous double extrapolate no sauce and a medium sweet tea no ice for my husband and a garden stack meal with the diet Staccola can I get a large chocolate frosty and two apple turnovers.",
+      "reps": 2,
+      "orderAccuracyRange": [
+        0.375,
+        0.375
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.375,
+          "menuAccuracy": 0.6704545454545454,
+          "wer": 0.2204724409448819,
+          "leaks": []
+        },
+        {
+          "orderAccuracy": 0.375,
+          "menuAccuracy": 0.6704545454545454,
+          "wer": 0.2204724409448819,
+          "leaks": []
+        }
+      ]
     },
     {
       "condition": "rush",
@@ -7122,7 +7652,7 @@
       "orderAccuracy": 0.5833333333333334,
       "menuAccuracy": 0.8636363636363636,
       "perfectLines": 0.5,
-      "wer": 0.1141732283464567,
+      "wer": 0.07874015748031496,
       "leaks": [
         "bored"
       ],
@@ -7235,7 +7765,7 @@
         },
         {
           "ref": "Can I get a Garden Stack, plain, and a small Fizzy Lemonade.",
-          "hyp": "Can I get a garden stack, plain, and a small fizzy lemonade? Mom, you've hurt my feelings.",
+          "hyp": "Can I get a garden stack, plain, and a small fizzy lemonade?",
           "missed": [],
           "order": [
             "1 Garden Stack, plain",
@@ -7249,19 +7779,19 @@
         },
         {
           "ref": "Give me a Stackhouse Triple meal with a large Stack Cola.",
-          "hyp": "Get me a Stackhouse Triple Meal with a large Stack Cola. Are you here",
-          "missed": [],
-          "order": [
-            "1 Stackhouse Triple, as a large meal with Stack Cola"
+          "hyp": "Give me a Stackhouse Triple Meal with a large stack",
+          "missed": [
+            "stack cola"
           ],
+          "order": [],
           "expected": [
             "1 Stackhouse Triple, as a large meal with Stack Cola"
           ],
-          "exact": true
+          "exact": false
         },
         {
           "ref": "Twenty piece Cluck Bites with sweet chili sauce.",
-          "hyp": "yet? 20-piece club bites with Sweet chili sauce.",
+          "hyp": "poly. 20-piece club bites with sweet chili sauce.",
           "missed": [
             "cluck bites"
           ],
@@ -7273,18 +7803,17 @@
         },
         {
           "ref": "No wait, scratch the onion rings, just a small fries.",
-          "hyp": "No, wait, scratch the onion rings. Just a small freeze. I am so bored.",
-          "missed": [
-            "fries"
-          ],
+          "hyp": "No wait, scratch the onion rings, just a small fries. I am so bored.",
+          "missed": [],
           "order": [
-            "1 Cluckwich"
+            "1 Cluckwich",
+            "1 small Stack Fries"
           ],
           "expected": [
             "1 Cluckwich",
             "1 small Stack Fries"
           ],
-          "exact": false
+          "exact": true
         },
         {
           "ref": "A vanilla Frostee, small, and a strawberry Frostee, large.",
@@ -7304,7 +7833,7 @@
         },
         {
           "ref": "Can I get a Cluckwich with no tomato and extra sauce.",
-          "hyp": "Can I get a Clubwich with no tomato and extra sauce?",
+          "hyp": "Can I get a clubwich with no tomato and extra sauce?",
           "missed": [
             "cluckwich"
           ],
@@ -7344,7 +7873,7 @@
         },
         {
           "ref": "I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade.",
-          "hyp": "I want the Smokestack Barbecue Meal, medium, with a fizzy lemonade.",
+          "hyp": "I want the Smokestack BBQ meal, medium, with a fizzy lemonade.",
           "missed": [],
           "order": [
             "1 Smokestack BBQ, as a medium meal with Fizzy Lemonade"
@@ -7368,7 +7897,7 @@
         },
         {
           "ref": "Two Spicy Cluckwiches and a large onion rings.",
-          "hyp": "2 spicy Clubwiches and a large onion rings.",
+          "hyp": "2 spicy clubwiches and a large onion rings.",
           "missed": [
             "spicy cluckwich"
           ],
@@ -7419,7 +7948,7 @@
         },
         {
           "ref": "That's it. Oh, and a Garden Stack meal with a Diet Stack Cola.",
-          "hyp": "That's it. Oh, and a Garden Stack meal with a Diet Stack cola.",
+          "hyp": "That's it. Oh, and a garden stack meal with a diet stack cola.",
           "missed": [],
           "order": [
             "1 Garden Stack, as a medium meal with Diet Stack Cola"
@@ -7446,17 +7975,40 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Clubwich meal, large, with a sweet tea. Can I get 10 club bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frisbee and an apple turnover. I'll do the Smokey Stack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with club bites. Large stack fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a garden stack, plain, and a small fizzy lemonade? Mom, you've hurt my feelings. Get me a Stackhouse Triple Meal with a large Stack Cola. Are you here yet? 20-piece club bites with Sweet chili sauce. No, wait, scratch the onion rings. Just a small freeze. I am so bored. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Clubwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack Barbecue Meal, medium, with a fizzy lemonade. 6-piece club bites with barbecue sauce for my daughter. 2 spicy Clubwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One Stackhouse double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack cola. Can I get a large chocolate Frosty and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a spicy Clubwich meal, large, with a sweet tea. Can I get 10 club bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frisbee and an apple turnover. I'll do the Smokey Stack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with club bites. Large stack fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a garden stack, plain, and a small fizzy lemonade? Give me a Stackhouse Triple Meal with a large stack poly. 20-piece club bites with sweet chili sauce. No wait, scratch the onion rings, just a small fries. I am so bored. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a clubwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with a fizzy lemonade. 6-piece club bites with barbecue sauce for my daughter. 2 spicy clubwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One Stackhouse double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a garden stack meal with a diet stack cola. Can I get a large chocolate Frosty and 2 apple turnovers?",
+      "reps": 2,
+      "orderAccuracyRange": [
+        0.5833333333333334,
+        0.5833333333333334
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.5833333333333334,
+          "menuAccuracy": 0.8636363636363636,
+          "wer": 0.07480314960629922,
+          "leaks": [
+            "bored"
+          ]
+        },
+        {
+          "orderAccuracy": 0.5833333333333334,
+          "menuAccuracy": 0.8636363636363636,
+          "wer": 0.08267716535433071,
+          "leaks": [
+            "bored"
+          ]
+        }
+      ]
     },
     {
       "condition": "rush",
       "conditionLabel": "Road + back seat (5 dB)",
       "config": "menu",
       "configLabel": "+ menu key terms & prompt",
-      "orderAccuracy": 0.9583333333333334,
-      "menuAccuracy": 0.9545454545454546,
-      "perfectLines": 0.8333333333333334,
-      "wer": 0.10236220472440945,
+      "orderAccuracy": 0.9305555555555557,
+      "menuAccuracy": 0.9507575757575757,
+      "perfectLines": 0.8194444444444445,
+      "wer": 0.10761154855643044,
       "leaks": [
         "bored"
       ],
@@ -7569,7 +8121,7 @@
         },
         {
           "ref": "Can I get a Garden Stack, plain, and a small Fizzy Lemonade.",
-          "hyp": "Can I get a garden stack, plain, and a small fizzy lemonade? Mom, you put my\u2014",
+          "hyp": "Can I get a garden stack, plain, and a small fizzy lemonade? Mom, you put my—",
           "missed": [],
           "order": [
             "1 Garden Stack, plain",
@@ -7583,19 +8135,19 @@
         },
         {
           "ref": "Give me a Stackhouse Triple meal with a large Stack Cola.",
-          "hyp": "Get me a Stackhouse triple meal with a large stack poly. Are you here",
-          "missed": [
-            "stack cola"
+          "hyp": "Get me a Stackhouse triple meal with a large Stack Cola. Are you here",
+          "missed": [],
+          "order": [
+            "1 Stackhouse Triple, as a large meal with Stack Cola"
           ],
-          "order": [],
           "expected": [
             "1 Stackhouse Triple, as a large meal with Stack Cola"
           ],
-          "exact": false
+          "exact": true
         },
         {
           "ref": "Twenty piece Cluck Bites with sweet chili sauce.",
-          "hyp": "yet? 20-piece cluck bites with Sweet chili sauce.",
+          "hyp": "yet? 20-piece Cluck Bites with Sweet chili sauce.",
           "missed": [],
           "order": [
             "1 20-piece Cluck Bites, sweet chili"
@@ -7677,7 +8229,7 @@
         },
         {
           "ref": "I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade.",
-          "hyp": "I want the Smokestack BBQ meal, medium, with the fizzy lemonade.",
+          "hyp": "I want the Smokestack BBQ meal, medium, with the fizzy lemonade. I am so",
           "missed": [],
           "order": [
             "1 Smokestack BBQ, as a medium meal with Fizzy Lemonade"
@@ -7689,7 +8241,7 @@
         },
         {
           "ref": "Six piece Cluck Bites with barbecue sauce for my daughter.",
-          "hyp": "6-piece Cluck Bites with barbecue sauce for my daughter.",
+          "hyp": "bored. 6-piece Cluck Bites with barbecue sauce for my daughter.",
           "missed": [],
           "order": [
             "1 6-piece Cluck Bites, bbq sauce (for my daughter)"
@@ -7727,15 +8279,17 @@
         },
         {
           "ref": "One Stackhouse Double, extra pickles, extra onions, no sauce.",
-          "hyp": "1 Stackhouse double, extra pickles, extra Extra onions, no sauce. Mom,",
-          "missed": [],
+          "hyp": "One stackhouse double, extra pickles, extra Fried onions, no sauce. Mom,",
+          "missed": [
+            "extra onions"
+          ],
           "order": [
-            "1 Stackhouse Double, extra pickles, extra onions, no sauce"
+            "1 Stackhouse Double, extra pickles, no sauce"
           ],
           "expected": [
             "1 Stackhouse Double, extra pickles, extra onions, no sauce"
           ],
-          "exact": true
+          "exact": false
         },
         {
           "ref": "And a medium Sweet Tea, no ice, for my husband.",
@@ -7778,7 +8332,38 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a Spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. 1 medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, 1 One with the mini burger and one with Cluck Bites. Large stack fries, no salt, and a medium diet stack cola with light ice. Can I get a garden stack, plain, and a small fizzy lemonade? Mom, you put my\u2014 Get me a Stackhouse triple meal with a large stack poly. Are you here yet? 20-piece cluck bites with Sweet chili sauce. No, wait, scratch the onion rings, just a small fries. I am so bored. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with the fizzy lemonade. 6-piece Cluck Bites with barbecue sauce for my daughter. 2 spicy cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? 1 Stackhouse double, extra pickles, extra Extra onions, no sauce. Mom, and a medium sweet tea, no ice, for my husband. Are you here yet? That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 apple turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a Spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. 1 medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, 1 One with the mini burger and one with Cluck Bites. Large stack fries, no salt, and a medium diet stack cola with light ice. Can I get a garden stack, plain, and a small fizzy lemonade? Mom, you put my— Get me a Stackhouse triple meal with a large Stack Cola. Are you here yet? 20-piece Cluck Bites with Sweet chili sauce. No, wait, scratch the onion rings, just a small fries. I am so bored. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with the fizzy lemonade. I am so bored. 6-piece Cluck Bites with barbecue sauce for my daughter. 2 spicy cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One stackhouse double, extra pickles, extra Fried onions, no sauce. Mom, and a medium sweet tea, no ice, for my husband. Are you here yet? That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 apple turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.875,
+        0.9583333333333334
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9545454545454546,
+          "wer": 0.1141732283464567,
+          "leaks": [
+            "bored"
+          ]
+        },
+        {
+          "orderAccuracy": 0.875,
+          "menuAccuracy": 0.9318181818181818,
+          "wer": 0.1377952755905512,
+          "leaks": [
+            "bored"
+          ]
+        },
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.07086614173228346,
+          "leaks": [
+            "bored"
+          ]
+        }
+      ]
     },
     {
       "condition": "rush",
@@ -7786,9 +8371,9 @@
       "config": "focus",
       "configLabel": "+ voice focus (far-field)",
       "orderAccuracy": 0.9583333333333334,
-      "menuAccuracy": 0.9659090909090909,
-      "perfectLines": 0.875,
-      "wer": 0.05511811023622047,
+      "menuAccuracy": 0.962121212121212,
+      "perfectLines": 0.8611111111111112,
+      "wer": 0.055118110236220465,
       "leaks": [
         "bored"
       ],
@@ -7915,7 +8500,7 @@
         },
         {
           "ref": "Give me a Stackhouse Triple meal with a large Stack Cola.",
-          "hyp": "Give me a Stackhouse Triple meal with a large Stack Cola,",
+          "hyp": "Give me a Stackhouse Triple Meal with a large Stack Cola.",
           "missed": [],
           "order": [
             "1 Stackhouse Triple, as a large meal with Stack Cola"
@@ -7927,7 +8512,7 @@
         },
         {
           "ref": "Twenty piece Cluck Bites with sweet chili sauce.",
-          "hyp": "20-piece Cluck Bites, With sweet chili sauce.",
+          "hyp": "20-piece Cluck Bites. With sweet chili sauce.",
           "missed": [],
           "order": [
             "1 20-piece Cluck Bites, sweet chili"
@@ -7939,21 +8524,22 @@
         },
         {
           "ref": "No wait, scratch the onion rings, just a small fries.",
-          "hyp": "No, wait, scratch the onion rings, just a small fries. I am so bored.",
-          "missed": [],
+          "hyp": "No, wait, scratch the onion rings, just a small freeze. I am so bored.",
+          "missed": [
+            "fries"
+          ],
           "order": [
-            "1 Cluckwich",
-            "1 small Stack Fries"
+            "1 Cluckwich"
           ],
           "expected": [
             "1 Cluckwich",
             "1 small Stack Fries"
           ],
-          "exact": true
+          "exact": false
         },
         {
           "ref": "A vanilla Frostee, small, and a strawberry Frostee, large.",
-          "hyp": "A vanilla Frosty, small, and a strawberry Frosty, large.",
+          "hyp": "A vanilla frosty, small, and a strawberry frosty, large.",
           "missed": [
             "frostee"
           ],
@@ -7995,7 +8581,7 @@
         },
         {
           "ref": "Make the lemonade a large and add an Apple Turnover.",
-          "hyp": "Make the lemonade a large and add an Apple Turnover.",
+          "hyp": "Make the lemonade a large and add an apple turnover.",
           "missed": [],
           "order": [
             "1 large Fizzy Lemonade",
@@ -8009,13 +8595,15 @@
         },
         {
           "ref": "I want the Smokestack BBQ meal, medium, with a Fizzy Lemonade.",
-          "hyp": "I want the Smokestack BBQ. BBQ meal, medium, with a Fizzy Lemonade. I am so",
+          "hyp": "I want the Smokestack BBQ meal, medium, with the Fizzy Lemonade. I am so",
           "missed": [],
-          "order": [],
+          "order": [
+            "1 Smokestack BBQ, as a medium meal with Fizzy Lemonade"
+          ],
           "expected": [
             "1 Smokestack BBQ, as a medium meal with Fizzy Lemonade"
           ],
-          "exact": false
+          "exact": true
         },
         {
           "ref": "Six piece Cluck Bites with barbecue sauce for my daughter.",
@@ -8057,7 +8645,7 @@
         },
         {
           "ref": "One Stackhouse Double, extra pickles, extra onions, no sauce.",
-          "hyp": "1 stackhouse double, extra pickles, extra Extra onions, no sauce.",
+          "hyp": "One Stackhouse Double, extra pickles, extra onions, no sauce.",
           "missed": [],
           "order": [
             "1 Stackhouse Double, extra pickles, extra onions, no sauce"
@@ -8108,7 +8696,38 @@
           "exact": true
         }
       ],
-      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a Spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple meal with a large Stack Cola, 20-piece Cluck Bites, With sweet chili sauce. No, wait, scratch the onion rings, just a small fries. I am so bored. A vanilla Frosty, small, and a strawberry Frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an Apple Turnover. I want the Smokestack BBQ. BBQ meal, medium, with a Fizzy Lemonade. I am so bored. 6-piece Cluck Bites with barbecue sauce for my daughter. 2 spicy cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? 1 stackhouse double, extra pickles, extra Extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 Apple Turnovers?"
+      "transcript": "Hi, can I get 2 Stackhouse Doubles, one with no pickles? Let me get a Spicy Cluckwich meal, large, with a sweet tea. Can I get 10 Cluck Bites with honey mustard and ranch? Actually, make that a Stackhouse Single instead, no onions. One medium chocolate Frosty and an Apple Turnover. I'll do the Smokestack BBQ with extra cheese and add bacon. 2 Stack Packs, one with the mini burger and one with Cluck Bites. Large Stack Fries, no salt, and a medium Diet Stack Cola with light ice. Can I get a Garden Stack, plain, and a small Fizzy Lemonade? Give me a Stackhouse Triple Meal with a large Stack Cola. 20-piece Cluck Bites. With sweet chili sauce. No, wait, scratch the onion rings, just a small freeze. I am so bored. A vanilla frosty, small, and a strawberry frosty, large. Can I get a Cluckwich with no tomato and extra sauce? 3 Stackhouse Singles, all with no pickles, and 3 waters. Make the lemonade a large and add an apple turnover. I want the Smokestack BBQ meal, medium, with the Fizzy Lemonade. I am so bored. 6-piece Cluck Bites with barbecue sauce for my daughter. 2 spicy cluckwiches and a large onion rings. Can I change the double to a triple and hold the cheese? One Stackhouse Double, extra pickles, extra onions, no sauce. And a medium sweet tea, no ice, for my husband. That's it. Oh, and a Garden Stack meal with a Diet Stack Cola. Can I get a large chocolate Frosty and 2 Apple Turnovers?",
+      "reps": 3,
+      "orderAccuracyRange": [
+        0.9583333333333334,
+        0.9583333333333334
+      ],
+      "runs": [
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9545454545454546,
+          "wer": 0.05511811023622047,
+          "leaks": [
+            "bored"
+          ]
+        },
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.05511811023622047,
+          "leaks": [
+            "bored"
+          ]
+        },
+        {
+          "orderAccuracy": 0.9583333333333334,
+          "menuAccuracy": 0.9659090909090909,
+          "wer": 0.05511811023622047,
+          "leaks": [
+            "bored"
+          ]
+        }
+      ]
     }
   ]
 }

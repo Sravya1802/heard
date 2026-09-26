@@ -31,6 +31,8 @@ export default function InsightsPage() {
     reps: r.reps ?? 1, range: r.orderAccuracyRange ?? [r.orderAccuracy, r.orderAccuracy],
   }))
   const reps = Math.max(...cells.map((c) => c.reps))
+  const minReps = Math.min(...cells.map((c) => c.reps))
+  const repsText = minReps === reps ? `${reps}` : `${minReps}–${reps}`
 
   // Headline: the loudest road noise we tested.
   const worst = find('road0', 'generic')
@@ -83,7 +85,7 @@ export default function InsightsPage() {
       <section>
         <h2 className="font-display text-2xl font-bold mb-1">Orders exactly right, by condition</h2>
         <p className="text-sm text-muted mb-5">
-          {reps > 1 ? `Each bar is the mean of ${reps} streaming sessions of all ${data.lines} lines.` : `Each bar is one streaming session of all ${data.lines} lines.`} Hover a bar for the range, menu-term accuracy and word error rate.
+          {reps > 1 ? `Each bar is the mean of ${repsText} streaming sessions of all ${data.lines} lines.` : `Each bar is one streaming session of all ${data.lines} lines.`} Hover a bar for the range, menu-term accuracy and word error rate.
         </p>
         <div className="rounded-2xl border border-line bg-panel p-5">
           <BenchChart cells={cells} conditions={conditions} configs={data.configs} />
@@ -160,7 +162,7 @@ export default function InsightsPage() {
           <h2 className="font-display text-xl font-bold text-ink mb-2">Limits, honestly</h2>
           <ul className="space-y-1.5 list-disc pl-5">
             <li>Synthetic voices and generated noise, not recordings from a real lane. Real-world numbers will differ.</li>
-            <li>{reps > 1 ? `${reps} sessions per cell; the same audio can still score a few points apart run to run, so small differences are within noise.` : 'One session per cell, so small differences (one or two lines) are within noise.'}</li>
+            <li>{reps > 1 ? `${repsText} sessions per cell (a few sessions dropped on connection errors); the same audio can score a few points apart run to run, so small differences are within noise.` : 'One session per cell, so small differences (one or two lines) are within noise.'}</li>
             <li>Voice focus did not stop our synthetic back-seat voices from appearing in transcripts. Those words never became order items, because the order is parsed only against the menu.</li>
             <li>Reproduce it: <code className="text-ink">npm run noise && npm run bench</code>. Last run {new Date(data.ranAt).toUTCString()}.</li>
           </ul>

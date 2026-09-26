@@ -121,6 +121,10 @@ export interface VoiceCallbacks {
   /** Milliseconds from the end of the guest's speech to the first audio of the reply. */
   onLatency?: (ms: number) => void
   onMicLevel?: (level: number) => void
+  /** Every captured 50 ms frame (24 kHz PCM16), for a parallel transcriber. */
+  onAudioFrame?: (pcm: ArrayBuffer) => void
+  /** Called once with the optional comparison-transcriber token from the token route. */
+  onShadowToken?: (token: string) => void
   /**
    * The agent finished a reply with no speech and no tool call. Return
    * instructions for a fresh reply (after syncing the order yourself), or null.
@@ -189,7 +193,8 @@ export class VoiceSession {
       const body = await res.json().catch(() => ({}))
       throw new Error(body.error || `Could not start a session (${res.status})`)
     }
-    const { token } = await res.json()
+    const { token, shadowToken } = await res.json()
+    if (shadowToken) this.cb.onShadowToken?.(shadowToken)
 
     // Created inside the click handler so Safari lets them run.
     this.captureCtx = new AudioContext({ sampleRate: WIRE_RATE })
@@ -218,6 +223,7 @@ export class VoiceSession {
     capture.port.onmessage = ({ data }) => {
       this.cb.onMicLevel?.(data.level)
       if (!this.ready || ws.readyState !== WebSocket.OPEN) return
+      this.cb.onAudioFrame?.(data.pcm)
       ws.send(JSON.stringify({ type: 'input.audio', audio: toBase64(data.pcm) }))
     }
 

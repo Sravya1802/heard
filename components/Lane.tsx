@@ -4,11 +4,14 @@ import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { sessionConfig, type HearingOptions } from '@/lib/agent-config'
 import { MENU_BY_ID, formatPrice } from '@/lib/menu'
-import { emptyOrder, priceLine, runTool, ticketLine, totals, type OrderState } from '@/lib/order-engine'
+import { describeLine, emptyOrder, priceLine, runTool, ticketLine, totals, type OrderState } from '@/lib/order-engine'
 import { recoveryInstructions, runAgentTool, syncHeard, type SyncSummary } from '@/lib/sync'
 import { openLaneChannel, type LaneChannel, type LaneSnapshot, type SubmittedOrder } from '@/lib/realtime'
 import { VoiceSession, type CallStatus } from '@/lib/voice-client'
 import NoiseQR from '@/components/NoiseQR'
+import HearBothWays from '@/components/HearBothWays'
+import { ShadowTranscriber } from '@/lib/shadow-stt'
+import { addGeneric, addHeard, type Row } from '@/lib/compare'
 
 const LANE = 1
 
@@ -58,7 +61,13 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
   const [crew, setCrew] = useState(false)
   const [elapsed, setElapsed] = useState(0)
   const [unavailable, setUnavailable] = useState<string[]>([])
-  const [showHood, setShowHood] = useState(true)
+  const [showHood, setShowHood] = useState(false)
+  // "Hear it both ways": the generic transcriber's view of the same audio.
+  const [rows, setRows] = useState<Row[]>([])
+  const [genericPartial, setGenericPartial] = useState('')
+  const [genericOrder, setGenericOrder] = useState<string[]>([])
+  const [shadowOn, setShadowOn] = useState(false)
+  const [nowTick, setNowTick] = useState(0)
 
   const session = useRef<VoiceSession | null>(null)
   const channel = useRef<LaneChannel | null>(null)
@@ -72,6 +81,8 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
   const unsynced = useRef<string[]>([])
   const inFlight = useRef(new Map<string, string[]>())
   const endTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const shadow = useRef<ShadowTranscriber | null>(null)
+  const shadowState = useRef<OrderState>(emptyOrder())
 
   const live = status === 'listening' || status === 'thinking' || status === 'speaking'
 
@@ -101,7 +112,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
   // ---- call timer ----
   useEffect(() => {
     if (!live) return
-    const t = setInterval(() => setElapsed(Math.round((Date.now() - startedAt.current) / 1000)), 500)
+    const t = setInterval(() => { setElapsed(Math.round((Date.now() - startedAt.current) / 1000)); setNowTick(Date.now()) }, 500)
     return () => clearInterval(t)
   }, [live])
 
@@ -120,6 +131,8 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
     lastHeard.current = ''
     unsynced.current = []
     inFlight.current.clear()
+    setRows([]); setGenericPartial(''); setGenericOrder([]); setShadowOn(false)
+    shadowState.current = emptyOrder()
 
     const ctx = () => ({
       unavailable: new Set(unavailableRef.current),
@@ -147,6 +160,23 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
         startedAt.current = Date.now()
         broadcast(committed.current, 'ordering')
       },
+      onShadowToken: (tok) => {
+        const sh = new ShadowTranscriber({
+          onPartial: setGenericPartial,
+          onFinal: (text) => {
+            setGenericPartial('')
+            setRows((r) => addGeneric(r, text, Date.now()))
+            // Build the order the generic transcript would produce, with the same parser and engine.
+            const { state } = syncHeard(shadowState.current, [text], ctx())
+            shadowState.current = state
+            setGenericOrder(state.lines.map(describeLine))
+          },
+        })
+        sh.start(tok)
+        shadow.current = sh
+        setShadowOn(true)
+      },
+      onAudioFrame: (pcm) => shadow.current?.send(pcm),
       onUserPartial: (text) => {
         setPartial(text)
         // Still talking after the total ("oh, and a cola"): don't hang up on them.
@@ -157,6 +187,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
         if (!text.trim()) return
         lastHeard.current = text
         unsynced.current.push(text)
+        setRows((r) => addHeard(r, text, Date.now()))
         setCaptions((c) => [...c, { who: 'guest' as const, text }].slice(-12))
       },
       onAgentPartial: setAgentPartial,
@@ -237,6 +268,8 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
         if (!['invalid_value', 'invalid_format'].includes(code)) setError(message)
       },
       onEnded: () => {
+        shadow.current?.stop()
+        shadow.current = null
         if (!committed.current.submitted) broadcast(committed.current, committed.current.humanRequested ? 'crew' : 'waiting')
       },
     })
@@ -252,6 +285,8 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
   }
 
   const stop = () => {
+    shadow.current?.stop()
+    shadow.current = null
     if (endTimer.current) clearTimeout(endTimer.current)
     session.current?.stop()
   }
@@ -289,8 +324,9 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
       </header>
 
       <div className="flex-1 grid gap-4 lg:grid-cols-[1.6fr_1fr] min-h-0">
+        <div className="flex flex-col gap-4 min-w-0">
         {/* ---- order confirmation board ---- */}
-        <section className="relative flex flex-col rounded-2xl border border-line bg-panel overflow-hidden min-h-[260px] lg:min-h-[420px]">
+        <section className="relative flex flex-col rounded-2xl border border-line bg-panel overflow-hidden min-h-[240px] lg:min-h-[300px]">
           <div className="flex items-baseline justify-between px-6 pt-5 pb-3 border-b border-line">
             <h1 className="font-display text-3xl font-bold">Your order</h1>
             <span className="text-sm text-muted">{t.itemCount ? `${t.itemCount} item${t.itemCount === 1 ? '' : 's'}` : ''}</span>
@@ -350,6 +386,17 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
             </div>
           )}
         </section>
+
+        <HearBothWays
+          rows={rows}
+          genericPartial={genericPartial}
+          heardPartial={partial}
+          genericOrder={genericOrder}
+          heardOrder={order.lines.map(describeLine)}
+          connected={shadowOn && live}
+          now={nowTick}
+        />
+        </div>
 
         {/* ---- speaker post ---- */}
         <section className="flex flex-col gap-4 min-h-0">

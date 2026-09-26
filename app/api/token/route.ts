@@ -45,5 +45,15 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Could not start a voice session. Please try again.' }, { status: 502 })
   }
   const { token } = await res.json()
-  return Response.json({ token, maxSeconds: MAX_SESSION_SECONDS })
+
+  // A second, cheap streaming session for the "hear it both ways" comparison. Optional.
+  let shadowToken: string | null = null
+  try {
+    const s = await fetch(`https://streaming.assemblyai.com/v3/token?expires_in_seconds=60&max_session_duration_seconds=${MAX_SESSION_SECONDS}`, {
+      headers: { Authorization: key }, cache: 'no-store',
+    })
+    if (s.ok) shadowToken = (await s.json()).token
+  } catch { /* the comparison is optional */ }
+
+  return Response.json({ token, shadowToken, maxSeconds: MAX_SESSION_SECONDS })
 }

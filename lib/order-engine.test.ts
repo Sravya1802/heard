@@ -160,9 +160,12 @@ describe('update_order (one call per guest sentence)', () => {
     expect(state.lines[0]).toMatchObject({ itemId: 'cluckwich', modifiers: ['no_tomato'] })
   })
 
-  it('is refused after submission', () => {
-    const { state } = run([['add_item', { item_id: 'apple_turnover' }], ['read_back', {}], ['submit_order', {}]])
-    expect(runTool(state, 'update_order', { changes: [{ item_id: 'apple_turnover' }] }).result.error).toBe('already_submitted')
+  it('reopens a sent order for a late add-on, keeping the order number', () => {
+    const { state } = run([['add_item', { item_id: 'apple_turnover' }], ['read_back', {}], ['submit_order', {}]], { nextOrderNumber: () => 489 })
+    const o = runTool(state, 'update_order', { changes: [{ item_id: 'stack_cola', size: 'large' }] })
+    expect(o.result.reopened).toBe(true)
+    expect(o.state.submitted).toBeNull()
+    expect(o.state.orderNumber).toBe(489)
   })
 })
 
@@ -204,13 +207,18 @@ describe('read back and submit', () => {
     expect(ok.last.result).toMatchObject({ ok: true, order_number: 142, total: '$4.85' })
   })
 
-  it('locks the order after submission', () => {
-    const { state } = run([
-      ['add_item', { item_id: 'stackhouse_single' }],
-      ['read_back', {}],
-      ['submit_order', {}],
-    ])
-    expect(runTool(state, 'add_item', { item_id: 'apple_turnover' }).result.error).toBe('already_submitted')
+  it('re-submits an add-on under the same number, marked updated', () => {
+    let { state } = run([['add_item', { item_id: 'apple_turnover' }], ['read_back', {}], ['submit_order', {}]], { nextOrderNumber: () => 489 })
+    state = runTool(state, 'add_item', { item_id: 'stack_cola', size: 'large' }).state
+    expect(runTool(state, 'submit_order', {}).result.error).toBe('read_back_required')
+    state = runTool(state, 'read_back', {}).state
+    const done = runTool(state, 'submit_order', {}, { nextOrderNumber: () => 999 })
+    expect(done.result).toMatchObject({ ok: true, order_number: 489, updated: true })
+  })
+
+  it('repeats the confirmation if an unchanged order is submitted twice', () => {
+    const { state } = run([['add_item', { item_id: 'apple_turnover' }], ['read_back', {}], ['submit_order', {}]], { nextOrderNumber: () => 142 })
+    expect(runTool(state, 'submit_order', {}).result).toMatchObject({ ok: true, order_number: 142 })
   })
 
   it('reads back with the total including tax', () => {

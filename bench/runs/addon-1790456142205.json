@@ -1,0 +1,156 @@
+{
+  "scenario": "addon",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": false,
+  "failures": [
+    "expected the ticket to be re-sent as updated"
+  ],
+  "latencies": [
+    832,
+    1359,
+    2256,
+    1971,
+    1348,
+    1288
+  ],
+  "order": [
+    "1 large Stack Fries",
+    "1 large Stack Cola"
+  ],
+  "log": [
+    {
+      "t": 0.89,
+      "kind": "ready",
+      "text": "sess_620a5eb368ff4b9c80e7b3e36f031710"
+    },
+    {
+      "t": 4.044,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 5.05,
+      "kind": "guest",
+      "text": "Can I get large fries please."
+    },
+    {
+      "t": 7.503,
+      "kind": "heard",
+      "text": "Can I get large fries please?"
+    },
+    {
+      "t": 7.757,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 large Stack Fries"
+    },
+    {
+      "t": 11.704,
+      "kind": "agent",
+      "text": "Got it, one large fries. Anything else?"
+    },
+    {
+      "t": 12.776,
+      "kind": "guest",
+      "text": "That's it."
+    },
+    {
+      "t": 13.903,
+      "kind": "heard",
+      "text": "That's it."
+    },
+    {
+      "t": 14.659,
+      "kind": "tool",
+      "text": "✓ suggest_upsell"
+    },
+    {
+      "t": 19.351,
+      "kind": "agent",
+      "text": "Would you like to add a Stack Cola, a Fizzy Lemonade, or a Sweet Tea to that?"
+    },
+    {
+      "t": 20.473,
+      "kind": "guest",
+      "text": "No thanks."
+    },
+    {
+      "t": 22.001,
+      "kind": "heard",
+      "text": "No thanks."
+    },
+    {
+      "t": 23.589,
+      "kind": "tool",
+      "text": "✓ read_back"
+    },
+    {
+      "t": 28.824,
+      "kind": "agent",
+      "text": "So that is one large fries for 3 dollars and 55 cents. Is that all correct?"
+    },
+    {
+      "t": 29.951,
+      "kind": "guest",
+      "text": "Yes."
+    },
+    {
+      "t": 32.2,
+      "kind": "heard",
+      "text": "Yes."
+    },
+    {
+      "t": 33.573,
+      "kind": "tool",
+      "text": "✓ submit_order"
+    },
+    {
+      "t": 38.981,
+      "kind": "agent",
+      "text": "Your total is 3 dollars and 55 cents. Please pull forward to the first window!"
+    },
+    {
+      "t": 40.102,
+      "kind": "guest",
+      "text": "Oh wait, can I also get a large Stack Cola?"
+    },
+    {
+      "t": 44.815,
+      "kind": "heard",
+      "text": "Oh wait, can I also get a large Stack Cola?"
+    },
+    {
+      "t": 45.555,
+      "kind": "tool",
+      "text": "✓ sync_order added 1 large Stack Cola"
+    },
+    {
+      "t": 50.412,
+      "kind": "agent",
+      "text": "Sure thing, I've added a large Stack Cola. Let me read that back for you."
+    },
+    {
+      "t": 51.521,
+      "kind": "guest",
+      "text": "Yes, that's right."
+    },
+    {
+      "t": 53.501,
+      "kind": "heard",
+      "text": "Yes, that's right."
+    },
+    {
+      "t": 54.149,
+      "kind": "tool",
+      "text": "✓ read_back"
+    },
+    {
+      "t": 61.279,
+      "kind": "agent",
+      "text": "One large fries and a large Stack Cola. Your total is 6 dollars and 24 cents. Is that all correct?"
+    }
+  ]
+}

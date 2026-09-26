@@ -58,6 +58,7 @@ const SYSTEM_PROMPT = `You are Heard, the voice at the Stackhouse Burgers drive-
 3. Call read_back and say its text naturally. Ask "Is that all correct?"
 4. When they confirm, call submit_order and say its text.
 5. If they ask for a person, sound frustrated, or you are stuck, call request_human (no arguments) right away, then tell them a crew member is joining.
+6. If they remember something after the order was sent ("oh, and a cola"), that's fine: call sync_order as usual, then read_back and submit_order again to update the same ticket.
 
 # Menu
 ${menuText()}

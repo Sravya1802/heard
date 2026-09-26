@@ -54,7 +54,11 @@ export default function Kitchen() {
     const ch = openLaneChannel()
     channel.current = ch
     ch.on('lane', (snap) => setLane(snap))
-    ch.on('order', (o) => setOrders((prev) => [o, ...prev.filter((p) => p.orderNumber !== o.orderNumber)].slice(0, 30)))
+    ch.on('order', (o) => {
+      setOrders((prev) => [o, ...prev.filter((p) => p.orderNumber !== o.orderNumber)].slice(0, 30))
+      // An updated ticket comes back even if the crew had bumped the first version.
+      if (o.updated) setBumped((b) => { const n = new Set(b); n.delete(o.orderNumber); return n })
+    })
     ch.on('availability', ({ unavailable }) => setUnavailable(unavailable))
     ch.on('crew', (c) => setCrewAlert({ reason: c.reason, at: c.at }))
     fetch('/api/orders').then((r) => r.json()).then(({ orders }) => setOrders((prev) => (prev.length ? prev : orders ?? []))).catch(() => {})
@@ -149,7 +153,10 @@ export default function Kitchen() {
                 return (
                   <article key={o.orderNumber} className={`line-in rounded-2xl border-2 ${tone} bg-panel flex flex-col`}>
                     <div className="flex items-center justify-between px-4 py-2 border-b border-line">
-                      <span className="font-display text-2xl font-extrabold">#{o.orderNumber}</span>
+                      <span className="font-display text-2xl font-extrabold">
+                        #{o.orderNumber}
+                        {o.updated && <span className="ml-2 align-middle text-xs font-mono font-bold rounded bg-mustard text-asphalt px-1.5 py-0.5">UPDATED</span>}
+                      </span>
                       <span className="font-mono text-sm text-muted tabular-nums">{age(waited)}</span>
                     </div>
                     <div className="flex-1 p-4"><Ticket lines={o.lines} /></div>

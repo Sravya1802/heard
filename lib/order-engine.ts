@@ -33,7 +33,9 @@ export interface OrderState {
   readBackVersion: number | null
   upsellOffered: boolean
   humanRequested: boolean
-  submitted: null | { orderNumber: number; totalCents: number }
+  submitted: null | { orderNumber: number; totalCents: number; updated?: boolean }
+  /** Assigned at the first submit and kept, so a late add-on updates the same ticket. */
+  orderNumber: number | null
   /** The question or offer the agent is waiting on, so "large" or "sure" can be understood. */
   pending: Pending | null
 }
@@ -51,7 +53,7 @@ export interface ToolOutcome {
 }
 
 export function emptyOrder(): OrderState {
-  return { lines: [], nextLine: 1, version: 0, readBackVersion: null, upsellOffered: false, humanRequested: false, submitted: null, pending: null }
+  return { lines: [], nextLine: 1, version: 0, readBackVersion: null, upsellOffered: false, humanRequested: false, submitted: null, orderNumber: null, pending: null }
 }
 
 // ---------------------------------------------------------------- pricing ---
@@ -347,11 +349,17 @@ function submitOrder(state: OrderState, ctx: EngineContext): ToolOutcome {
     return fail(state, 'read_back_required', 'The order changed since it was last read back. Call read_back and confirm with the guest before submitting.')
   }
   const t = totals(state)
-  const orderNumber = ctx.nextOrderNumber?.() ?? 100 + Math.floor(Math.random() * 900)
-  const next = { ...state, submitted: { orderNumber, totalCents: t.total } }
+  const updated = state.orderNumber != null
+  const orderNumber = state.orderNumber ?? ctx.nextOrderNumber?.() ?? 100 + Math.floor(Math.random() * 900)
+  const next = { ...state, orderNumber, submitted: { orderNumber, totalCents: t.total, updated } }
   return {
     state: next, ok: true,
-    result: { ok: true, order_number: orderNumber, total: formatPrice(t.total), say: `Your total is ${formatPrice(t.total)}. Please pull forward to the first window.` },
+    result: {
+      ok: true, order_number: orderNumber, total: formatPrice(t.total), updated,
+      say: updated
+        ? `Got it, I've updated your order. Your new total is ${formatPrice(t.total)}. Please pull forward to the first window.`
+        : `Your total is ${formatPrice(t.total)}. Please pull forward to the first window.`,
+    },
   }
 }
 
@@ -399,9 +407,25 @@ function updateOrder(state: OrderState, a: Args, ctx: EngineContext): ToolOutcom
 const MUTATING = new Set(['add_item', 'modify_item', 'remove_item', 'update_order'])
 
 export function runTool(state: OrderState, name: string, args: Args, ctx: EngineContext = {}): ToolOutcome {
-  if (state.submitted && (MUTATING.has(name) || name === 'submit_order')) {
-    return fail(state, 'already_submitted', `Order #${state.submitted.orderNumber} was already sent to the kitchen. Changes now need the window crew; tell the guest to mention it at the window.`)
+  // "Oh, and a cola": a late add-on reopens the sent order under the same number.
+  if (state.submitted && MUTATING.has(name)) {
+    const o = dispatch(state, name, args, ctx)
+    if (o.state.version === state.version) return o
+    return {
+      ...o,
+      state: { ...o.state, submitted: null, readBackVersion: null },
+      result: { ...o.result, reopened: true, note: `This adds to order #${state.submitted.orderNumber}, which was already sent. Confirm the change, then call read_back and submit_order again to update the ticket.` },
+    }
   }
+  // Submitting an unchanged, already-sent order just repeats the confirmation.
+  if (state.submitted && name === 'submit_order' && state.readBackVersion === state.version) {
+    const { orderNumber, totalCents } = state.submitted
+    return { state, ok: true, result: { ok: true, order_number: orderNumber, total: formatPrice(totalCents), say: `Your total is ${formatPrice(totalCents)}. Please pull forward to the first window.` } }
+  }
+  return dispatch(state, name, args, ctx)
+}
+
+function dispatch(state: OrderState, name: string, args: Args, ctx: EngineContext): ToolOutcome {
   switch (name) {
     case 'update_order': return updateOrder(state, args, ctx)
     case 'add_item': return addItem(state, args, ctx)

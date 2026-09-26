@@ -88,6 +88,22 @@ const SCENARIOS: Record<string, Scenario> = {
       !has(s, 'apple_turnover', 1) && 'expected 1 Apple Turnover',
     ].filter(Boolean) as string[],
   },
+  addon: {
+    lines: [
+      'Can I get large fries please.',
+      "That's it.",
+      'No thanks.',
+      'Yes.',
+      'Oh wait, can I also get a large Stack Cola?',
+      'Okay.',
+      "Yes, that's right.",
+    ],
+    expect: (s) => [
+      !s.lines.some((l) => l.itemId === 'stack_fries' && l.size === 'large') && 'expected large fries',
+      !s.lines.some((l) => l.itemId === 'stack_cola' && l.size === 'large') && 'expected the late large Stack Cola',
+      !s.submitted?.updated && 'expected the ticket to be re-sent as updated',
+    ].filter(Boolean) as string[],
+  },
   human: {
     lines: [
       'I want a Stackhouse Triple.',

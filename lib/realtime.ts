@@ -34,6 +34,8 @@ export interface SubmittedOrder {
   sessionId?: string | null
   submittedAt: number
   seconds?: number
+  /** A late add-on re-sent this ticket under the same number. */
+  updated?: boolean
 }
 
 export type LaneEvents = {

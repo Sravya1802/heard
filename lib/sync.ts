@@ -23,11 +23,13 @@ export interface SyncSummary {
   done: boolean
   unmatched: string[]
   negative: boolean
+  /** A late add-on reopened an order that was already sent to the kitchen. */
+  reopened: boolean
 }
 
 /** Apply everything the guest said since the last sync. */
 export function syncHeard(state: OrderState, heard: string[], ctx: EngineContext): { state: OrderState; summary: SyncSummary } {
-  const summary: SyncSummary = { heard, changed: [], ask: [], wantsHuman: false, done: false, unmatched: [], negative: false }
+  const summary: SyncSummary = { heard, changed: [], ask: [], wantsHuman: false, done: false, unmatched: [], negative: false, reopened: false }
   let s = state
   for (const utterance of heard) {
     if (!utterance.trim()) continue
@@ -37,12 +39,14 @@ export function syncHeard(state: OrderState, heard: string[], ctx: EngineContext
     summary.negative ||= Boolean(r.negative)
     if (r.unmatched) summary.unmatched.push(utterance)
     if (!r.changes.length) {
-      // A clear "no" closes an open offer; anything else leaves the question open.
-      if (r.negative && s.pending?.kind === 'offer') s = { ...s, pending: null }
+      // An offer only applies to the very next answer. "Thank you" or anything else
+      // that doesn't take it closes it, so a later "yes" (to the read-back) can't revive it.
+      if (s.pending?.kind === 'offer') s = { ...s, pending: null }
       continue
     }
-    if (s.submitted) { summary.ask.push('The order was already sent to the kitchen; tell them to mention changes at the window.'); break }
+    if (s.submitted) summary.reopened = true
     const o = runTool(s, 'update_order', { changes: r.changes }, ctx)
+    if (o.result.reopened) summary.reopened = true
     s = { ...o.state, pending: null }
     const results = (o.result.results as Record<string, unknown>[] | undefined) ?? [o.result]
     results.forEach((res, i) => {
@@ -60,6 +64,8 @@ export function syncHeard(state: OrderState, heard: string[], ctx: EngineContext
 
 function syncNote(sum: SyncSummary): string {
   if (sum.wantsHuman) return 'The guest asked for a person. Call request_human now.'
+  if (sum.reopened && sum.ask.length) return 'This adds to the order already sent to the kitchen. Ask the question in "ask"; once it is answered, call read_back and then submit_order to update the ticket.'
+  if (sum.reopened) return 'This adds to the order already sent to the kitchen. Confirm it in a few words, then call read_back and, when they confirm, submit_order to update the ticket.'
   if (sum.ask.length) return 'Confirm what changed in a few words, then ask the question in `ask`.'
   if (sum.changed.length) return sum.done
     ? 'Confirm briefly. The guest is done ordering: call suggest_upsell next.'
@@ -93,6 +99,13 @@ export function runAgentTool(state: OrderState, name: string, args: Record<strin
 
   if (summary.wantsHuman && name !== 'request_human') {
     return { state: synced, ok: false, summary, result: { ok: false, error: 'guest_wants_human', message: 'The guest asked for a person. Call request_human now.' } }
+  }
+  // Never send a ticket while a question is still open ("yes, and a Coke" -> what size?).
+  if (name === 'submit_order' && (summary.ask.length || synced.pending?.kind === 'item')) {
+    return {
+      state: synced, ok: false, summary,
+      result: { ok: false, error: 'question_open', message: `Don't submit yet. First ask: ${summary.ask.join(' ') || 'the open question about the last item.'}`, ...(summary.changed.length ? { also_changed: summary.changed } : {}) },
+    }
   }
 
   const o = runTool(synced, name, args, ctx)

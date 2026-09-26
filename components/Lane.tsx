@@ -147,7 +147,11 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
         startedAt.current = Date.now()
         broadcast(committed.current, 'ordering')
       },
-      onUserPartial: setPartial,
+      onUserPartial: (text) => {
+        setPartial(text)
+        // Still talking after the total ("oh, and a cola"): don't hang up on them.
+        if (endTimer.current && text.trim()) { clearTimeout(endTimer.current); endTimer.current = null }
+      },
       onUserFinal: (text) => {
         setPartial('')
         if (!text.trim()) return
@@ -185,11 +189,12 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
                 sessionId: s.id,
                 submittedAt: Date.now(),
                 seconds: Math.round((Date.now() - startedAt.current) / 1000),
+                updated: outcome.state.submitted.updated,
               }
               channel.current?.send('order', submitted)
               void fetch('/api/orders', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(submitted) })
               broadcast(outcome.state, 'submitted')
-              endSoon(9000)
+              endSoon(12000)
             } else if (name === 'request_human' && outcome.ok) {
               setCrew(true)
               channel.current?.send('crew', { lane: LANE, reason: lastHeard.current, at: Date.now() })
@@ -334,7 +339,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
                 <div className="text-muted uppercase tracking-widest text-sm">Order</div>
                 <div className="font-display text-8xl font-extrabold text-mustard">#{order.submitted.orderNumber}</div>
                 <div className="mt-2 font-display text-3xl font-bold">{formatPrice(order.submitted.totalCents)} · please pull forward</div>
-                <p className="mt-3 text-muted">Sent to the kitchen. Nobody touched a keyboard.</p>
+                <p className="mt-3 text-muted">{order.submitted.updated ? 'Updated ticket sent to the kitchen.' : 'Sent to the kitchen. Nobody touched a keyboard.'}{live ? ' Forgot something? Just say it.' : ''}</p>
                 {!live && <button onClick={start} className="mt-6 rounded-xl bg-mustard text-asphalt font-bold px-6 py-3">Next car</button>}
               </div>
             </div>

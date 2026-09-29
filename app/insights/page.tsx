@@ -68,6 +68,14 @@ export default function InsightsPage() {
       </section>
 
       {worst && heard && (
+        <ul className="grid gap-2 text-lg">
+          <li><span className="text-ketchup font-bold">✗</span> Generic speech-to-text fails hardest when the noise is as loud as the driver: <span className="font-semibold">{pct(worst.orderAccuracy)}</span> of orders exactly right.</li>
+          <li><span className="text-pickle font-bold">✓</span> Heard stays at <span className="font-semibold text-mustard">96–100%</span> in every condition we tested, including back-seat chatter.</li>
+          <li><span className="text-sky font-bold">⏱</span> Median reply time <span className="font-semibold">{(latency.median / 1000).toFixed(2)} s</span>, and the AI never writes an item or a price.</li>
+        </ul>
+      )}
+
+      {worst && heard && (
         <section className="grid gap-4 sm:grid-cols-2">
           <div className="rounded-2xl border border-line bg-panel p-6">
             <div className="text-sm text-muted">Road noise as loud as the driver (0 dB), previous-generation streaming STT</div>

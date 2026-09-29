@@ -366,7 +366,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
         </div>
       </header>
 
-      <div className="flex-1 grid gap-4 lg:grid-cols-[1.6fr_1fr] min-h-0">
+      <div className="flex-1 grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] min-h-0">
         <div className="flex flex-col gap-4 min-w-0">
         {/* ---- order confirmation board ---- */}
         <section className="relative flex flex-col rounded-2xl border border-line bg-panel overflow-hidden min-h-[240px] lg:min-h-[300px]">
@@ -460,7 +460,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
         </div>
 
         {/* ---- speaker post ---- */}
-        <section className="flex flex-col gap-4 min-h-0">
+        <section className="flex flex-col gap-4 min-h-0 min-w-0">
           <div className="rounded-2xl border border-line bg-panel p-5 flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <div className="flex items-end gap-1 h-10" aria-hidden>
@@ -552,7 +552,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
                   <li key={t.id} className="flex gap-2">
                     <span className={t.rolledBack ? 'text-mustard' : t.ok ? 'text-pickle' : 'text-ketchup'}>{t.rolledBack ? '↺' : t.ok ? '✓' : '✗'}</span>
                     <span className="text-ink">{t.name}</span>
-                    <span className="text-muted truncate">{t.detail}</span>
+                    <span className="text-muted break-words min-w-0">{t.detail}</span>
                   </li>
                 ))}
               </ul>

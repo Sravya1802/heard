@@ -93,7 +93,7 @@ export default function ReplayPlayer({ id }: { id: string }) {
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <section className="relative rounded-2xl border border-line bg-panel overflow-hidden min-h-[320px] flex flex-col">
           <div className="px-6 pt-5 pb-3 border-b border-line flex items-baseline justify-between">
             <h2 className="font-display text-2xl font-bold">The order</h2>
@@ -125,7 +125,7 @@ export default function ReplayPlayer({ id }: { id: string }) {
           {crew && <div className="absolute inset-x-0 top-0 alarm text-asphalt text-center font-display font-bold py-2">Crew member taking over</div>}
         </section>
 
-        <section className="flex flex-col gap-4">
+        <section className="flex flex-col gap-4 min-w-0">
           <div className="rounded-2xl border border-line bg-panel flex-1 min-h-[200px]">
             <div className="px-5 py-3 border-b border-line text-xs font-mono uppercase tracking-widest text-muted">What Heard heard</div>
             <div className="px-5 py-3 flex flex-col gap-2 text-[15px]">
@@ -145,7 +145,7 @@ export default function ReplayPlayer({ id }: { id: string }) {
                 <li key={i} className="flex gap-2">
                   <span className={x.error ? 'text-ketchup' : 'text-pickle'}>{x.error ? '✗' : '✓'}</span>
                   <span className="text-ink">{x.name}</span>
-                  <span className="text-muted truncate">{[x.changed.join('; '), x.ask && `asks: ${x.ask}`, x.error].filter(Boolean).join(' · ')}</span>
+                  <span className="text-muted break-words min-w-0">{[x.changed.join('; '), x.ask && `asks: ${x.ask}`, x.error].filter(Boolean).join(' · ')}</span>
                 </li>
               ))}
             </ul>

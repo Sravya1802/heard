@@ -1,0 +1,123 @@
+{
+ "id": "sess_c8a95ea89890426dbcf38e2c23fa31c9",
+ "title": "Four corrections in one breath (scripted voice)",
+ "duration": 55.4,
+ "recordedAt": "2026-09-29T22:38:43.574943Z",
+ "events": [
+  {
+   "t": 0.22,
+   "kind": "agent",
+   "text": "Welcome to Stackhouse! What can I get started for you?",
+   "end": 3.19
+  },
+  {
+   "t": 4.59,
+   "kind": "guest",
+   "text": "Can I get 2 spicy cluckwiches? Actually, make one of those a Stackhouse Double, no pickles, and a large chocolate Frostee. Wait, scratch the Frostee."
+  },
+  {
+   "t": 16.79,
+   "kind": "tool",
+   "name": "sync_order",
+   "changed": [
+    "added 2 Spicy Cluckwich",
+    "now 1 Spicy Cluckwich",
+    "added 1 Stackhouse Double, no pickles",
+    "added 1 large chocolate Frostee",
+    "removed 1 large chocolate Frostee"
+   ]
+  },
+  {
+   "t": 16.79,
+   "kind": "order",
+   "lines": [
+    "1 Spicy Cluckwich",
+    "1 Stackhouse Double, no pickles"
+   ]
+  },
+  {
+   "t": 17.09,
+   "kind": "agent",
+   "text": "Got it, so one spicy cluckwich and a stackhouse double with no pickles. Anything else?",
+   "end": 22.91
+  },
+  {
+   "t": 24.69,
+   "kind": "guest",
+   "text": "That's all."
+  },
+  {
+   "t": 26.36,
+   "kind": "tool",
+   "name": "suggest_upsell",
+   "changed": []
+  },
+  {
+   "t": 26.36,
+   "kind": "order",
+   "lines": [
+    "1 Spicy Cluckwich",
+    "1 Stackhouse Double, no pickles"
+   ]
+  },
+  {
+   "t": 26.66,
+   "kind": "agent",
+   "text": "Would you like to make that spicy cluckwich a meal with fries and a drink for just 3 dollars and 19 cents more?",
+   "end": 32.19
+  },
+  {
+   "t": 34.29,
+   "kind": "guest",
+   "text": "No thanks."
+  },
+  {
+   "t": 35.98,
+   "kind": "tool",
+   "name": "read_back",
+   "changed": []
+  },
+  {
+   "t": 35.98,
+   "kind": "order",
+   "lines": [
+    "1 Spicy Cluckwich",
+    "1 Stackhouse Double, no pickles"
+   ],
+   "total": "$13.05"
+  },
+  {
+   "t": 36.28,
+   "kind": "agent",
+   "text": "So that's one spicy cluckwich and a stackhouse double with no pickles for 13 dollars and 5 cents. Is that all correct?",
+   "end": 43.25
+  },
+  {
+   "t": 44.89,
+   "kind": "guest",
+   "text": "Yes, that's right."
+  },
+  {
+   "t": 47.43,
+   "kind": "tool",
+   "name": "submit_order",
+   "changed": []
+  },
+  {
+   "t": 47.43,
+   "kind": "order",
+   "lines": [
+    "1 Spicy Cluckwich",
+    "1 Stackhouse Double, no pickles"
+   ],
+   "total": "$13.05",
+   "submitted": 104
+  },
+  {
+   "t": 47.73,
+   "kind": "agent",
+   "text": "Your total is 13 dollars and 5 cents. Please pull forward to the first window.",
+   "end": 52.09
+  }
+ ]
+}

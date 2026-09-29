@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Heard — pitch deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root { --asphalt:#0c0c0d; --panel:#151517; --panel2:#1c1c1f; --line:#2a2a2f; --ink:#f4f1ea; --muted:#a4a098; --faint:#6a6761; --mustard:#ffc21a; --ketchup:#ff4b33; --pickle:#7bd389; --sky:#7cc4ff; }
+  @page { size: 1920px 1080px; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--asphalt); color: var(--ink); font-family: Inter, system-ui, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .slide { width: 1920px; height: 1080px; padding: 90px 110px; position: relative; overflow: hidden; page-break-after: always; break-after: page; display: flex; flex-direction: column; gap: 36px; background: var(--asphalt); }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+  .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 22px; letter-spacing: 3px; text-transform: uppercase; color: var(--mustard); }
+  h1, h2 { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; letter-spacing: -2px; line-height: .98; }
+  h1 { font-size: 132px; }
+  h2 { font-size: 76px; }
+  p, li { font-size: 30px; line-height: 1.4; color: var(--muted); }
+  .ink { color: var(--ink); } .mustard { color: var(--mustard); } .ketchup { color: var(--ketchup); } .pickle { color: var(--pickle); } .sky { color: var(--sky); }
+  .row { display: flex; gap: 40px; } .col { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+  .card { background: var(--panel); border: 2px solid var(--line); border-radius: 28px; padding: 36px; }
+  .card h3 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 40px; font-weight: 700; color: var(--ink); margin-bottom: 12px; }
+  .big { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 160px; line-height: 1; letter-spacing: -4px; }
+  img.shot { border-radius: 22px; border: 2px solid var(--line); display: block; }
+  .foot { position: absolute; left: 110px; right: 110px; bottom: 44px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--faint); }
+  ul.clean { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  ul.clean li::before { content: '▸ '; color: var(--mustard); }
+  .quote { font-size: 36px; color: var(--ink); background: var(--panel2); border-left: 6px solid var(--mustard); padding: 24px 32px; border-radius: 12px; line-height: 1.35; }
+  table { border-collapse: collapse; width: 100%; font-size: 26px; }
+  td { padding: 14px 18px; border-top: 2px solid var(--line); vertical-align: top; }
+  td:first-child { color: var(--ketchup); width: 44%; } td:last-child { color: var(--ink); }
+  .arch { display: flex; align-items: center; gap: 18px; font-family: 'JetBrains Mono', monospace; font-size: 22px; }
+  .box { background: var(--panel); border: 2px solid var(--line); border-radius: 18px; padding: 20px 24px; color: var(--ink); text-align: center; line-height: 1.35; }
+  .box small { display: block; color: var(--muted); font-size: 18px; margin-top: 6px; }
+  .arrow { color: var(--mustard); font-size: 34px; }
+  .tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 20px; border: 2px solid var(--line); border-radius: 999px; padding: 6px 16px; color: var(--muted); margin: 0 10px 10px 0; }
+</style>
+</head>
+<body>
+
+<!-- 1. Title -->
+<section class="slide" style="justify-content:center">
+  <div class="eyebrow">AssemblyAI Voice Agent Hackathon · lablab.ai</div>
+  <h1>Heard<span class="mustard">.</span></h1>
+  <h2 style="font-size:88px; max-width:1500px">The drive-thru AI that doesn&rsquo;t make up orders.</h2>
+  <p style="font-size:34px; max-width:1400px">Hears the driver through engine noise and back-seat chatter, builds a verified order from what it actually heard, and keeps a person one sentence away.</p>
+  <div class="foot"><span>Sravya R</span><span>{{DEMO_URL}} · github.com/Sravya1802/heard</span></div>
+</section>
+
+<!-- 2. Problem -->
+<section class="slide">
+  <div class="eyebrow">The problem</div>
+  <h2>Every viral AI drive-thru failure was a <span class="mustard">hearing</span> failure.</h2>
+  <div class="row" style="margin-top:10px">
+    <div class="card col"><h3>McDonald&rsquo;s · June 2024</h3><p>Ended its IBM AI drive-thru test and pulled it from <span class="ink">100+ restaurants</span> after viral misheard orders, like <span class="ink">nine sweet teas instead of one</span>.</p></div>
+    <div class="card col"><h3>Taco Bell · 2025</h3><p>Slowed its AI rollout after glitches and trolling, including a caller who ordered <span class="ink">18,000 waters</span> just to reach a human.</p></div>
+    <div class="card col"><h3>The hardest place to listen</h3><p>Engines, traffic, kids in the back seat, a cheap speaker a metre away, and guests who change their mind mid-sentence.</p></div>
+  </div>
+  <p style="font-size:22px">Sources: CNBC, Restaurant Dive (Jun 2024); Jalopnik, AOL (2025). Full links in the repo: docs/sources.md</p>
+</section>
+
+<!-- 3. Solution -->
+<section class="slide">
+  <div class="eyebrow">The solution</div>
+  <h2>Hear the driver. Verify the order. Keep it human.</h2>
+  <div class="row">
+    <div class="card col"><h3 class="mustard">1 · Hears</h3><p>AssemblyAI Universal-3.6 Pro with <span class="ink">voice focus</span> (AssemblyAI lists it for drive-thru speakers) and the <span class="ink">menu as key terms</span>, so &ldquo;Cluckwich&rdquo; survives the engine noise.</p></div>
+    <div class="card col"><h3 class="mustard">2 · Verifies</h3><p>The AI runs the conversation but <span class="ink">never writes the order</span>. A deterministic parser builds it from the transcript; a tested engine owns every item, price and total.</p></div>
+    <div class="card col"><h3 class="mustard">3 · Stays human</h3><p>&ldquo;Can I talk to a person?&rdquo; works in one sentence. Spanish, English or both. Tickets go straight to the kitchen screen.</p></div>
+  </div>
+</section>
+
+<!-- 4. Demo: the order -->
+<section class="slide">
+  <div class="eyebrow">Live demo · one breath, four corrections</div>
+  <div class="quote">&ldquo;Two Spicy Cluckwiches, <span class="mustard">actually</span> make one of those a Stackhouse Double, <span class="mustard">no pickles</span>, and a large chocolate Frostee. <span class="mustard">Wait, scratch the Frostee.</span>&rdquo;</div>
+  <div class="row" style="align-items:flex-start">
+    <img class="shot" src="img/order-crop.png" style="width:1250px">
+    <div class="col">
+      <p class="ink" style="font-size:34px">Exactly right, on the live Voice Agent API.</p>
+      <p>Every change shows the words it came from and the rule that applied: <span class="ink">&ldquo;make one of those&hellip;&rdquo; takes one off the existing line.</span></p>
+      <p>Read back, then sent. No keyboard.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Kitchen -->
+<section class="slide">
+  <div class="eyebrow">Closing the loop</div>
+  <h2>From the speaker to the kitchen, with no keyboard.</h2>
+  <img class="shot" src="img/kitchen-crop.png" style="width:1700px">
+  <div class="row">
+    <p class="col"><span class="ink">NO PICKLES</span> in red on the ticket, the moment the guest confirms.</p>
+    <p class="col">&ldquo;Oh wait, a cola&rdquo; after the total <span class="ink">updates the same ticket</span>.</p>
+    <p class="col">Frostee machine down? Mark it, and Heard <span class="ink">stops selling it immediately</span>.</p>
+  </div>
+</section>
+
+<!-- 6. Proof -->
+<section class="slide">
+  <div class="eyebrow">The proof · noise benchmark</div>
+  <div class="row" style="align-items:center">
+    <div class="col" style="flex:0 0 640px">
+      <p>Road noise as loud as the driver:</p>
+      <div><span class="big ketchup">13%</span></div>
+      <p>of orders exactly right with generic speech-to-text</p>
+      <div style="margin-top:20px"><span class="big mustard">99%</span></div>
+      <p>with Heard. <span class="ink">96&ndash;100% in every condition.</span></p>
+    </div>
+    <img class="shot" src="img/chart.png" style="width:1000px">
+  </div>
+  <p style="font-size:22px">24 order lines · 6 English accents · streamed in real time through AssemblyAI · mean of 2&ndash;3 sessions per cell · same parser as the live agent. Synthetic voices and noise; reproducible with npm run bench.</p>
+</section>
+
+<!-- 7. What each heard -->
+<section class="slide">
+  <div class="eyebrow">Same audio, two ears</div>
+  <h2>Made-up brand names are exactly what generic STT gets wrong.</h2>
+  <div class="row" style="align-items:flex-start">
+    <img class="shot" src="img/examples.png" style="width:1100px">
+    <div class="col">
+      <p>&ldquo;Cluck Bites&rdquo; &rarr; <span class="ketchup">&ldquo;plug bites&rdquo;</span></p>
+      <p>&ldquo;Smokestack BBQ&rdquo; &rarr; <span class="ketchup">&ldquo;theq&rdquo;</span></p>
+      <p>&ldquo;Spicy Cluckwiches&rdquo; &rarr; <span class="ketchup">&ldquo;USPYC Club witches&rdquo;</span></p>
+      <p class="ink">In the live demo, judges see this side by side for their own voice: <span class="mustard">Hear it both ways</span>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8. How it's built -->
+<section class="slide">
+  <div class="eyebrow">How it&rsquo;s built</div>
+  <h2>The model runs the conversation. Code owns the order.</h2>
+  <div class="arch">
+    <div class="box">Driver&rsquo;s mic<small>browser, 24 kHz</small></div><span class="arrow">&rarr;</span>
+    <div class="box" style="border-color:var(--mustard)">AssemblyAI Voice Agent API<small>Universal-3.6 Pro · voice focus · key terms · LLM · voice · barge-in</small></div><span class="arrow">&rarr;</span>
+    <div class="box">sync_order {}<small>no arguments</small></div><span class="arrow">&rarr;</span>
+    <div class="box">Deterministic parser<small>from the final transcript</small></div><span class="arrow">&rarr;</span>
+    <div class="box">Order engine<small>prices · guardrails</small></div><span class="arrow">&rarr;</span>
+    <div class="box">Kitchen<small>realtime</small></div>
+  </div>
+  <div class="row">
+    <div class="card col"><h3>Why no tool arguments?</h3><p>Live testing showed the managed LLM returned an <span class="ink">empty reply</span> whenever a turn needed several changes. A parameterless tool is called reliably, and the order becomes deterministic and testable.</p></div>
+    <div class="card col"><h3>Engineering</h3><ul class="clean"><li>103 automated tests</li><li>Scripted scenarios verified against the live agent</li><li>Median reply 1.25 s, p90 1.68 s</li><li>Single-use browser tokens; MIT-licensed</li></ul></div>
+  </div>
+</section>
+
+<!-- 9. Safety and inclusion -->
+<section class="slide">
+  <div class="eyebrow">Safety and inclusion</div>
+  <h2>Built so everyone gets understood the first time.</h2>
+  <div class="row" style="align-items:flex-start">
+    <div class="card col" style="flex:1.3">
+      <table>
+        <tr><td>Nine sweet teas instead of one</td><td>Quantities parsed deterministically, read back before sending</td></tr>
+        <tr><td>18,000 waters</td><td>Quantity caps with a friendly double-check</td></tr>
+        <tr><td>Trapped with a bot</td><td>A person is one sentence away; crew alarm on the kitchen screen</td></tr>
+        <tr><td>Invented items or prices</td><td>Impossible: the AI never writes the order</td></tr>
+        <tr><td>Pushy upselling</td><td>At most one offer per order</td></tr>
+      </table>
+    </div>
+    <div class="card col">
+      <h3>Everyone, any car</h3>
+      <ul class="clean"><li>Tested across 6 English accents</li><li>Spanish, English or both in one sentence</li><li>Every order shown on screen as it&rsquo;s heard, for hard-of-hearing drivers too</li><li>Asks instead of guessing a size or flavor</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- 10. Business and next -->
+<section class="slide">
+  <div class="eyebrow">Business and what&rsquo;s next</div>
+  <h2>The hearing layer for voice AI in loud places.</h2>
+  <div class="row" style="align-items:stretch">
+    <div class="card col"><h3>Who pays</h3><p>Quick-service chains and franchisees. Proposed model: a monthly subscription per drive-thru lane.</p><p style="margin-top:10px">Why switch: accuracy you can <span class="ink">measure before you deploy</span>, orders that are never invented, a human always one sentence away, and bilingual service.</p></div>
+    <div class="card col"><h3>Landscape</h3><p>Presto, SoundHound and Wendy&rsquo;s FreshAI (with Google Cloud) show the demand. Heard&rsquo;s difference: hearing-first, deterministic orders, and published accuracy.</p><p style="margin-top:10px;font-size:24px">Illustrative only: 500 drive-thru orders a day with 2% fewer remakes is 10 orders a day, about 3,650 a year per store.</p></div>
+    <div class="card col"><h3>Next</h3><ul class="clean"><li><span class="ink">Pharmacy drive-thru windows</span>, where a misheard name or drug is a safety risk</li><li>Pilot recordings from a real lane</li><li>Point-of-sale integration</li><li>More languages</li></ul></div>
+  </div>
+  <div class="foot"><span>Try it: {{DEMO_URL}}</span><span>github.com/Sravya1802/heard</span></div>
+</section>
+
+</body>
+</html>

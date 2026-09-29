@@ -9,7 +9,7 @@ Timings are targets. Narration is what you say over the recording; **LIVE** mean
 ## 0:00–0:20 — Hook (the side-by-side)
 **On screen:** Lane 1, "Hear it both ways" panel large. Noise phone playing.
 
-**LIVE (you, into the laptop):** "Two Spicy Cluckwiches and a large onion rings."
+**LIVE (you, into the laptop):** "Two Spicy Cluckwiches and a large onion rings." 
 
 **Narration (over the result):**
 > "Same microphone. Same traffic noise. On the left, what a typical drive-thru AI hears. On the right, Heard. One of these gets your order right."
@@ -21,17 +21,17 @@ Timings are targets. Narration is what you say over the recording; **LIVE** mean
 > These weren't intelligence failures. They were hearing failures. A drive-thru is the hardest place for a voice AI to listen: engines, traffic, kids in the back seat, and people who change their mind mid-sentence."
 
 ## 0:50–2:20 — Live demo, one continuous take
-**On screen:** Lane 1 on the left, kitchen screen on the right. Noise playing the whole time. Don't cut inside this section.
+**On screen:** Lane 1 on the left, kitchen screen on the right. Noise playing the whole time. Don't cut inside this section. Scenario button: **"Changes their mind"**.
 
 Say, naturally (the agent answers between each):
-1. "Hi, can I get two Stackhouse Doubles… actually, make one of those a single, no pickles."
-   > *(narrate briefly, or let it play)* "It edits the line instead of adding a duplicate. The kitchen sees it while I'm still talking."
-2. "And a large chocolate Frostee."
-3. "Can I get eighteen thousand waters?"
-   > "Guardrails say no, politely."
-4. "That's everything." → answer the one upsell offer with "No thanks." → read-back → "Yes, that's right."
+1. **The killer line, in one breath:** "Can I get two Spicy Cluckwiches, actually make one of those a Stackhouse Double, no pickles, and a large chocolate Frostee. Wait, scratch the Frostee."
+   > *(point at "How Heard decided")* "Four corrections in one breath. Every change shows the words it came from and the rule that applied. The AI never writes the order."
+   > *(point at "Hear it both ways")* "And here's the same sentence through generic speech-to-text: 'clock witches'. That's the order a typical drive-thru AI would have made."
+2. "Can I get eighteen thousand waters?"
+   > "Capped. Heard double-checks instead of sending it to the kitchen."
+3. "That's all." → answer the one offer with "No thanks." → read-back → "Yes, that's right."
    > "The ticket fires: No Pickles in red. Nobody touched a keyboard."
-5. "Oh wait — can I also get a large Stack Cola?"
+4. "Oh wait — can I also get a large Stack Cola?"
    > "Late add-ons update the same ticket, like a real crew would."
 
 **Optional 10 s:** on the kitchen screen, switch **Frostee machine → DOWN**, then ask for a Frostee. Heard apologizes and offers an Apple Turnover.
@@ -55,7 +55,8 @@ Say, naturally (the agent answers between each):
 
 ## 3:50–4:15 — Business and close
 **On screen:** business slide, then the landing page with the live URL.
-> "Drive-thru is most of fast food's revenue, and every chain is trying voice AI. Heard is the hearing layer: sold per lane, with accuracy you can measure before you deploy — and a human always one sentence away. Drive-thrus first; gas stations, stadiums and curbside next.
+> "Every chain is trying voice AI at the drive-thru. Heard is the hearing layer: sold per lane, with accuracy you can measure before you deploy, and a human always one sentence away. It's built so everyone gets understood the first time — any accent, English or Spanish.
+> Drive-thrus first. Next: pharmacy drive-thru windows, where a misheard name or drug isn't an inconvenience, it's a safety risk.
 > Pull up and try it yourself — the link's below. Put your phone on the noise page, and watch both columns."
 
 ---

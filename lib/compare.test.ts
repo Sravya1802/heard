@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { addGeneric, addHeard, orderMeaning, sameMeaning } from './compare'
+import { addGeneric, addHeard, diffWords, orderMeaning, sameMeaning } from './compare'
 
 describe('pairing turns', () => {
   it('pairs a generic final that arrives just after Heard', () => {
@@ -47,6 +47,18 @@ describe('order meaning', () => {
     expect(sameMeaning('Can I get two Stackhouse Doubles?', 'can i get 2 stackhouse doubles')).toBe(true)
   })
   it('keeps items that still need a size', () => {
-    expect(orderMeaning('And a Stack Cola.')).toEqual(['1 stack_cola'])
+    expect(orderMeaning('And a Stack Cola.')).toEqual(['stack_cola refused: size required'])
+  })
+})
+
+describe('word-level diff', () => {
+  it('marks only the misheard words', () => {
+    const d = diffWords('Two spicy clock witches and a large onion rings.', 'Two Spicy Cluckwiches and a large onion rings.')
+    expect(d.a.filter((p) => !p.same).map((p) => p.text)).toEqual(['clock', 'witches'])
+    expect(d.b.filter((p) => !p.same).map((p) => p.text)).toEqual(['Cluckwiches'])
+  })
+  it('treats number words and digits as the same', () => {
+    const d = diffWords('Can I get 2 Stackhouse Doubles?', 'can i get two stackhouse doubles')
+    expect(d.a.every((p) => p.same)).toBe(true)
   })
 })

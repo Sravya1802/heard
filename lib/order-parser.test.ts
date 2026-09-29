@@ -42,7 +42,7 @@ describe('single utterances from the benchmark set', () => {
 
   it('parses a drink without a size, which the engine then asks about', () => {
     const r = parseUtterance('Large Stack Fries, no salt, and a Diet Stack Cola with light ice.', emptyOrder())
-    expect(r.changes).toEqual([
+    expect(r.changes).toMatchObject([
       { action: 'add', item_id: 'stack_fries', size: 'large', quantity: 1, modifiers: ['no_salt'] },
       { action: 'add', item_id: 'diet_stack_cola', quantity: 1, modifiers: ['light_ice'] },
     ])
@@ -76,7 +76,7 @@ describe('corrections', () => {
   it('"make it a meal"', () => {
     const s = order(['A Cluckwich.'])
     const r = parseUtterance('Make it a meal.', s)
-    expect(r.changes).toEqual([{ action: 'change', line_id: 'L1', as_meal: true }])
+    expect(r.changes).toMatchObject([{ action: 'change', line_id: 'L1', as_meal: true }])
   })
   it('"just one" reduces the last line', () => {
     expect(said(['Three Apple Turnovers.', 'Actually just one.'])).toEqual(['1 Apple Turnover'])
@@ -86,7 +86,7 @@ describe('corrections', () => {
 describe('guardrail inputs', () => {
   it('reads "eighteen thousand waters" as 18000 so the engine can refuse it', () => {
     const r = parseUtterance('Can I get eighteen thousand waters?', emptyOrder())
-    expect(r.changes).toEqual([{ action: 'add', item_id: 'bottled_water', quantity: 18000 }])
+    expect(r.changes).toMatchObject([{ action: 'add', item_id: 'bottled_water', quantity: 18000 }])
   })
   it('"just kidding, one water" adds one', () => {
     expect(said(['Ha, just kidding. Just one water please.'])).toEqual(['1 Bottled Water'])

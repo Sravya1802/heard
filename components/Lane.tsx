@@ -28,18 +28,20 @@ const STATUS_LABEL: Record<CallStatus, string> = {
   error: 'Something went wrong',
 }
 
-const TRY_SAYING_ES = [
-  '“Quiero dos Stackhouse Doubles, una sin pepinillos.”',
-  '“Y unas papas grandes… mejor medianas.”',
-  '“Can I get una malteada de chocolate grande?”',
-  '“Eso es todo.”',
-]
+interface Scenario { id: string; label: string; lines: string[]; bilingual?: boolean }
+interface Decision { id: number; heard: string; action: string; why: string; ok: boolean }
 
-const TRY_SAYING = [
-  '“Two Stackhouse Doubles… actually make one a single, no pickles.”',
-  '“And a large chocolate Frostee for her.”',
-  '“Can I get eighteen thousand waters?”',
-  '“Can I talk to a real person?”',
+/** What the order engine did, and what it refused to do, in this car. */
+const NO_CHECKS = { corrections: 0, capped: 0, unavailable: 0, offMenu: 0, asked: 0 }
+
+/** Suggested scripts, so a judge knows exactly what to say. */
+const SCENARIOS: Scenario[] = [
+  { id: 'mind', label: 'Changes their mind', lines: ['“Two Spicy Cluckwiches, actually make one of those a Stackhouse Double, no pickles, and a large chocolate Frostee. Wait, scratch the Frostee.”', 'All in one breath. Watch every correction land.'] },
+  { id: 'correction', label: 'Mid-order correction', lines: ['“Two Stackhouse Doubles… actually make one of those a single, no pickles.”', '“And a large chocolate Frostee.”'] },
+  { id: 'family', label: 'Noisy family car', lines: ['Play the noise from your phone first.', '“Two Spicy Cluckwiches, a ten piece Cluck Bites with ranch, and a large onion rings.”'] },
+  { id: 'prank', label: 'Prank & human', lines: ['“Can I get eighteen thousand waters?”', '“Ugh, can I just talk to a real person?”'] },
+  { id: 'addon', label: 'Forgot something', lines: ['“A large Stack Fries.” … “That\'s all.” … “Yes.”', 'After the total: “Oh wait, can I also get a large Stack Cola?”'] },
+  { id: 'spanglish', label: 'Spanglish', bilingual: true, lines: ['“Quiero dos Stackhouse Doubles, una sin pepinillos.”', '“Y unas papas grandes.” … “Eso es todo.”'] },
 ]
 
 function toolDetail(name: string, result: Record<string, unknown>, summary: SyncSummary): string {
@@ -69,6 +71,9 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
   const [elapsed, setElapsed] = useState(0)
   const [unavailable, setUnavailable] = useState<string[]>([])
   const [showHood, setShowHood] = useState(false)
+  const [scenarioId, setScenarioId] = useState(hearing.bilingual ? 'spanglish' : 'mind')
+  const [checks, setChecks] = useState(NO_CHECKS)
+  const [decisions, setDecisions] = useState<Decision[]>([])
   // "Hear it both ways": the generic transcriber's view of the same audio.
   const [rows, setRows] = useState<Row[]>([])
   const [genericPartial, setGenericPartial] = useState('')
@@ -123,6 +128,27 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
     return () => clearInterval(t)
   }, [live])
 
+  /** Feeds the "Verified order" strip and the "How Heard decided" log. */
+  const countChecks = (summary: SyncSummary) => {
+    const n = (codes: string[]) => summary.refused.filter((e) => codes.includes(e)).length
+    const delta = {
+      corrections: summary.changed.filter((c) => c.startsWith('now ') || c.startsWith('removed ')).length,
+      capped: n(['quantity_too_high', 'order_too_large']),
+      unavailable: n(['unavailable']),
+      offMenu: n(['not_on_menu']),
+      asked: n(['size_required', 'flavor_required', 'meal_drink_required', 'kids_main_required']),
+    }
+    if (Object.values(delta).some(Boolean)) {
+      setChecks((c) => ({
+        corrections: c.corrections + delta.corrections, capped: c.capped + delta.capped,
+        unavailable: c.unavailable + delta.unavailable, offMenu: c.offMenu + delta.offMenu, asked: c.asked + delta.asked,
+      }))
+    }
+    if (summary.explain.length) {
+      setDecisions((d) => [...summary.explain.map((e) => ({ id: ++toolSeq.current, ...e })).reverse(), ...d].slice(0, 30))
+    }
+  }
+
   const addTool = (entry: Omit<ToolLog, 'id'>) => setTools((t) => [{ id: ++toolSeq.current, ...entry }, ...t].slice(0, 40))
 
   const endSoon = (ms: number) => {
@@ -139,6 +165,8 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
     unsynced.current = []
     inFlight.current.clear()
     setRows([]); setGenericPartial(''); setGenericOrder([]); setShadowOn(false)
+    setChecks(NO_CHECKS)
+    setDecisions([])
     shadowState.current = emptyOrder()
 
     const ctx = () => ({
@@ -218,6 +246,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
             inFlight.current.delete(callId)
             commitState(outcome.state)
             addTool({ name, detail, ok: outcome.ok })
+            countChecks(outcome.summary)
             if (name === 'submit_order' && outcome.ok && outcome.state.submitted) {
               const submitted: SubmittedOrder = {
                 orderNumber: outcome.state.submitted.orderNumber,
@@ -252,6 +281,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
         const next = summary.wantsHuman ? runTool(state, 'request_human', {}).state : state
         speculative.current = next
         commitState(next)
+        countChecks(summary)
         addTool({ name: 'recovered', detail: toolDetail('sync_order', { ok: true }, summary) || 'empty reply, re-prompted', ok: true, rolledBack: true })
         if (summary.wantsHuman) {
           setCrew(true)
@@ -299,6 +329,8 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
   }
 
   const t = totals(order)
+  const ignored = rows.filter((r) => r.heard == null && r.genericAt != null && nowTick - r.genericAt > 4000).length
+  const scenario = SCENARIOS.find((x) => x.id === scenarioId) ?? SCENARIOS[0]
   const lastLatency = latencies.at(-1)
   const sorted = [...latencies].sort((a, b) => a - b)
   const median = sorted.length ? sorted[Math.floor(sorted.length / 2)] : undefined
@@ -342,6 +374,24 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
             <h1 className="font-display text-3xl font-bold">Your order</h1>
             <span className="text-sm text-muted">{t.itemCount ? `${t.itemCount} item${t.itemCount === 1 ? '' : 's'}` : ''}</span>
           </div>
+
+          {(order.lines.length > 0 || checks.capped + checks.unavailable + checks.offMenu + checks.asked > 0) && (
+            <div className="flex flex-wrap gap-1.5 px-5 py-2.5 border-b border-line text-xs font-mono">
+              <span className="text-faint uppercase tracking-wider self-center mr-1">Verified order</span>
+              {order.lines.length > 0 && <span className="rounded bg-pickle/15 text-pickle px-2 py-0.5">✓ built from what was heard</span>}
+              {checks.corrections > 0 && <span className="rounded bg-sky/15 text-sky px-2 py-0.5">↺ {checks.corrections} correction{checks.corrections === 1 ? '' : 's'} applied</span>}
+              {checks.asked > 0 && <span className="rounded bg-mustard/15 text-mustard px-2 py-0.5">? asked instead of guessing</span>}
+              {checks.capped > 0 && <span className="rounded bg-ketchup/15 text-ketchup px-2 py-0.5">✗ capped a suspicious quantity</span>}
+              {checks.unavailable > 0 && <span className="rounded bg-ketchup/15 text-ketchup px-2 py-0.5">✗ didn&apos;t sell an unavailable item</span>}
+              {checks.offMenu > 0 && <span className="rounded bg-ketchup/15 text-ketchup px-2 py-0.5">✗ didn&apos;t invent an off-menu item</span>}
+              {ignored > 0 && <span className="rounded bg-panel-2 border border-line text-muted px-2 py-0.5">◌ {ignored} background voice{ignored === 1 ? '' : 's'} ignored</span>}
+              {order.lines.length > 0 && (order.submitted
+                ? <span className="rounded bg-pickle/15 text-pickle px-2 py-0.5">✓ read back · sent to kitchen</span>
+                : order.readBackVersion === order.version
+                  ? <span className="rounded bg-pickle/15 text-pickle px-2 py-0.5">✓ read back to guest</span>
+                  : <span className="rounded bg-panel-2 border border-line text-muted px-2 py-0.5">… read-back before sending</span>)}
+            </div>
+          )}
 
           <ol className="flex-1 overflow-y-auto px-3 py-2">
             {order.lines.length === 0 && (
@@ -423,6 +473,24 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
                 {live ? 'Speak normally. Background voices and car noise are filtered out.' : 'Chrome recommended. Headphones help.'}
               </div>
             </div>
+            <div>
+              <div className="text-xs font-mono uppercase tracking-wider text-faint mb-2">Pick a scenario</div>
+              <div className="flex flex-wrap gap-1.5">
+                {SCENARIOS.map((x) => {
+                  const selected = x.id === scenario.id
+                  const cls = `rounded-full px-3 py-1 text-sm border ${selected ? 'bg-ink text-asphalt border-ink' : 'border-line text-muted hover:text-ink'}`
+                  // The Spanglish script needs the bilingual lane; others need the English one.
+                  if (Boolean(x.bilingual) !== Boolean(hearing.bilingual)) {
+                    return <Link key={x.id} href={x.bilingual ? '/lane?lang=es' : '/lane'} className={cls}>{x.label}</Link>
+                  }
+                  return <button key={x.id} onClick={() => setScenarioId(x.id)} className={cls}>{x.label}</button>
+                })}
+              </div>
+              <div className="mt-3 rounded-xl bg-panel-2 border border-line p-3 text-[15px] leading-snug">
+                <div className="text-xs font-mono uppercase tracking-wider text-mustard mb-1">Say this</div>
+                {scenario.lines.map((l) => <p key={l} className={l.startsWith('“') ? 'text-ink' : 'text-muted text-sm'}>{l}</p>)}
+              </div>
+            </div>
             {!live ? (
               <button
                 onClick={start}
@@ -449,10 +517,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
             <div className="px-5 py-3 border-b border-line text-xs font-mono uppercase tracking-widest text-muted">What Heard heard</div>
             <div className="flex-1 overflow-y-auto px-5 py-3 flex flex-col gap-2 text-[15px]">
               {captions.length === 0 && !partial && (
-                <div className="text-muted">
-                  <p className="mb-2">Try saying:</p>
-                  <ul className="space-y-1.5">{(hearing.bilingual ? TRY_SAYING_ES : TRY_SAYING).map((s) => <li key={s}>{s}</li>)}</ul>
-                </div>
+                <p className="text-muted">The conversation appears here. Pick a scenario above, pull up, and say its line.</p>
               )}
               {captions.map((c, i) => (
                 <p key={i} className={c.who === 'guest' ? 'text-ink' : 'text-sky'}>
@@ -465,14 +530,24 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
             </div>
           </div>
 
-          {/* under the hood */}
+          {/* how Heard decided: heard -> action -> why */}
           <div className="rounded-2xl border border-line bg-panel overflow-hidden">
             <button onClick={() => setShowHood((v) => !v)} className="w-full flex justify-between px-5 py-3 text-xs font-mono uppercase tracking-widest text-muted">
-              <span>Under the hood · order engine</span><span>{showHood ? 'hide' : 'show'}</span>
+              <span>How Heard decided</span><span>{showHood ? 'hide' : 'show tool calls'}</span>
             </button>
+            <ul className="max-h-64 overflow-y-auto px-5 pb-3 space-y-2.5">
+              {decisions.length === 0 && <li className="text-sm text-faint">Every change to the order shows up here with the words it came from and the rule that applied. The AI never writes the order.</li>}
+              {decisions.map((d) => (
+                <li key={d.id} className="text-sm leading-snug">
+                  <div className="text-muted">“{d.heard}”</div>
+                  <div className={d.ok ? 'text-pickle' : 'text-ketchup'}>{d.ok ? '→ ' : '✗ '}{d.action}</div>
+                  {d.why && <div className="text-xs text-faint font-mono">{d.why}</div>}
+                </li>
+              ))}
+            </ul>
             {showHood && (
-              <ul className="max-h-48 overflow-y-auto px-5 pb-3 font-mono text-xs space-y-1">
-                {tools.length === 0 && <li className="text-faint">Tool calls from the agent show up here. Prices and totals only ever come from this engine.</li>}
+              <ul className="max-h-40 overflow-y-auto px-5 pb-3 pt-2 border-t border-line font-mono text-xs space-y-1">
+                {tools.length === 0 && <li className="text-faint">Tool calls from the agent show up here.</li>}
                 {tools.map((t) => (
                   <li key={t.id} className="flex gap-2">
                     <span className={t.rolledBack ? 'text-mustard' : t.ok ? 'text-pickle' : 'text-ketchup'}>{t.rolledBack ? '↺' : t.ok ? '✓' : '✗'}</span>

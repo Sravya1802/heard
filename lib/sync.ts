@@ -6,7 +6,7 @@
 // order is built from what was *heard*, and the model only runs the conversation.
 
 import { describeLine, runTool, type EngineContext, type OrderState, type ToolOutcome } from './order-engine'
-import { parseUtterance, type Change, type Pending } from './order-parser'
+import { parseUtterance, splitClauses, type Change, type Pending } from './order-parser'
 
 const NEEDS: Record<string, Extract<Pending, { kind: 'item' }>['missing']> = {
   size_required: 'size',
@@ -25,13 +25,17 @@ export interface SyncSummary {
   negative: boolean
   /** A late add-on reopened an order that was already sent to the kitchen. */
   reopened: boolean
+  /** Engine refusals in this sync (e.g. quantity_too_high, unavailable, size_required). */
+  refused: string[]
+  /** Heard -> action -> why, for every change the parser proposed. */
+  explain: { heard: string; action: string; why: string; ok: boolean; item?: string }[]
 }
 
 /** Apply everything the guest said since the last sync. */
 export function syncHeard(state: OrderState, heard: string[], ctx: EngineContext): { state: OrderState; summary: SyncSummary } {
-  const summary: SyncSummary = { heard, changed: [], ask: [], wantsHuman: false, done: false, unmatched: [], negative: false, reopened: false }
+  const summary: SyncSummary = { heard, changed: [], ask: [], wantsHuman: false, done: false, unmatched: [], negative: false, reopened: false, refused: [], explain: [] }
   let s = state
-  for (const utterance of heard) {
+  for (const utterance of heard.flatMap(splitClauses)) {
     if (!utterance.trim()) continue
     const r = parseUtterance(utterance, s, s.pending)
     summary.wantsHuman ||= Boolean(r.wantsHuman)
@@ -50,10 +54,15 @@ export function syncHeard(state: OrderState, heard: string[], ctx: EngineContext
     s = { ...o.state, pending: null }
     const results = (o.result.results as Record<string, unknown>[] | undefined) ?? [o.result]
     results.forEach((res, i) => {
+      const action = res.ok
+        ? String(res.added ? `added ${res.added}` : res.now ? `now ${res.now}` : res.removed ? `removed ${res.removed}` : 'updated')
+        : `refused: ${String(res.error).replace(/_/g, ' ')}`
+      summary.explain.push({ heard: utterance, action, why: r.changes[i]?.why ?? '', ok: Boolean(res.ok), item: r.changes[i]?.item_id })
       if (res.ok) {
         summary.changed.push(String(res.added ? `added ${res.added}` : res.now ? `now ${res.now}` : res.removed ? `removed ${res.removed}` : 'updated'))
       } else {
         summary.ask.push(String(res.message))
+        summary.refused.push(String(res.error))
         const missing = NEEDS[String(res.error)]
         if (missing && !s.pending) s = { ...s, pending: { kind: 'item', change: r.changes[i] as Change, missing } }
       }

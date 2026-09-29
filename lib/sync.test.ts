@@ -66,3 +66,21 @@ describe('a real conversation from live testing', () => {
     expect(lines).toEqual(['1 Stackhouse Double, as a medium meal with Sweet Tea'])
   })
 })
+
+describe('corrections inside one breath', () => {
+  it('applies "actually…" and "wait, scratch…" in order within a single sentence', () => {
+    const { lines } = conversation([
+      ['Can I get two Spicy Cluckwiches, actually make one of those a Stackhouse Double, no pickles, and a large chocolate Frostee. Wait, scratch the Frostee.', 'sync_order'],
+    ])
+    expect(lines).toEqual(['1 Spicy Cluckwich', '1 Stackhouse Double, no pickles'])
+  })
+
+  it('explains every change it made', () => {
+    const o = runAgentTool(emptyOrder(), 'sync_order', {}, ['Two Stackhouse Doubles, actually make one of those a single.'])
+    expect(o.summary.explain.map((e) => e.why)).toEqual([
+      'new item named',
+      'correction: "make one of those…" takes one off the existing line',
+      'correction: …and turns it into the new item',
+    ])
+  })
+})

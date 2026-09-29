@@ -1,22 +1,19 @@
 import Link from 'next/link'
+import NoiseQR from '@/components/NoiseQR'
+import results from '@/bench/results.json'
+import latency from '@/bench/latency.json'
 
 const FAILURES = [
-  { failure: 'Mishears orders over engine noise and back-seat chatter', fix: 'AssemblyAI voice_focus isolates the driver; menu key terms catch made-up brand names' },
+  { failure: 'Mishears orders over engine noise and back-seat chatter', fix: 'AssemblyAI voice focus isolates the driver; menu key terms catch made-up brand names' },
   { failure: 'Guest changes their mind mid-sentence', fix: 'Corrections edit the existing line instead of adding a duplicate' },
   { failure: 'Nine sweet teas instead of one', fix: 'Quantities are parsed deterministically and read back before anything reaches the kitchen' },
   { failure: 'Pranked with 18,000 waters to reach a human', fix: 'A person is one sentence away, and quantity guardrails refuse absurd orders' },
   { failure: 'AI invents items or prices', fix: 'The model never writes the order: a tested parser and engine own every item, price and total' },
 ]
 
-const STEPS = [
-  { n: '1', title: 'Pull up', body: 'Open Lane 1 and allow the microphone. Chrome works best; headphones help.' },
-  { n: '2', title: 'Order like a real person', body: '“Two Stackhouse Doubles… actually make one a single, no pickles.” Then try “eighteen thousand waters” or “can I talk to a person?”' },
-  { n: '3', title: 'Watch the kitchen', body: 'Open the kitchen screen in a second tab: items appear while you talk, and the ticket fires when you confirm.' },
-]
-
 const STACK = [
   'AssemblyAI Voice Agent API: speech-to-text, LLM and voice over one WebSocket, with barge-in',
-  'Universal-3.6 Pro streaming with voice_focus, which AssemblyAI lists for drive-thru speakers',
+  'Universal-3.6 Pro streaming with voice focus, which AssemblyAI lists for drive-thru speakers',
   'Menu key terms and a transcription prompt, so invented names like "Cluckwich" survive',
   'The model runs the conversation; a deterministic parser builds the order from the transcript',
   'A tested order engine owns every item, price and total, with guardrails and read-back',
@@ -24,6 +21,25 @@ const STACK = [
   'Bilingual lane: Spanish, English or both in one sentence, answered in the guest\'s language',
   'Single-use browser tokens: the API key never reaches the page',
 ]
+
+type Cell = { condition: string; config: string; orderAccuracy: number }
+const cells = (results as unknown as { results: Cell[] }).results
+const at = (condition: string, config: string) => cells.find((c) => c.condition === condition && c.config === config)?.orderAccuracy ?? 0
+const pct = (v: number) => `${Math.round(v * 100)}%`
+const GENERIC_LOUD = pct(at('road0', 'generic'))
+const HEARD_LOUD = pct(at('road0', 'focus'))
+
+function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
+  return (
+    <li className="rounded-2xl border border-line bg-panel p-5 flex flex-col gap-3">
+      <div className="flex items-baseline gap-3">
+        <span className="font-display text-3xl font-extrabold text-mustard">{n}</span>
+        <h3 className="font-display text-lg font-bold">{title}</h3>
+      </div>
+      <div className="text-sm text-muted flex flex-col gap-3">{children}</div>
+    </li>
+  )
+}
 
 export default function Home() {
   return (
@@ -34,50 +50,84 @@ export default function Home() {
           <Link href="/lane" className="hover:text-ink">Lane 1</Link>
           <Link href="/kitchen" className="hover:text-ink">Kitchen</Link>
           <Link href="/insights" className="hover:text-ink">Benchmark</Link>
+          <Link href="/replay" className="hover:text-ink">Replay</Link>
         </nav>
       </header>
 
-      <section className="grid gap-8 lg:grid-cols-[1.3fr_1fr] items-end">
+      <section className="grid gap-8 lg:grid-cols-[1.35fr_1fr] items-end">
         <div>
           <p className="font-mono text-xs uppercase tracking-widest text-mustard mb-4">Drive-thru voice AI, built around hearing</p>
           <h1 className="font-display text-5xl sm:text-7xl font-extrabold leading-[0.95] tracking-tight">
-            Drive-thru AI didn&apos;t fail because it was dumb. It failed because it couldn&apos;t hear.
+            The drive-thru AI that doesn&apos;t make up orders.
           </h1>
           <p className="mt-6 text-lg text-muted max-w-2xl">
-            McDonald&apos;s pulled its AI drive-thru from 100+ restaurants after viral misheard orders.{' '}
-            Taco Bell slowed its rollout after one caller ordered 18,000 waters just to reach a human.{' '}
-            Heard isolates the driver&apos;s voice from engine noise and back-seat chatter, builds the order only from what it heard, and puts a person one sentence away.
+            Heard turns chaotic drive-thru speech into a verified order, using AssemblyAI voice focus, menu-aware transcription and a deterministic order engine. The AI runs the conversation; it never writes the order.
           </p>
         </div>
         <div className="flex flex-col gap-3">
           <Link href="/lane" className="rounded-2xl bg-mustard text-asphalt font-display text-2xl font-bold text-center py-5 hover:brightness-110">
-            Pull up to the speaker →
+            Start the judge demo →
           </Link>
-          <Link href="/kitchen" target="_blank" className="rounded-2xl border border-line text-center py-4 font-semibold hover:border-mustard">
-            Open the kitchen screen ↗
+          <Link href="/replay" className="rounded-2xl border border-line text-center py-4 font-semibold hover:border-mustard">
+            No mic? Watch a real order ▶
           </Link>
-          <p className="text-xs text-muted text-center">No login. Sessions are capped at 3 minutes.</p>
+          <p className="text-xs text-muted text-center">No login. Chrome recommended. Sessions are capped at 3 minutes.</p>
         </div>
       </section>
 
-      <section>
-        <h2 className="font-display text-3xl font-bold mb-5">Try it in 60 seconds</h2>
-        <ol className="grid gap-4 md:grid-cols-3">
-          {STEPS.map((s) => (
-            <li key={s.n} className="rounded-2xl border border-line bg-panel p-5">
-              <span className="font-display text-4xl font-extrabold text-mustard">{s.n}</span>
-              <h3 className="mt-2 font-display text-xl font-bold">{s.title}</h3>
-              <p className="mt-2 text-muted">{s.body}</p>
-            </li>
-          ))}
+      <section className="grid gap-4 sm:grid-cols-3">
+        <div className="rounded-2xl border border-mustard/60 bg-panel p-5">
+          <div className="font-display text-5xl font-extrabold text-mustard tabular-nums">{HEARD_LOUD}</div>
+          <div className="mt-1 text-sm text-muted">of orders exactly right with road noise as loud as the driver. Generic speech-to-text: <span className="text-ink font-semibold">{GENERIC_LOUD}</span>.</div>
+          <Link href="/insights" className="mt-2 inline-block text-xs text-mustard underline">See the benchmark</Link>
+        </div>
+        <div className="rounded-2xl border border-line bg-panel p-5">
+          <div className="font-display text-5xl font-extrabold tabular-nums">{(latency.median / 1000).toFixed(2)} s</div>
+          <div className="mt-1 text-sm text-muted">median reply time, from the end of the driver&apos;s speech to Heard&apos;s voice, over {latency.replies} live replies.</div>
+        </div>
+        <div className="rounded-2xl border border-line bg-panel p-5">
+          <div className="font-display text-5xl font-extrabold tabular-nums">0</div>
+          <div className="mt-1 text-sm text-muted">items or prices written by the AI. A tested parser and order engine build every order from what was actually heard.</div>
+        </div>
+      </section>
+
+      <section id="judge-demo">
+        <h2 className="font-display text-3xl font-bold mb-2">Judge demo, in 2 minutes</h2>
+        <p className="text-muted mb-5">Everything below works in the browser. Headphones help, so Heard doesn&apos;t hear itself.</p>
+        <ol className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Step n={1} title="Turn your phone into a drive-thru">
+            <p>Scan this and press play. Put the phone about a metre from your laptop.</p>
+            <NoiseQR />
+          </Step>
+          <Step n={2} title="Pull up to the speaker">
+            <p>Open Lane 1 and allow the microphone.</p>
+            <Link href="/lane" className="self-start rounded-lg bg-mustard text-asphalt font-bold px-4 py-2 hover:brightness-110">Open Lane 1 →</Link>
+            <Link href="/kitchen" target="_blank" className="self-start text-mustard underline">Also open the kitchen screen ↗</Link>
+          </Step>
+          <Step n={3} title="Say a messy order, over the noise">
+            <p className="rounded-lg bg-panel-2 border border-line p-3 text-ink text-[15px] leading-snug">
+              “Two Stackhouse Doubles… actually make one of those a single, no pickles. And a large chocolate Frostee.”
+            </p>
+            <p>Then try “eighteen thousand waters”, or “can I talk to a person?”</p>
+          </Step>
+          <Step n={4} title="Watch it hear both ways">
+            <p>Under the order board, the same microphone goes through generic speech-to-text and through Heard. Mistakes are marked in red, with the order each would have built.</p>
+          </Step>
+          <Step n={5} title="Confirm, and watch the kitchen">
+            <p>Say “that&apos;s all”, answer the one offer, confirm the read-back. The ticket fires on the kitchen screen. Forgot something? Just say it: the ticket updates.</p>
+          </Step>
+          <Step n={6} title="Habla español?">
+            <p>Switch Lane 1 to “Español + English” and order in Spanish, English or both: “Quiero dos Stackhouse Doubles, una sin pepinillos, y unas papas grandes.”</p>
+            <Link href="/lane?lang=es" className="self-start text-mustard underline">Open the bilingual lane →</Link>
+          </Step>
         </ol>
-        <p className="mt-4 text-sm text-muted">
-          Want to test the hearing? Play car or traffic noise from your phone next to your laptop and order again. It has to come from a second device: your browser cancels out sound the page plays itself.
-        </p>
       </section>
 
       <section>
-        <h2 className="font-display text-3xl font-bold mb-5">Designed from the public failures</h2>
+        <h2 className="font-display text-3xl font-bold mb-2">Why the big pilots failed, and what Heard does instead</h2>
+        <p className="text-muted mb-5 max-w-3xl">
+          McDonald&apos;s pulled its AI drive-thru from 100+ restaurants in 2024 after viral misheard orders. Taco Bell slowed its rollout after a caller ordered 18,000 waters just to reach a human. These were hearing and trust failures, not intelligence failures.
+        </p>
         <div className="rounded-2xl border border-line overflow-hidden">
           {FAILURES.map((f, i) => (
             <div key={f.failure} className={`grid gap-2 sm:grid-cols-2 px-5 py-4 ${i % 2 ? 'bg-panel' : 'bg-panel-2'}`}>
@@ -110,7 +160,7 @@ export default function Home() {
       <footer className="border-t border-line pt-6 text-sm text-faint flex flex-wrap gap-x-6 gap-y-2">
         <span>Heard · built for the AssemblyAI Voice Agent Hackathon on lablab.ai</span>
         <span>Stackhouse Burgers is a fictional restaurant.</span>
-        <span>MIT licensed</span>
+        <a href="https://github.com/Sravya1802/heard" className="underline hover:text-ink">Source on GitHub (MIT)</a>
       </footer>
     </main>
   )

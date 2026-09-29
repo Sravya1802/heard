@@ -1,0 +1,112 @@
+{
+  "scenario": "mind",
+  "voice": "Samantha",
+  "voiceFocus": "far-field",
+  "keyterms": true,
+  "noise": null,
+  "snr": null,
+  "passed": true,
+  "failures": [],
+  "latencies": [
+    1138,
+    1400,
+    1520,
+    1281
+  ],
+  "order": [
+    "1 Spicy Cluckwich",
+    "1 Stackhouse Double, no pickles"
+  ],
+  "log": [
+    {
+      "t": 0.855,
+      "kind": "ready",
+      "text": "sess_c8a95ea89890426dbcf38e2c23fa31c9"
+    },
+    {
+      "t": 3.974,
+      "kind": "agent",
+      "text": "Welcome to Stackhouse! What can I get started for you?"
+    },
+    {
+      "t": 4.967,
+      "kind": "guest",
+      "text": "Can I get two Spicy Cluckwiches, actually make one of those a Stackhouse Double, no pickles, and a large chocolate Frostee. Wait, scratch the Frostee."
+    },
+    {
+      "t": 16.707,
+      "kind": "heard",
+      "text": "Can I get 2 spicy cluckwiches? Actually, make one of those a Stackhouse Double, no pickles, and a large chocolate Frostee. Wait, scratch the Frostee."
+    },
+    {
+      "t": 17.26,
+      "kind": "tool",
+      "text": "✓ sync_order added 2 Spicy Cluckwich; now 1 Spicy Cluckwich; added 1 Stackhouse Double, no pickles; added 1 large chocolate Frostee; removed 1 large chocolate Frostee"
+    },
+    {
+      "t": 23.696,
+      "kind": "agent",
+      "text": "Got it, so one spicy cluckwich and a stackhouse double with no pickles. Anything else?"
+    },
+    {
+      "t": 24.758,
+      "kind": "guest",
+      "text": "That's all."
+    },
+    {
+      "t": 26.075,
+      "kind": "heard",
+      "text": "That's all."
+    },
+    {
+      "t": 26.831,
+      "kind": "tool",
+      "text": "✓ suggest_upsell"
+    },
+    {
+      "t": 32.972,
+      "kind": "agent",
+      "text": "Would you like to make that spicy cluckwich a meal with fries and a drink for just 3 dollars and 19 cents more?"
+    },
+    {
+      "t": 34.071,
+      "kind": "guest",
+      "text": "No thanks."
+    },
+    {
+      "t": 35.575,
+      "kind": "heard",
+      "text": "No thanks."
+    },
+    {
+      "t": 36.468,
+      "kind": "tool",
+      "text": "✓ read_back"
+    },
+    {
+      "t": 44.041,
+      "kind": "agent",
+      "text": "So that's one spicy cluckwich and a stackhouse double with no pickles for 13 dollars and 5 cents. Is that all correct?"
+    },
+    {
+      "t": 45.109,
+      "kind": "guest",
+      "text": "Yes, that's right."
+    },
+    {
+      "t": 47.182,
+      "kind": "heard",
+      "text": "Yes, that's right."
+    },
+    {
+      "t": 47.932,
+      "kind": "tool",
+      "text": "✓ submit_order"
+    },
+    {
+      "t": 52.872,
+      "kind": "agent",
+      "text": "Your total is 13 dollars and 5 cents. Please pull forward to the first window."
+    }
+  ]
+}

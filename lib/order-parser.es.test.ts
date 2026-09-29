@@ -28,7 +28,7 @@ describe('Spanish and Spanglish orders', () => {
   for (const [text, expected] of cases) it(text, () => expect(order([text])).toEqual(expected))
 
   it('reads "dieciocho mil aguas" as 18000 so the guardrail can refuse it', () => {
-    expect(parseUtterance('¿Me da dieciocho mil aguas?', emptyOrder()).changes).toEqual([{ action: 'add', item_id: 'bottled_water', quantity: 18000 }])
+    expect(parseUtterance('¿Me da dieciocho mil aguas?', emptyOrder()).changes).toMatchObject([{ action: 'add', item_id: 'bottled_water', quantity: 18000 }])
   })
 })
 

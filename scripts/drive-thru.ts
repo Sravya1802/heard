@@ -107,6 +107,22 @@ const SCENARIOS: Record<string, Scenario> = {
       !s.submitted?.updated && 'expected the ticket to be re-sent as updated',
     ].filter(Boolean) as string[],
   },
+  mind: {
+    lines: [
+      'Can I get two Spicy Cluckwiches, actually make one of those a Stackhouse Double, no pickles, and a large chocolate Frostee. Wait, scratch the Frostee.',
+      "That's all.",
+      'No thanks.',
+      "Yes, that's right.",
+    ],
+    expect: (s) => {
+      const got = s.lines.map(describeLine)
+      const want = ['1 Spicy Cluckwich', '1 Stackhouse Double, no pickles']
+      return [
+        JSON.stringify(got) !== JSON.stringify(want) && `expected ${want.join(' | ')}, got ${got.join(' | ')}`,
+        !s.submitted && 'expected the order to be submitted',
+      ].filter(Boolean) as string[]
+    },
+  },
   spanglish: {
     bilingual: true,
     voice: 'Paulina',

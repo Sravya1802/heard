@@ -20,6 +20,8 @@ export interface Change {
   as_meal?: boolean
   meal_drink_id?: string
   meal_size?: string
+  /** Why the parser made this change, in plain words (shown to judges and in logs; ignored by the engine). */
+  why?: string
 }
 
 /** A question the agent is waiting on, so a bare "large" or "sure" can be understood. */
@@ -50,6 +52,16 @@ export function tokenize(text: string): string[] {
     .replace(/[^a-z0-9 ]+/g, ' , ')
     .split(/\s+/)
     .filter(Boolean)
+}
+
+/**
+ * Split one breath into clauses at correction cues, so each part can be applied
+ * in order: "two Cluckwiches, actually make one of those a Double… wait, scratch
+ * the Frostee" is three steps, and later steps can refer to earlier ones.
+ */
+const CUE = /(?:[,.;!?]\s*|\s+)(?=(?:actually|wait|scratch|make that|make it|make one|change the|change that|mejor|quita|quitale|cambia|cambiame)\b)/i
+export function splitClauses(text: string): string[] {
+  return text.split(CUE).map((c) => c.trim()).filter(Boolean)
 }
 
 const SMALL: Record<string, number> = {
@@ -325,10 +337,10 @@ function toAdd(m: Mention): Change[] {
   const total = m.qty ?? 1
   const split = m.groups.reduce((s, g) => s + g.qty, 0)
   const out: Change[] = []
-  if (total - split > 0) out.push({ ...base, quantity: total - split, ...(m.modifiers.length ? { modifiers: [...m.modifiers] } : {}) })
+  if (total - split > 0) out.push({ ...base, quantity: total - split, ...(m.modifiers.length ? { modifiers: [...m.modifiers] } : {}), why: 'new item named' })
   for (const g of m.groups) {
     const mods = [...m.modifiers, ...g.modifiers]
-    out.push({ ...base, quantity: g.qty, ...(mods.length ? { modifiers: mods } : {}) })
+    out.push({ ...base, quantity: g.qty, ...(mods.length ? { modifiers: mods } : {}), why: '"one with…" split into its own line' })
   }
   return out
 }
@@ -372,12 +384,14 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
     const line = lineFor(m.itemId)
     if (!line) continue
     const fewer = m.qty != null && / (one|1|una|uno) (of|de) /.test(b) ? 1 : m.qty != null && m.qty < line.qty && !/ (las|los|el|la|the) $/.test(b) ? m.qty : null
-    result.changes.push(fewer ? { action: 'change', line_id: line.id, quantity: line.qty - fewer } : { action: 'remove', line_id: line.id })
+    result.changes.push(fewer
+      ? { action: 'change', line_id: line.id, quantity: line.qty - fewer, why: 'correction: asked to take some off an existing line' }
+      : { action: 'remove', line_id: line.id, why: 'correction: asked to remove an item already on the order' })
     handled.add(m)
   }
   if (!mentions.length && removeRe.test(said) && / (that|those|it|them|last) /.test(said)) {
     const line = lastLine()
-    if (line) result.changes.push({ action: 'remove', line_id: line.id })
+    if (line) result.changes.push({ action: 'remove', line_id: line.id, why: 'correction: "remove that" refers to the last line' })
   }
 
   for (let n = 0; n < mentions.length; n++) {
@@ -394,8 +408,10 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
       const namedPhrase = namedIdx >= 0 ? phraseAt(t, namedIdx) : null
       const from = (namedPhrase ? lineFor(namedPhrase.itemId) : undefined) ?? lastLine((l) => l.qty > 1) ?? lastLine()
       if (from) {
-        result.changes.push(from.qty > 1 ? { action: 'change', line_id: from.id, quantity: from.qty - 1 } : { action: 'remove', line_id: from.id })
-        result.changes.push(...toAdd({ ...m, qty: 1, groups: [] }))
+        result.changes.push(from.qty > 1
+          ? { action: 'change', line_id: from.id, quantity: from.qty - 1, why: 'correction: "make one of those…" takes one off the existing line' }
+          : { action: 'remove', line_id: from.id, why: 'correction: "make that one…" replaces the existing line' })
+        result.changes.push(...toAdd({ ...m, qty: 1, groups: [] }).map((c) => ({ ...c, why: 'correction: …and turns it into the new item' })))
         if (namedPhrase) for (const other of mentions) if (other.start === namedIdx) handled.add(other)
         handled.add(m)
         continue
@@ -411,7 +427,7 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
       const toNew = next && (between.some((w) => ['to', 'into', 'por'].includes(w)) ||
         (between[0] === 'a' && between.length <= 2 && between.every((w) => ['a', 'una', 'un', 'an'].includes(w))))
       if (line && !toNew) {
-        const c: Change = { action: 'change', line_id: line.id }
+        const c: Change = { action: 'change', line_id: line.id, why: 'correction: changed the item they named' }
         if (m.size) c.size = m.size
         if (m.modifiers.length) c.modifiers = m.modifiers
         if (m.meal) { c.as_meal = true; if (m.mealDrinkId) c.meal_drink_id = m.mealDrinkId; if (m.mealSize) c.meal_size = m.mealSize }
@@ -427,7 +443,7 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
         t.slice(m.end, next.start).some((w) => ['to', 'into', 'for', 'por'].includes(w))) {
       const from = lineFor(m.itemId)
       if (from) {
-        const c: Change = { action: 'change', line_id: from.id, item_id: next.itemId }
+        const c: Change = { action: 'change', line_id: from.id, item_id: next.itemId, why: 'correction: "change X to Y" swapped the named item' }
         const mods = [...m.modifiers, ...next.modifiers]
         if (mods.length) c.modifiers = mods
         if (next.size) c.size = next.size
@@ -445,7 +461,7 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
     if (swap && lines.length) {
       const cat = MENU_BY_ID[m.itemId].category
       const from = lastLine((l) => MENU_BY_ID[l.itemId].category === cat) ?? lastLine()!
-      const c: Change = { action: 'change', line_id: from.id }
+      const c: Change = { action: 'change', line_id: from.id, why: 'correction: "make that…/instead" swapped the last matching line' }
       if (from.itemId !== m.itemId) c.item_id = m.itemId
       if (m.size) c.size = m.size
       if (m.modifiers.length) c.modifiers = m.modifiers
@@ -475,12 +491,12 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
         const n = numberAt(t, i)
         if (pending.change.item_id === 'cluck_bites' && n && [6, 10, 20].includes(n.value)) { c.size = `${n.value}pc`; filled = true }
       }
-      if (filled) result.changes.push(c)
+      if (filled) result.changes.push({ ...c, why: `answer to the question about ${pending.missing.replace('_', ' ')}` })
     } else if (pending.missing === 'meal_drink') {
       const drink = result.changes.find((c) => c.action === 'add' && c.item_id && isMealDrink(c.item_id))
       if (drink) {
         result.changes = result.changes.filter((c) => c !== drink)
-        result.changes.unshift({ ...pending.change, meal_drink_id: drink.item_id, ...(drink.size === 'large' ? { meal_size: 'large' } : {}) })
+        result.changes.unshift({ ...pending.change, meal_drink_id: drink.item_id, ...(drink.size === 'large' ? { meal_size: 'large' } : {}), why: 'answer to the question about the meal drink' })
       }
     }
   } else if (pending?.kind === 'offer') {
@@ -489,7 +505,7 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
     const drink = result.changes.find((c) => c.action === 'add' && c.item_id && isMealDrink(c.item_id))
     if (pending.change.as_meal && drink && !no) {
       result.changes = result.changes.filter((c) => c !== drink)
-      result.changes.unshift({ ...pending.change, meal_drink_id: drink.item_id, ...(drink.size === 'large' || drink.size === 'medium' ? { meal_size: drink.size } : {}) })
+      result.changes.unshift({ ...pending.change, meal_drink_id: drink.item_id, ...(drink.size === 'large' || drink.size === 'medium' ? { meal_size: drink.size } : {}), why: 'accepted the offer, with a drink' })
     } else if (yes && !no && !mentions.length) {
       const c: Change = { ...pending.change }
       for (let i = 0; i < t.length; i++) {
@@ -497,7 +513,7 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
         if (mod) { c.modifiers = [...(c.modifiers ?? []), mod.mod]; i += mod.len - 1 }
         else if (SIZE_WORDS[t[i]]) { if (c.as_meal) c.meal_size = SIZE_WORDS[t[i]] === 'large' ? 'large' : 'medium'; else c.size = SIZE_WORDS[t[i]] }
       }
-      result.changes.push(c)
+      result.changes.push({ ...c, why: 'accepted the offer' })
     }
   }
 
@@ -517,7 +533,7 @@ export function parseUtterance(text: string, order: OrderState, pending: Pending
       : mods.length ? lastLine((l) => mods.every((mod) => canTake(l, mod)))
       : qty != null ? lastLine() : undefined
     if (target) {
-      const c: Change = { action: 'change', line_id: target.id }
+      const c: Change = { action: 'change', line_id: target.id, why: 'no item named, so it applies to the last matching line' }
       if (mods.length) c.modifiers = mods
       if (size) c.size = size
       if (qty != null) c.quantity = qty

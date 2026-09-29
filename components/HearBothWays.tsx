@@ -1,6 +1,6 @@
 'use client'
 
-import { sameMeaning, type Row } from '@/lib/compare'
+import { diffWords, sameMeaning, type Part, type Row } from '@/lib/compare'
 
 interface Props {
   rows: Row[]
@@ -10,6 +10,10 @@ interface Props {
   heardOrder: string[]
   connected: boolean
   now: number
+}
+
+function Words({ parts, wrong }: { parts: Part[]; wrong: string }) {
+  return <>{parts.map((p, i) => <span key={i} className={p.same ? '' : wrong}>{p.text}{i < parts.length - 1 ? ' ' : ''}</span>)}</>
 }
 
 /** The same microphone through two ears: a generic setup vs Heard, turn by turn. */
@@ -42,14 +46,17 @@ export default function HearBothWays({ rows, genericPartial, heardPartial, gener
           const generic = r.generic.join(' ')
           const filtered = r.heard == null && r.genericAt != null && now - r.genericAt > 4000
           const differs = r.heard != null && generic !== '' && !sameMeaning(generic, r.heard)
+          const d = r.heard != null && generic ? diffWords(generic, r.heard) : null
           return (
             <div key={i} className="grid grid-cols-2 border-b border-line/60 text-[15px] leading-snug">
               <div className={`px-4 py-2.5 ${differs ? 'text-ink' : 'text-muted'}`}>
-                {generic ? (<>{differs && <span className="text-ketchup font-bold mr-1.5">✗</span>}{generic}</>) : <span className="text-faint">…</span>}
+                {generic
+                  ? (<>{differs && <span className="text-ketchup font-bold mr-1.5">✗</span>}{d ? <Words parts={d.a} wrong="text-ketchup font-semibold underline decoration-ketchup/60" /> : generic}</>)
+                  : <span className="text-faint">…</span>}
               </div>
               <div className="px-4 py-2.5 border-l border-line">
                 {r.heard != null
-                  ? (<>{differs && <span className="text-pickle font-bold mr-1.5">✓</span>}{r.heard}</>)
+                  ? (<>{differs && <span className="text-pickle font-bold mr-1.5">✓</span>}{d ? <Words parts={d.b} wrong="text-pickle font-semibold" /> : r.heard}</>)
                   : filtered
                     ? <span className="text-faint italic">Not taken as the driver&apos;s order (background)</span>
                     : <span className="text-faint">…</span>}

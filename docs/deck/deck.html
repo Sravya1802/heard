@@ -73,16 +73,13 @@
 
 <!-- 4. Demo: the order -->
 <section class="slide">
-  <div class="eyebrow">Live demo · one breath, four corrections</div>
+  <div class="eyebrow">Live demo · two changes of mind, one breath</div>
   <div class="quote">&ldquo;Two Spicy Cluckwiches, <span class="mustard">actually</span> make one of those a Stackhouse Double, <span class="mustard">no pickles</span>, and a large chocolate Frostee. <span class="mustard">Wait, scratch the Frostee.</span>&rdquo;</div>
-  <div class="row" style="align-items:flex-start">
-    <img class="shot" src="img/order-crop.png" style="width:1250px">
-    <div class="col">
-      <p class="ink" style="font-size:34px">Exactly right, on the live Voice Agent API.</p>
-      <p>Every change shows the words it came from and the rule that applied: <span class="ink">&ldquo;make one of those&hellip;&rdquo; takes one off the existing line.</span></p>
-      <p>Read back, then sent. No keyboard.</p>
-    </div>
+  <div class="row" style="align-items:flex-start; gap:32px">
+    <img class="shot" src="img/lane-confidence.png" style="height:560px">
+    <img class="shot" src="img/confidence-moment.png" style="height:560px; border:none">
   </div>
+  <p>A real Voice Agent session: the order comes out exactly right, and <span class="ink">all five confidence checks pass before the ticket fires</span>. Every change shows the words it came from and the rule that applied.</p>
 </section>
 
 <!-- 5. Kitchen -->
@@ -142,7 +139,7 @@
   </div>
   <div class="row">
     <div class="card col"><h3>Why no tool arguments?</h3><p>Live testing showed the managed LLM returned an <span class="ink">empty reply</span> whenever a turn needed several changes. A parameterless tool is called reliably, and the order becomes deterministic and testable.</p></div>
-    <div class="card col"><h3>Engineering</h3><ul class="clean"><li>103 automated tests</li><li>Scripted scenarios verified against the live agent</li><li>Median reply 1.25 s, p90 1.68 s</li><li>Single-use browser tokens; MIT-licensed</li></ul></div>
+    <div class="card col"><h3>Engineering</h3><ul class="clean"><li>104 automated tests</li><li>Scripted scenarios verified against the live agent</li><li>Median reply 1.25 s, p90 1.68 s</li><li>Single-use browser tokens; MIT-licensed</li></ul></div>
   </div>
 </section>
 

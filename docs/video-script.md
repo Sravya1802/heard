@@ -25,12 +25,14 @@ Timings are targets. Narration is what you say over the recording; **LIVE** mean
 
 Say, naturally (the agent answers between each):
 1. **The killer line, in one breath:** "Can I get two Spicy Cluckwiches, actually make one of those a Stackhouse Double, no pickles, and a large chocolate Frostee. Wait, scratch the Frostee."
-   > *(point at "How Heard decided")* "Four corrections in one breath. Every change shows the words it came from and the rule that applied. The AI never writes the order."
-   > *(point at "Hear it both ways")* "And here's the same sentence through generic speech-to-text: 'clock witches'. That's the order a typical drive-thru AI would have made."
+   > *(point at "Order confidence")* "I changed my mind twice in one breath. Both corrections landed, and so did no pickles."
+   > *(point at "How Heard decided")* "Every change shows the words it came from and the rule that applied. The AI never writes the order."
+   > *(point at "Hear it both ways")* "And here's the same sentence through generic speech-to-text. Every mistake is in red, and below it, the order a typical drive-thru AI would have made." *(in our test run it heard "clockwitches" and "frosty", and lost the Cluckwich entirely)*
 2. "Can I get eighteen thousand waters?"
    > "Capped. Heard double-checks instead of sending it to the kitchen."
 3. "That's all." → answer the one offer with "No thanks." → read-back → "Yes, that's right."
-   > "The ticket fires: No Pickles in red. Nobody touched a keyboard."
+   > *(the full-screen Order confidence moment lands, five green checks)* "Heard it, built it from my words, applied the corrections, ignored the prank, read it back. Five for five, and only then does it go to the kitchen."
+   > *(click to continue, point at the kitchen screen)* "The ticket fires: No Pickles in red. Nobody touched a keyboard."
 4. "Oh wait — can I also get a large Stack Cola?"
    > "Late add-ons update the same ticket, like a real crew would."
 

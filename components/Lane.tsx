@@ -10,6 +10,7 @@ import { openLaneChannel, type LaneChannel, type LaneSnapshot, type SubmittedOrd
 import { VoiceSession, type CallStatus } from '@/lib/voice-client'
 import NoiseQR from '@/components/NoiseQR'
 import HearBothWays from '@/components/HearBothWays'
+import OrderConfidence, { ConfidenceMoment, confidenceChecks } from '@/components/OrderConfidence'
 import { ShadowTranscriber } from '@/lib/shadow-stt'
 import { addGeneric, addHeard, type Row } from '@/lib/compare'
 
@@ -80,6 +81,9 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
   const [genericOrder, setGenericOrder] = useState<string[]>([])
   const [shadowOn, setShadowOn] = useState(false)
   const [nowTick, setNowTick] = useState(0)
+  // The full-screen "verified and sent" beat.
+  const [moment, setMoment] = useState<{ orderNumber: number; total: string; updated?: boolean } | null>(null)
+  const closeMoment = useCallback(() => setMoment(null), [])
 
   const session = useRef<VoiceSession | null>(null)
   const channel = useRef<LaneChannel | null>(null)
@@ -167,6 +171,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
     setRows([]); setGenericPartial(''); setGenericOrder([]); setShadowOn(false)
     setChecks(NO_CHECKS)
     setDecisions([])
+    setMoment(null)
     shadowState.current = emptyOrder()
 
     const ctx = () => ({
@@ -216,6 +221,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
         setPartial(text)
         // Still talking after the total ("oh, and a cola"): don't hang up on them.
         if (endTimer.current && text.trim()) { clearTimeout(endTimer.current); endTimer.current = null }
+        if (text.trim()) setMoment(null)
       },
       onUserFinal: (text) => {
         setPartial('')
@@ -259,6 +265,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
                 updated: outcome.state.submitted.updated,
               }
               channel.current?.send('order', submitted)
+              setMoment({ orderNumber: submitted.orderNumber, total: submitted.total, updated: submitted.updated })
               void fetch('/api/orders', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(submitted) })
               broadcast(outcome.state, 'submitted')
               endSoon(12000)
@@ -335,6 +342,21 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
   const sorted = [...latencies].sort((a, b) => a - b)
   const median = sorted.length ? sorted[Math.floor(sorted.length / 2)] : undefined
   const focusLabel = hearing.voiceFocus === 'off' ? 'Voice focus off' : `Voice focus · ${hearing.voiceFocus}`
+  const confidence = confidenceChecks({
+    live,
+    heardCount: rows.filter((r) => r.heard != null).length,
+    lastHeard: captions.findLast((c) => c.who === 'guest')?.text,
+    itemCount: t.itemCount,
+    corrections: checks.corrections,
+    lastCorrection: decisions.find((d) => d.ok && d.why.startsWith('correction'))?.heard,
+    asked: checks.asked,
+    background: ignored,
+    capped: checks.capped,
+    unavailable: checks.unavailable,
+    offMenu: checks.offMenu,
+    readBack: order.lines.length > 0 && order.readBackVersion === order.version,
+    sentNumber: order.submitted?.orderNumber,
+  })
 
   return (
     <main className="flex-1 flex flex-col w-full max-w-[1400px] mx-auto px-4 sm:px-6 py-4 gap-4">
@@ -374,24 +396,6 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
             <h1 className="font-display text-3xl font-bold">Your order</h1>
             <span className="text-sm text-muted">{t.itemCount ? `${t.itemCount} item${t.itemCount === 1 ? '' : 's'}` : ''}</span>
           </div>
-
-          {(order.lines.length > 0 || checks.capped + checks.unavailable + checks.offMenu + checks.asked > 0) && (
-            <div className="flex flex-wrap gap-1.5 px-5 py-2.5 border-b border-line text-xs font-mono">
-              <span className="text-faint uppercase tracking-wider self-center mr-1">Verified order</span>
-              {order.lines.length > 0 && <span className="rounded bg-pickle/15 text-pickle px-2 py-0.5">✓ built from what was heard</span>}
-              {checks.corrections > 0 && <span className="rounded bg-sky/15 text-sky px-2 py-0.5">↺ {checks.corrections} correction{checks.corrections === 1 ? '' : 's'} applied</span>}
-              {checks.asked > 0 && <span className="rounded bg-mustard/15 text-mustard px-2 py-0.5">? asked instead of guessing</span>}
-              {checks.capped > 0 && <span className="rounded bg-ketchup/15 text-ketchup px-2 py-0.5">✗ capped a suspicious quantity</span>}
-              {checks.unavailable > 0 && <span className="rounded bg-ketchup/15 text-ketchup px-2 py-0.5">✗ didn&apos;t sell an unavailable item</span>}
-              {checks.offMenu > 0 && <span className="rounded bg-ketchup/15 text-ketchup px-2 py-0.5">✗ didn&apos;t invent an off-menu item</span>}
-              {ignored > 0 && <span className="rounded bg-panel-2 border border-line text-muted px-2 py-0.5">◌ {ignored} background voice{ignored === 1 ? '' : 's'} ignored</span>}
-              {order.lines.length > 0 && (order.submitted
-                ? <span className="rounded bg-pickle/15 text-pickle px-2 py-0.5">✓ read back · sent to kitchen</span>
-                : order.readBackVersion === order.version
-                  ? <span className="rounded bg-pickle/15 text-pickle px-2 py-0.5">✓ read back to guest</span>
-                  : <span className="rounded bg-panel-2 border border-line text-muted px-2 py-0.5">… read-back before sending</span>)}
-            </div>
-          )}
 
           <ol className="flex-1 overflow-y-auto px-3 py-2">
             {order.lines.length === 0 && (
@@ -447,6 +451,8 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
             </div>
           )}
         </section>
+
+        <OrderConfidence checks={confidence} sent={Boolean(order.submitted)} />
 
         <HearBothWays
           rows={rows}
@@ -563,6 +569,7 @@ export default function Lane({ hearing }: { hearing: HearingOptions }) {
           </div>
         </section>
       </div>
+      {moment && <ConfidenceMoment checks={confidence} {...moment} onDone={closeMoment} />}
     </main>
   )
 }

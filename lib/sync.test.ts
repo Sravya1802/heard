@@ -84,3 +84,10 @@ describe('corrections inside one breath', () => {
     ])
   })
 })
+
+describe('refusals explain themselves', () => {
+  it('says why "eighteen thousand waters" was not added', () => {
+    const o = runAgentTool(emptyOrder(), 'sync_order', {}, ['Can I get eighteen thousand waters?'])
+    expect(o.summary.explain).toMatchObject([{ ok: false, action: 'refused: quantity too high', why: expect.stringContaining('guardrail') }])
+  })
+})

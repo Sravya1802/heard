@@ -14,13 +14,14 @@ Heard is a drive-thru voice agent built around hearing. It runs on AssemblyAI's 
 One design decision makes it trustworthy: the AI never writes the order. It runs the conversation; a deterministic parser builds the order from what was actually heard, and a tested engine owns every item, price and total. Corrections work even inside one breath ("two Spicy Cluckwiches, actually make one a Double, no pickles… wait, scratch the Frostee"), and every change shows the words it came from and the rule that applied.
 
 What judges can try in the browser:
+- Order confidence: five checks turn green as the order earns them (heard, built from your words, corrections applied, chatter and pranks ignored, read back), and nothing reaches the kitchen before all five.
 - Hear it both ways: the same microphone through generic speech-to-text and through Heard, side by side, with the order each would build.
 - A noise page for your phone, so you can test it in real drive-thru noise.
 - A kitchen screen where tickets fire, update for late add-ons, and a crew alarm when a guest asks for a person.
 - A bilingual lane: Spanish, English or both in one sentence.
 - Guardrails from the public failures: quantity caps, read-back before sending, one offer only, a human one sentence away, and "Frostee machine down" handled live.
 
-Proof: a reproducible benchmark of 24 order lines in 6 accents under road noise and back-seat chatter. With noise as loud as the driver, generic speech-to-text gets 13% of orders exactly right; Heard gets 99%. Median reply time is 1.25 seconds. 103 automated tests, and scripted scenarios verified against the live agent.
+Proof: a reproducible benchmark of 24 order lines in 6 accents under road noise and back-seat chatter. With noise as loud as the driver, generic speech-to-text gets 13% of orders exactly right; Heard gets 99%. Median reply time is 1.25 seconds. 104 automated tests, and scripted scenarios verified against the live agent.
 
 Built so everyone gets understood the first time, any accent, English or Spanish, with a real person always one sentence away. Next: pharmacy drive-thru windows, where a misheard name or drug is a safety risk.
 

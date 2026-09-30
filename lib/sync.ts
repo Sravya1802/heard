@@ -5,6 +5,7 @@
 // sync (AssemblyAI's final transcripts), using the deterministic parser. So the
 // order is built from what was *heard*, and the model only runs the conversation.
 
+import { MAX_ITEMS_PER_ORDER, MAX_QTY_PER_LINE } from './menu'
 import { describeLine, runTool, type EngineContext, type OrderState, type ToolOutcome } from './order-engine'
 import { parseUtterance, splitClauses, type Change, type Pending } from './order-parser'
 
@@ -29,6 +30,18 @@ export interface SyncSummary {
   refused: string[]
   /** Heard -> action -> why, for every change the parser proposed. */
   explain: { heard: string; action: string; why: string; ok: boolean; item?: string }[]
+}
+
+/** Why the engine said no, in words a manager (or a judge) can read. */
+const REFUSAL_WHY: Record<string, string> = {
+  quantity_too_high: `guardrail: more than ${MAX_QTY_PER_LINE} of one item is double-checked, never sent`,
+  order_too_large: `guardrail: more than ${MAX_ITEMS_PER_ORDER} items in one car goes to the store`,
+  not_on_menu: 'guardrail: not on the menu, so nothing was invented',
+  unavailable: 'the kitchen marked it unavailable',
+  size_required: 'a detail was missing, so Heard asks instead of guessing',
+  flavor_required: 'a detail was missing, so Heard asks instead of guessing',
+  meal_drink_required: 'a detail was missing, so Heard asks instead of guessing',
+  kids_main_required: 'a detail was missing, so Heard asks instead of guessing',
 }
 
 /** Apply everything the guest said since the last sync. */
@@ -57,7 +70,8 @@ export function syncHeard(state: OrderState, heard: string[], ctx: EngineContext
       const action = res.ok
         ? String(res.added ? `added ${res.added}` : res.now ? `now ${res.now}` : res.removed ? `removed ${res.removed}` : 'updated')
         : `refused: ${String(res.error).replace(/_/g, ' ')}`
-      summary.explain.push({ heard: utterance, action, why: r.changes[i]?.why ?? '', ok: Boolean(res.ok), item: r.changes[i]?.item_id })
+      const why = res.ok ? r.changes[i]?.why ?? '' : REFUSAL_WHY[String(res.error)] ?? r.changes[i]?.why ?? ''
+      summary.explain.push({ heard: utterance, action, why, ok: Boolean(res.ok), item: r.changes[i]?.item_id })
       if (res.ok) {
         summary.changed.push(String(res.added ? `added ${res.added}` : res.now ? `now ${res.now}` : res.removed ? `removed ${res.removed}` : 'updated'))
       } else {

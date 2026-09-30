@@ -8,6 +8,8 @@ Heard is a voice agent for the drive-thru speaker post, built on the [AssemblyAI
 
 **Hear it both ways.** While you order, the same microphone audio also goes to a generic speech-to-text setup (an older AssemblyAI streaming model with no menu hints and no voice focus). Lane 1 shows every sentence as both heard it, and the order each would have built, so you can watch the difference live with noise playing from your phone.
 
+**Order confidence.** Five checks turn green as the order earns them: Heard heard you, the order was built from your words (not by the AI), corrections were applied, chatter and pranks were kept off, and the order was read back. When the guest confirms, all five land full-screen before the ticket fires, and "How Heard decided" shows the words and the rule behind every change.
+
 **Habla español? Order in Spanglish.** The bilingual lane understands Spanish, English, or both in one sentence (*"quiero dos Stackhouse Doubles, una sin pepinillos, y unas papas grandes"*), answers in the guest's language with a Spanish-native voice, and builds the same exact order.
 
 The demo restaurant, **Stackhouse Burgers**, is fictional. Its menu names (*Cluckwich*, *Frostee*, *Smokestack BBQ*) are invented on purpose: made-up brand names are exactly what generic speech-to-text gets wrong.

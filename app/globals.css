@@ -61,3 +61,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .line-in, .pulse-dot, .alarm { animation: none; }
 }
+
+/* An order-confidence check lands. */
+@keyframes check-in {
+  from { opacity: 0; transform: translateY(8px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+.check-in { animation: check-in .45s ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .check-in { animation: none; }
+}

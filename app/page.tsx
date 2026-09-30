@@ -114,7 +114,7 @@ export default function Home() {
             <p>Under the order board, the same microphone goes through generic speech-to-text and through Heard. Mistakes are marked in red, with the order each would have built.</p>
           </Step>
           <Step n={5} title="Confirm, and watch the kitchen">
-            <p>Say “that&apos;s all”, answer the one offer, confirm the read-back. The ticket fires on the kitchen screen. Forgot something? Just say it: the ticket updates.</p>
+            <p>Say “that&apos;s all”, answer the one offer, confirm the read-back. Order confidence checks off all five, then the ticket fires on the kitchen screen. Forgot something? Just say it: the ticket updates.</p>
           </Step>
           <Step n={6} title="Habla español?">
             <p>Switch Lane 1 to “Español + English” and order in Spanish, English or both: “Quiero dos Stackhouse Doubles, una sin pepinillos, y unas papas grandes.”</p>

@@ -4,6 +4,8 @@
 
 Heard is a voice agent for the drive-thru speaker post, built on the [AssemblyAI Voice Agent API](https://www.assemblyai.com/docs/voice-agents/voice-agent-api). It picks out the driver's voice from engine noise and back-seat chatter, builds the order **only from what it heard**, follows mid-sentence corrections, never invents a price, and puts a human one sentence away.
 
+**Live demo: [heard-lyart.vercel.app](https://heard-lyart.vercel.app)** (Chrome, allow the microphone; no login)
+
 **Try it:** `/lane` (order out loud) · `/lane?lang=es` (Spanish/English lane) · `/kitchen` (kitchen display, open it in a second tab) · `/noise` (open on your phone for drive-thru noise) · `/replay` (a recorded real order) · `/insights` (the benchmark)
 
 **Hear it both ways.** While you order, the same microphone audio also goes to a generic speech-to-text setup (an older AssemblyAI streaming model with no menu hints and no voice focus). Lane 1 shows every sentence as both heard it, and the order each would have built, so you can watch the difference live with noise playing from your phone.

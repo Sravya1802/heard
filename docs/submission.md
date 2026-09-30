@@ -29,6 +29,6 @@ Built so everyone gets understood the first time, any accent, English or Spanish
 AssemblyAI, Voice Agent API, Universal-3.6 Pro, Streaming Speech-to-Text, Voice Focus, Next.js, TypeScript, Vercel, Voice AI, Drive-thru, Restaurant Tech
 
 ## Links
-- Demo application: https://<your-vercel-url>
+- Demo application: https://heard-lyart.vercel.app
 - GitHub repository: https://github.com/Sravya1802/heard
 - Demo platform: Vercel

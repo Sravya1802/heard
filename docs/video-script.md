@@ -1,72 +1,103 @@
-# Heard — video script (target 3:45–4:15)
+# Heard — video script (about 4 minutes)
 
-**Setup:** laptop running `/lane` (English) with the kitchen screen in a second window, phone playing `/noise` about 1 m from the laptop, decibel-meter app visible if you have one. Record the screen with OBS (screen + mic + app audio) and the webcam as a small picture-in-picture. Speak clearly and a bit slower than normal.
-
-Timings are targets. Narration is what you say over the recording; **LIVE** means you are actually ordering and the agent is answering.
-
----
-
-## 0:00–0:20 — Hook (the side-by-side)
-**On screen:** Lane 1, "Hear it both ways" panel large. Noise phone playing.
-
-**LIVE (you, into the laptop):** "Two Spicy Cluckwiches and a large onion rings." 
-
-**Narration (over the result):**
-> "Same microphone. Same traffic noise. On the left, what a typical drive-thru AI hears. On the right, Heard. One of these gets your order right."
-
-## 0:20–0:50 — The problem
-**On screen:** landing page hero, then the two headlines (McDonald's / Taco Bell), then the Insights headline tiles.
-
-> "In 2024 McDonald's pulled its AI drive-thru from over a hundred restaurants after viral videos of wrong orders — like nine sweet teas instead of one. Taco Bell slowed its rollout after one customer ordered eighteen thousand waters just to reach a human.
-> These weren't intelligence failures. They were hearing failures. A drive-thru is the hardest place for a voice AI to listen: engines, traffic, kids in the back seat, and people who change their mind mid-sentence."
-
-## 0:50–2:20 — Live demo, one continuous take
-**On screen:** Lane 1 on the left, kitchen screen on the right. Noise playing the whole time. Don't cut inside this section. Scenario button: **"Changes their mind"**.
-
-Say, naturally (the agent answers between each):
-1. **The killer line, in one breath:** "Can I get two Spicy Cluckwiches, actually make one of those a Stackhouse Double, no pickles, and a large chocolate Frostee. Wait, scratch the Frostee."
-   > *(point at "Order confidence")* "I changed my mind twice in one breath. Both corrections landed, and so did no pickles."
-   > *(point at "How Heard decided")* "Every change shows the words it came from and the rule that applied. The AI never writes the order."
-   > *(point at "Hear it both ways")* "And here's the same sentence through generic speech-to-text. Every mistake is in red, and below it, the order a typical drive-thru AI would have made." *(in our test run it heard "clockwitches" and "frosty", and lost the Cluckwich entirely)*
-2. "Can I get eighteen thousand waters?"
-   > "Capped. Heard double-checks instead of sending it to the kitchen."
-3. "That's all." → answer the one offer with "No thanks." → read-back → "Yes, that's right."
-   > *(the full-screen Order confidence moment lands, five green checks)* "Heard it, built it from my words, applied the corrections, ignored the prank, read it back. Five for five, and only then does it go to the kitchen."
-   > *(click to continue, point at the kitchen screen)* "The ticket fires: No Pickles in red. Nobody touched a keyboard."
-4. "Oh wait — can I also get a large Stack Cola?"
-   > "Late add-ons update the same ticket, like a real crew would."
-
-**Optional 10 s:** on the kitchen screen, switch **Frostee machine → DOWN**, then ask for a Frostee. Heard apologizes and offers an Apple Turnover.
-
-## 2:20–2:45 — Spanglish
-**On screen:** switch to "Español + English", start a new car.
-
-**LIVE:** "Hola, quiero dos Stackhouse Doubles, una sin pepinillos… y unas papas grandes."
-> "Many drive-thru customers mix Spanish and English. Heard understands both in one sentence, answers in the guest's language, and builds the same exact order."
-
-## 2:45–3:25 — The proof
-**On screen:** `/insights` — headline tiles, then the chart, then "What each setup actually heard".
-> "We didn't just demo it. We measured it. Twenty-four real-world order lines, six accents, streamed through AssemblyAI in real time under road noise and back-seat chatter.
-> With noise as loud as the driver's voice, generic speech-to-text gets thirteen percent of orders exactly right. Heard gets ninety-nine.
-> The difference is hearing: AssemblyAI's Universal-3.6 Pro, voice focus — which AssemblyAI lists for drive-thru speakers — and our menu as key terms, so 'Cluckwich' doesn't become 'clock witch'."
-
-## 3:25–3:50 — How it's built
-**On screen:** architecture slide, then the "Under the hood" panel on Lane 1.
-> "Heard runs on AssemblyAI's Voice Agent API: speech-to-text, the LLM and the voice over one connection, with barge-in.
-> One design decision matters most: the AI never writes the order. It runs the conversation; a deterministic parser builds the order from what was actually heard, and a tested engine owns every price. Same words, same order, every time. Median reply time: one and a quarter seconds."
-
-## 3:50–4:15 — Business and close
-**On screen:** business slide, then the landing page with the live URL.
-> "Every chain is trying voice AI at the drive-thru. Heard is the hearing layer: sold per lane, with accuracy you can measure before you deploy, and a human always one sentence away. It's built so everyone gets understood the first time — any accent, English or Spanish.
-> Drive-thrus first. Next: pharmacy drive-thru windows, where a misheard name or drug isn't an inconvenience, it's a safety risk.
-> Pull up and try it yourself — the link's below. Put your phone on the noise page, and watch both columns."
+Read it top to bottom, in this order. **Bold quotes** are what you say. *Italics* are what you do.
+"YOU ORDER" lines are said to Heard; everything else is you talking to the judges.
+No camera needed: screen + your voice.
 
 ---
 
-## Recording checklist
-- [ ] Headphones on (the agent's voice should not reach the laptop mic)
-- [ ] Phone noise at a steady, loud volume; a decibel app in frame is a bonus
-- [ ] Chrome, `/lane` freshly loaded, kitchen window open and visible
-- [ ] One practice run first; keep the best continuous take of the demo section
-- [ ] Final length between 3:30 and 4:30 (under 3:00 caps Presentation at 2)
-- [ ] Export 1080p MP4, under 300 MB
+## Before you press record
+
+1. Headphones on. System Settings → Sound → Input → **MacBook Pro Microphone**.
+2. Phone about 1 m away playing **heard-lyart.vercel.app/noise**, loud but quieter than your voice.
+3. Chrome: **heard-lyart.vercel.app/lane** on the left, **/kitchen** in a second window on the right.
+4. Scenario button **"Changes their mind"** selected.
+5. Preview: `docs/deck/heard-deck.pdf` open on **slide 2**, full screen (⇧⌘F), ready to ⌘Tab to.
+6. OBS: start recording.
+
+---
+
+## 1. Opening — 0:00 to 0:15 (on `/lane`)
+
+**"Hi, I'm Sravya, and this is Heard: a drive-thru voice agent built on AssemblyAI's Voice Agent API. Drive-thru AI has failed in public because it couldn't hear people. Heard is built around hearing. This is live, no edits, with traffic noise playing from my phone. Let's pull up."**
+
+*Click **Pull up to the speaker**. Heard says "Welcome to Stackhouse! What can I get started for you?"*
+
+## 2. Live demo — 0:15 to 1:55 (on `/lane` + kitchen, don't stop recording)
+
+**YOU ORDER, in one breath:** "Can I get two Spicy Cluckwiches, actually make one of those a Stackhouse Double, no pickles, and a large chocolate Frostee. Wait, scratch the Frostee."
+
+*Wait for Heard to answer. Then point at each panel as you talk:*
+
+- *Order confidence:* **"I changed my mind twice in one breath. Both corrections landed, and so did no pickles."**
+- *How Heard decided:* **"Every change shows the exact words it came from and the rule that applied. The AI never writes the order."**
+- *Hear it both ways:* **"And this is the same sentence through generic speech-to-text. Every mistake is in red, and underneath is the wrong order a typical drive-thru AI would have made."**
+
+**YOU ORDER:** "Can I get eighteen thousand waters?"
+
+**"That's the prank that hit Taco Bell. Heard refuses and double-checks, instead of sending it to the kitchen."**
+
+**YOU ORDER:** "That's all."
+*Heard offers one upsell.* **YOU ORDER:** "No thanks."
+*Heard reads the order back.* **YOU ORDER:** "Yes, that's right."
+
+*The full-screen Order confidence card appears. Leave it up; talk over it:*
+
+**"Heard it, built it from my words, applied the corrections, ignored the prank, and read it back. Five for five, and only then does it go to the kitchen."**
+
+*Click to close it. Point at the kitchen window:*
+
+**"The ticket fires with No Pickles in red. Nobody touched a keyboard."**
+
+**YOU ORDER:** "Oh wait, can I also get a large Stack Cola?" *(if Heard asks you to confirm, say "Yes")*
+
+**"Late add-ons update the same ticket, like a real crew would."**
+
+## 3. Spanglish — 1:55 to 2:15 (on `/lane?lang=es`)
+
+*Click **Español + English** at the top, then **Pull up to the speaker**.*
+
+**YOU ORDER** (an accent is fine, that's the point):
+*OH-lah, kee-EH-roh DOHS Stackhouse Doubles, OO-nah seen peh-pee-NEE-yohs… ee OO-nahs PAH-pahs GRAHN-dehs.*
+("Hola, quiero dos Stackhouse Doubles, una sin pepinillos… y unas papas grandes." = two Doubles, one with no pickles, and large fries.)
+
+**"I don't speak Spanish, but plenty of drive-thru customers mix Spanish and English. Heard understands both in one sentence, answers in the guest's language, and builds the same exact order."**
+
+*Click **Drive away (end)**.*
+
+If this didn't work in your practice run: skip ordering, just show the Español + English button and say the line above.
+
+## 4. The problem — 2:15 to 2:45 (slide 2)
+
+*⌘Tab to Preview (slide 2).*
+
+**"Why does this matter? In 2024, McDonald's pulled its AI drive-thru from over a hundred restaurants after viral videos of wrong orders, like nine sweet teas instead of one. Taco Bell slowed its rollout after someone ordered eighteen thousand waters just to reach a human. These weren't intelligence failures. They were hearing failures. A drive-thru is the hardest place to listen: engines, traffic, kids in the back seat, and people who change their mind mid-sentence."**
+
+## 5. The proof — 2:45 to 3:25 (slide 6)
+
+*Right arrow to slide 6.*
+
+**"We didn't just demo it, we measured it. Twenty-four real-world order lines, six accents, streamed through AssemblyAI in real time with road noise and back-seat chatter. With noise as loud as the driver, generic speech-to-text gets thirteen percent of orders exactly right. Heard gets ninety-nine. The difference is hearing: AssemblyAI's Universal-3.6 Pro, voice focus, which AssemblyAI lists for drive-thru speakers, and our menu as key terms, so 'Cluckwich' doesn't become 'clock witch'."**
+
+## 6. How it's built — 3:25 to 3:50 (slide 8)
+
+*Right arrow to slide 8.*
+
+**"Heard runs on AssemblyAI's Voice Agent API: speech-to-text, the language model and the voice over one connection, with barge-in. The key design decision: the AI never writes the order. It runs the conversation, a deterministic parser builds the order from what was actually heard, and a tested engine owns every price. Same words, same order, every time, with a median reply time of about one and a quarter seconds."**
+
+## 7. Business and close — 3:50 to 4:15 (slide 10)
+
+*Right arrow to slide 10.*
+
+**"Every big chain is trying voice AI at the drive-thru. Heard is the hearing layer: sold per lane, with accuracy you can measure before you deploy, and a human always one sentence away. It's built so everyone gets understood the first time, any accent, English or Spanish. Next, pharmacy drive-thru windows, where a misheard name or drug is a safety risk. Try it yourself at heard-lyart.vercel.app. Put your phone on the noise page and watch both columns. Thanks!"**
+
+*Stop recording.*
+
+---
+
+## Tips
+- Do one practice run of section 2 first and play it back: you should hear **both** your voice and Heard's.
+- Speak a little slower than normal. If Heard says something unexpected, just answer it naturally and keep going.
+- If a take goes badly, start again. Two or three takes is normal.
+- Final length 3:30 to 4:30 (under 3:00 caps the Presentation score). Trim the start and end in QuickTime (⌘T).
+- Optional extra 10 s if you're short: on the kitchen screen set **Frostee machine → DOWN**, then ask Heard for a Frostee. It apologizes and offers an Apple Turnover.
